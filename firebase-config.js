@@ -15,12 +15,12 @@ import {
   updateDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ВАША КОНФИГУРАЦИЯ (должна быть ТОЧНО такой, как в Firebase)
+// ИСПРАВЛЕННАЯ КОНФИГУРАЦИЯ
 const firebaseConfig = {
   apiKey: "AIzaSyBn6fbSjjlT8dM41ov_uHEYPIDUfFgijo",
   authDomain: "vaillant-assistant.firebaseapp.com",
   projectId: "vaillant-assistant",
-  storageBucket: "vaillant-assistant.firebasestorage.app",
+  storageBucket: "vaillant-assistant.appspot.com",  // ✅ ИСПРАВЛЕНО!
   messagingSenderId: "94125964883",
   appId: "1:94125964883:web:972621f4bfeaf2ab6e10a6"
 };
