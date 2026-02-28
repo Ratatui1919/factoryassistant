@@ -83,7 +83,7 @@ window.register = async function() {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
     const userData = {
-      uid: user.uid, name, email, fullName: '', employeeId: '',
+      uid: user.uid, name, email, fullName: '', employeeId: '', cardId: '', email: '',
       records: [], quickSalaries: [], financialGoal: null,
       settings: { hourlyRate: BASE_RATE, lunchCost: LUNCH_COST_REAL, nightBonus: NIGHT_BONUS_PERCENT,
         saturdayBonus: 1.5, sundayBonus: 2.0, extraBonus: 25,
@@ -116,6 +116,21 @@ window.login = async function() {
     document.getElementById('app').classList.remove('hidden');
     document.getElementById('fullName').value = currentUser.fullName || '';
     document.getElementById('employeeId').value = currentUser.employeeId || '';
+    document.getElementById('cardId').value = currentUser.cardId || '';
+    document.getElementById('email').value = currentUser.email || '';
+    if (currentUser.settings) {
+      document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
+      document.getElementById('lunchCost').value = currentUser.settings.lunchCost || LUNCH_COST_REAL;
+      document.getElementById('nightBonus').value = currentUser.settings.nightBonus || NIGHT_BONUS_PERCENT;
+      document.getElementById('saturdayBonus').value = currentUser.settings.saturdayBonus || 1.5;
+      document.getElementById('sundayBonus').value = currentUser.settings.sundayBonus || 2.0;
+      document.getElementById('extraBonus').value = currentUser.settings.extraBonus || 25;
+      document.getElementById('personalDoctorDays').value = currentUser.settings.personalDoctorDays || 7;
+      document.getElementById('accompanyDoctorDays').value = currentUser.settings.accompanyDoctorDays || 6;
+      document.getElementById('usedPersonalDoctor').value = currentUser.settings.usedPersonalDoctor || 0;
+      document.getElementById('usedAccompanyDoctor').value = currentUser.settings.usedAccompanyDoctor || 0;
+      document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
+    }
     showMessage('Добро пожаловать!');
   } catch (error) { showMessage('Ошибка входа: ' + error.message, true); }
 };
@@ -142,14 +157,30 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById('app').classList.remove('hidden');
       document.getElementById('fullName').value = currentUser.fullName || '';
       document.getElementById('employeeId').value = currentUser.employeeId || '';
+      document.getElementById('cardId').value = currentUser.cardId || '';
+      document.getElementById('email').value = currentUser.email || '';
       document.getElementById('userName').textContent = currentUser.name || '';
       document.getElementById('profileName').textContent = currentUser.name || '';
       let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.name);
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
+      if (currentUser.settings) {
+        document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
+        document.getElementById('lunchCost').value = currentUser.settings.lunchCost || LUNCH_COST_REAL;
+        document.getElementById('nightBonus').value = currentUser.settings.nightBonus || NIGHT_BONUS_PERCENT;
+        document.getElementById('saturdayBonus').value = currentUser.settings.saturdayBonus || 1.5;
+        document.getElementById('sundayBonus').value = currentUser.settings.sundayBonus || 2.0;
+        document.getElementById('extraBonus').value = currentUser.settings.extraBonus || 25;
+        document.getElementById('personalDoctorDays').value = currentUser.settings.personalDoctorDays || 7;
+        document.getElementById('accompanyDoctorDays').value = currentUser.settings.accompanyDoctorDays || 6;
+        document.getElementById('usedPersonalDoctor').value = currentUser.settings.usedPersonalDoctor || 0;
+        document.getElementById('usedAccompanyDoctor').value = currentUser.settings.usedAccompanyDoctor || 0;
+        document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
+      }
       updateMonthDisplay();
       buildCalendar();
       calculateAllStats();
+      loadFinancialGoal();
     }
   } else {
     currentUser = null;
@@ -501,10 +532,40 @@ function buildYearChart() {
   });
 }
 
+function loadFinancialGoal() {
+  if (!currentUser?.financialGoal) return;
+  let goal = currentUser.financialGoal;
+  document.getElementById('goalNameDisplay').innerText = goal.name;
+  document.getElementById('goalTarget').innerText = goal.amount.toFixed(2) + ' €';
+  document.getElementById('goalName').value = goal.name;
+  document.getElementById('goalAmount').value = goal.amount;
+  document.getElementById('goalSaved').innerText = (goal.saved || 0).toFixed(2) + ' €';
+  let remaining = Math.max(goal.amount - (goal.saved || 0), 0);
+  document.getElementById('goalRemaining').innerText = remaining.toFixed(2) + ' €';
+  let percent = Math.min(((goal.saved || 0) / goal.amount) * 100, 100);
+  document.getElementById('goalPercent').innerText = percent.toFixed(1) + '%';
+  document.getElementById('goalProgressBar').style.width = percent + '%';
+  document.querySelector('.goal-inputs').style.display = 'none';
+  document.getElementById('goalProgress').style.display = 'block';
+  document.getElementById('goalActions').style.display = 'flex';
+  updateHistoryList();
+}
+
+function updateHistoryList() {
+  if (!currentUser?.financialGoal?.history) return;
+  let history = currentUser.financialGoal.history;
+  let html = '';
+  history.slice().reverse().slice(0,10).forEach(item => {
+    let icon = item.type === 'add' ? '➕' : '➖';
+    let color = item.type === 'add' ? '#00b060' : '#ef4444';
+    html += `<div class="history-item"><span>${icon} ${item.date}</span><span style="color:${color}">${item.type === 'add' ? '+' : '-'}${item.amount.toFixed(2)} €</span><span style="color:#94a3b8;">(баланс: ${item.balance.toFixed(2)} €)</span></div>`;
+  });
+  document.getElementById('goalHistory').innerHTML = html || '<div style="color:#94a3b8;">История пуста</div>';
+}
+
 window.saveGoal = async function() {
-  if (!currentUser) return;
-  let name = document.getElementById('goalName')?.value.trim();
-  let amount = parseFloat(document.getElementById('goalAmount')?.value);
+  let name = document.getElementById('goalName').value.trim();
+  let amount = parseFloat(document.getElementById('goalAmount').value);
   if (!name || isNaN(amount) || amount <= 0) return showMessage('Введите название и сумму цели', true);
   currentUser.financialGoal = { name, amount, saved: 0, history: [], date: new Date().toISOString() };
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
@@ -513,12 +574,13 @@ window.saveGoal = async function() {
 };
 
 window.clearGoal = async function() {
-  if (!currentUser) return;
+  if (!currentUser?.financialGoal) return;
   if (confirm('Удалить цель?')) {
     currentUser.financialGoal = null;
     await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: null });
     showMessage('Цель удалена');
-    loadFinancialGoal();
+    document.querySelector('.goal-inputs').style.display = 'flex';
+    document.getElementById('goalProgress').style.display = 'none';
   }
 };
 
@@ -526,66 +588,21 @@ window.addToGoal = async function() {
   if (!currentUser?.financialGoal) return;
   let amount = parseFloat(prompt('Сколько добавить?', '100'));
   if (isNaN(amount) || amount <= 0) return showMessage('Введите сумму', true);
-  currentUser.financialGoal.saved += amount;
+  currentUser.financialGoal.saved = (currentUser.financialGoal.saved || 0) + amount;
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
   currentUser.financialGoal.history.push({ type: 'add', amount, date: new Date().toLocaleString(), balance: currentUser.financialGoal.saved });
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
-  updateGoalDisplay(); showMessage(`Добавлено ${amount} €`);
+  loadFinancialGoal(); showMessage(`Добавлено ${amount} €`);
 };
 
 window.withdrawFromGoal = async function() {
   if (!currentUser?.financialGoal) return;
   let amount = parseFloat(prompt('Сколько снять?', '50'));
   if (isNaN(amount) || amount <= 0) return showMessage('Введите сумму', true);
-  if (amount > currentUser.financialGoal.saved) return showMessage('Недостаточно средств', true);
+  if (amount > (currentUser.financialGoal.saved || 0)) return showMessage('Недостаточно средств', true);
   currentUser.financialGoal.saved -= amount;
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
   currentUser.financialGoal.history.push({ type: 'withdraw', amount, date: new Date().toLocaleString(), balance: currentUser.financialGoal.saved });
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
-  updateGoalDisplay(); showMessage(`Снято ${amount} €`);
+  loadFinancialGoal(); showMessage(`Снято ${amount} €`);
 };
-
-function loadFinancialGoal() {
-  if (!currentUser) return;
-  let goal = currentUser.financialGoal;
-  if (goal && goal.name && goal.amount > 0) {
-    document.getElementById('goalNameDisplay').innerText = goal.name;
-    document.getElementById('goalTarget').innerText = goal.amount.toFixed(2) + ' €';
-    document.getElementById('goalName').value = goal.name;
-    document.getElementById('goalAmount').value = goal.amount;
-    if (!goal.saved) goal.saved = 0;
-    if (!goal.history) goal.history = [];
-    document.querySelector('.goal-inputs').style.display = 'none';
-    document.getElementById('goalProgress').style.display = 'block';
-    document.getElementById('goalActions').style.display = 'flex';
-    updateGoalDisplay();
-  } else {
-    document.getElementById('goalName').value = ''; document.getElementById('goalAmount').value = '';
-    document.querySelector('.goal-inputs').style.display = 'flex';
-    document.getElementById('goalProgress').style.display = 'none';
-  }
-}
-
-function updateGoalDisplay() {
-  if (!currentUser?.financialGoal) return;
-  let goal = currentUser.financialGoal;
-  document.getElementById('goalSaved').innerText = goal.saved.toFixed(2) + ' €';
-  document.getElementById('goalRemaining').innerText = Math.max(goal.amount - goal.saved, 0).toFixed(2) + ' €';
-  let percent = Math.min((goal.saved / goal.amount) * 100, 100);
-  document.getElementById('goalPercent').innerText = percent.toFixed(1) + '%';
-  document.getElementById('goalProgressBar').style.width = percent + '%';
-  updateHistoryList();
-}
-
-function updateHistoryList() {
-  let historyList = document.getElementById('goalHistory');
-  if (!historyList || !currentUser?.financialGoal?.history) return;
-  let history = currentUser.financialGoal.history;
-  let html = '';
-  history.slice().reverse().slice(0,10).forEach(item => {
-    let icon = item.type === 'add' ? '➕' : '➖';
-    let color = item.type === 'add' ? '#00b060' : '#ef4444';
-    html += `<div class="history-item"><span>${icon} ${item.date}</span><span style="color:${color}">${item.type === 'add' ? '+' : '-'}${item.amount.toFixed(2)} €</span><span style="color:#94a3b8;">(баланс: ${item.balance.toFixed(2)} €)</span></div>`;
-  });
-  historyList.innerHTML = html || '<div style="color:#94a3b8;">История пуста</div>';
-}
