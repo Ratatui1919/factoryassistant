@@ -73,7 +73,7 @@ window.showRegisterForm = function() {
   document.getElementById('registerForm')?.classList.add('active');
 };
 
-// ===== НОВАЯ РЕГИСТРАЦИЯ (ПО EMAIL) =====
+// ===== РЕГИСТРАЦИЯ (ТОЛЬКО EMAIL, БЕЗ ИМЕНИ) =====
 window.register = async function() {
   const email = document.getElementById('regEmail')?.value.trim();
   const pass = document.getElementById('regPass')?.value.trim();
@@ -88,7 +88,7 @@ window.register = async function() {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
     
-    // Используем часть email как имя для отображения
+    // Имя берём из email (часть до @)
     const displayName = email.split('@')[0];
     
     const userData = {
@@ -137,7 +137,7 @@ window.register = async function() {
   }
 };
 
-// ===== НОВЫЙ ВХОД (ПО EMAIL) =====
+// ===== ВХОД (ПО EMAIL) =====
 window.login = async function() {
   const email = document.getElementById('loginEmail')?.value.trim();
   const pass = document.getElementById('loginPass')?.value.trim();
@@ -197,7 +197,7 @@ window.login = async function() {
   }
 };
 
-// ===== ОСТАЛЬНОЙ КОД БЕЗ ИЗМЕНЕНИЙ =====
+// ===== ВЫХОД =====
 window.logout = async function() {
   if (confirm('Выйти?')) { 
     await signOut(auth); 
@@ -680,4 +680,3 @@ window.withdrawFromGoal = async function() {
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
   loadFinancialGoal(); showMessage(`Снято ${amount} €`);
 };
-
