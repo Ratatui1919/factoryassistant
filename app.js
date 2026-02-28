@@ -59,6 +59,32 @@ function getAvatarUrl(email) {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`; 
 }
 
+// ===== НОВАЯ ФУНКЦИЯ ДЛЯ ОТОБРАЖЕНИЯ ИМЕНИ =====
+function getDisplayName(user) {
+  if (!user) return 'Гость';
+  
+  // Если есть fullName и оно не пустое
+  if (user.fullName && user.fullName.trim() !== '') {
+    return user.fullName;
+  }
+  
+  // Иначе показываем часть email до @
+  if (user.email) {
+    return user.email.split('@')[0];
+  }
+  
+  return 'Пользователь';
+}
+
+// ===== ОБНОВЛЕНИЕ ИМЕНИ В ИНТЕРФЕЙСЕ =====
+function updateUserDisplay() {
+  if (!currentUser) return;
+  
+  const displayName = getDisplayName(currentUser);
+  document.getElementById('userName').textContent = displayName;
+  document.getElementById('profileName').textContent = displayName;
+}
+
 window.showLoginForm = function() {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -73,7 +99,6 @@ window.showRegisterForm = function() {
   document.getElementById('registerForm')?.classList.add('active');
 };
 
-// ===== РЕГИСТРАЦИЯ (ТОЛЬКО EMAIL, БЕЗ ИМЕНИ) =====
 window.register = async function() {
   const email = document.getElementById('regEmail')?.value.trim();
   const pass = document.getElementById('regPass')?.value.trim();
@@ -88,7 +113,6 @@ window.register = async function() {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
     
-    // Имя берём из email (часть до @)
     const displayName = email.split('@')[0];
     
     const userData = {
@@ -137,7 +161,6 @@ window.register = async function() {
   }
 };
 
-// ===== ВХОД (ПО EMAIL) =====
 window.login = async function() {
   const email = document.getElementById('loginEmail')?.value.trim();
   const pass = document.getElementById('loginPass')?.value.trim();
@@ -176,11 +199,11 @@ window.login = async function() {
         document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
       }
       
-      document.getElementById('userName').textContent = currentUser.name || email.split('@')[0];
-      document.getElementById('profileName').textContent = currentUser.name || email.split('@')[0];
       let avatarUrl = currentUser.avatar || getAvatarUrl(email);
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
+      
+      updateUserDisplay();
       
       showMessage('Добро пожаловать!');
     } else {
@@ -197,7 +220,6 @@ window.login = async function() {
   }
 };
 
-// ===== ВЫХОД =====
 window.logout = async function() {
   if (confirm('Выйти?')) { 
     await signOut(auth); 
@@ -245,11 +267,11 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
       }
       
-      document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
-      document.getElementById('profileName').textContent = currentUser.name || currentUser.email.split('@')[0];
       let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.email);
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
+      
+      updateUserDisplay();
       
       updateMonthDisplay();
       buildCalendar();
@@ -337,14 +359,14 @@ window.addRecord = async function(type) {
   let dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(selectedDay).padStart(2,'0')}`;
   let oldRecord = currentUser.records?.find(r => r.date === dateStr);
   if (oldRecord) {
-    if (oldRecord.type === 'doctor') currentUser.settings.usedPersonalDoctor--;
-    if (oldRecord.type === 'sat' || oldRecord.type === 'sun') currentUser.settings.usedWeekends--;
+    if (oldRecord.type === 'doctor') currentUser.settings.usedPersonalDoctor = Math.max(0, (currentUser.settings.usedPersonalDoctor || 0) - 1);
+    if (oldRecord.type === 'sat' || oldRecord.type === 'sun') currentUser.settings.usedWeekends = Math.max(0, (currentUser.settings.usedWeekends || 0) - 1);
   }
   currentUser.records = currentUser.records?.filter(r => r.date !== dateStr) || [];
   if (type !== 'off') {
     currentUser.records.push({ date: dateStr, type: type, hours: 7.5 });
-    if (type === 'doctor') currentUser.settings.usedPersonalDoctor++;
-    if (type === 'sat' || type === 'sun') currentUser.settings.usedWeekends++;
+    if (type === 'doctor') currentUser.settings.usedPersonalDoctor = (currentUser.settings.usedPersonalDoctor || 0) + 1;
+    if (type === 'sat' || type === 'sun') currentUser.settings.usedWeekends = (currentUser.settings.usedWeekends || 0) + 1;
   }
   await updateDoc(doc(db, "users", currentUser.uid), { records: currentUser.records, settings: currentUser.settings });
   hideModal('dayModal');
@@ -502,6 +524,7 @@ function buildStatsChart(monthTotals) {
 
 window.saveProfile = async function() {
   if (!currentUser) return;
+  
   currentUser.fullName = document.getElementById('fullName').value;
   currentUser.employeeId = document.getElementById('employeeId').value;
   currentUser.cardId = document.getElementById('cardId').value;
@@ -517,10 +540,16 @@ window.saveProfile = async function() {
   currentUser.settings.usedPersonalDoctor = parseInt(document.getElementById('usedPersonalDoctor').value) || 0;
   currentUser.settings.usedAccompanyDoctor = parseInt(document.getElementById('usedAccompanyDoctor').value) || 0;
   currentUser.settings.usedWeekends = parseInt(document.getElementById('usedWeekends').value) || 0;
+  
   await updateDoc(doc(db, "users", currentUser.uid), {
-    fullName: currentUser.fullName, employeeId: currentUser.employeeId, cardId: currentUser.cardId,
-    email: currentUser.email, settings: currentUser.settings
+    fullName: currentUser.fullName,
+    employeeId: currentUser.employeeId,
+    cardId: currentUser.cardId,
+    email: currentUser.email,
+    settings: currentUser.settings
   });
+  
+  updateUserDisplay();
   showMessage('Профиль сохранён!');
   calculateAllStats();
 };
@@ -528,22 +557,38 @@ window.saveProfile = async function() {
 window.clearAllData = async function() {
   if (!currentUser) return;
   if (confirm('Удалить ВСЕ данные?')) {
-    currentUser.records = []; currentUser.quickSalaries = []; currentUser.financialGoal = null;
-    currentUser.settings.usedPersonalDoctor = 0; currentUser.settings.usedAccompanyDoctor = 0; currentUser.settings.usedWeekends = 0;
+    currentUser.records = []; 
+    currentUser.quickSalaries = []; 
+    currentUser.financialGoal = null;
+    currentUser.settings.usedPersonalDoctor = 0; 
+    currentUser.settings.usedAccompanyDoctor = 0; 
+    currentUser.settings.usedWeekends = 0;
     await updateDoc(doc(db, "users", currentUser.uid), {
-      records: currentUser.records, quickSalaries: currentUser.quickSalaries,
-      financialGoal: currentUser.financialGoal, settings: currentUser.settings
+      records: currentUser.records, 
+      quickSalaries: currentUser.quickSalaries,
+      financialGoal: currentUser.financialGoal, 
+      settings: currentUser.settings
     });
-    buildCalendar(); calculateAllStats(); showMessage('Все данные очищены');
+    buildCalendar(); 
+    calculateAllStats(); 
+    showMessage('Все данные очищены');
   }
 };
 
 window.exportData = function() {
   if (!currentUser) return;
-  let data = { user: currentUser.name, records: currentUser.records, quickSalaries: currentUser.quickSalaries, financialGoal: currentUser.financialGoal, settings: currentUser.settings };
+  let data = { 
+    user: currentUser.name, 
+    records: currentUser.records, 
+    quickSalaries: currentUser.quickSalaries, 
+    financialGoal: currentUser.financialGoal, 
+    settings: currentUser.settings 
+  };
   let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
   let url = URL.createObjectURL(blob);
-  let a = document.createElement('a'); a.href = url; a.download = `vaillant_${currentUser.name}_${new Date().toISOString().split('T')[0]}.json`;
+  let a = document.createElement('a'); 
+  a.href = url; 
+  a.download = `vaillant_${currentUser.name}_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
 };
 
@@ -553,12 +598,21 @@ window.previewAvatar = function(input) {
     reader.onload = async function(e) {
       document.getElementById('avatarPreview').src = e.target.result;
       document.getElementById('profileAvatar').src = e.target.result;
-      if (currentUser) { currentUser.avatar = e.target.result; await updateDoc(doc(db, "users", currentUser.uid), { avatar: currentUser.avatar }); }
-    }; reader.readAsDataURL(input.files[0]);
+      if (currentUser) { 
+        currentUser.avatar = e.target.result; 
+        await updateDoc(doc(db, "users", currentUser.uid), { avatar: currentUser.avatar }); 
+      }
+    }; 
+    reader.readAsDataURL(input.files[0]);
   }
 };
 
-function calculateAllStats() { calculateDashboardStats(); updateWeekendStats(); buildYearChart(); updateFinanceStats(); }
+function calculateAllStats() { 
+  calculateDashboardStats(); 
+  updateWeekendStats(); 
+  buildYearChart(); 
+  updateFinanceStats(); 
+}
 
 function updateWeekendStats() {
   if (!currentUser) return;
@@ -598,10 +652,26 @@ function buildYearChart() {
     months[d.getMonth()] += calculateDayEarnings(r, rate, currentUser.settings);
   });
   if (yearChart) yearChart.destroy();
-  yearChart = new Chart(canvas, { type: 'line', data: { labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
-    datasets: [{ label: 'Доход €', data: months, borderColor: '#00b060', backgroundColor: 'rgba(0,176,96,0.15)', fill: true, tension: 0.4 }] },
-    options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } },
-      scales: { y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+  yearChart = new Chart(canvas, { 
+    type: 'line', 
+    data: { 
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+      datasets: [{ 
+        label: 'Доход €', 
+        data: months, 
+        borderColor: '#00b060', 
+        backgroundColor: 'rgba(0,176,96,0.15)', 
+        fill: true, 
+        tension: 0.4 
+      }] 
+    },
+    options: { 
+      responsive: true, 
+      plugins: { legend: { labels: { color: '#fff' } } },
+      scales: { 
+        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
+        x: { ticks: { color: '#94a3b8' } } 
+      }
     }
   });
 }
@@ -666,7 +736,8 @@ window.addToGoal = async function() {
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
   currentUser.financialGoal.history.push({ type: 'add', amount, date: new Date().toLocaleString(), balance: currentUser.financialGoal.saved });
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
-  loadFinancialGoal(); showMessage(`Добавлено ${amount} €`);
+  loadFinancialGoal(); 
+  showMessage(`Добавлено ${amount} €`);
 };
 
 window.withdrawFromGoal = async function() {
@@ -678,5 +749,6 @@ window.withdrawFromGoal = async function() {
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
   currentUser.financialGoal.history.push({ type: 'withdraw', amount, date: new Date().toLocaleString(), balance: currentUser.financialGoal.saved });
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
-  loadFinancialGoal(); showMessage(`Снято ${amount} €`);
+  loadFinancialGoal(); 
+  showMessage(`Снято ${amount} €`);
 };
