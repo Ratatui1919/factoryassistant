@@ -59,27 +59,15 @@ function getAvatarUrl(email) {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`; 
 }
 
-// ===== НОВАЯ ФУНКЦИЯ ДЛЯ ОТОБРАЖЕНИЯ ИМЕНИ =====
 function getDisplayName(user) {
   if (!user) return 'Гость';
-  
-  // Если есть fullName и оно не пустое
-  if (user.fullName && user.fullName.trim() !== '') {
-    return user.fullName;
-  }
-  
-  // Иначе показываем часть email до @
-  if (user.email) {
-    return user.email.split('@')[0];
-  }
-  
+  if (user.fullName && user.fullName.trim() !== '') return user.fullName;
+  if (user.email) return user.email.split('@')[0];
   return 'Пользователь';
 }
 
-// ===== ОБНОВЛЕНИЕ ИМЕНИ В ИНТЕРФЕЙСЕ =====
 function updateUserDisplay() {
   if (!currentUser) return;
-  
   const displayName = getDisplayName(currentUser);
   document.getElementById('userName').textContent = displayName;
   document.getElementById('profileName').textContent = displayName;
@@ -164,9 +152,18 @@ window.register = async function() {
 window.login = async function() {
   const email = document.getElementById('loginEmail')?.value.trim();
   const pass = document.getElementById('loginPass')?.value.trim();
+  const remember = document.getElementById('rememberMe')?.checked;
   
   if (!email || !pass) return showMessage('Введите email и пароль!', true);
   if (!email.includes('@')) return showMessage('Введите корректный email!', true);
+  
+  if (remember) {
+    localStorage.setItem('rememberedEmail', email);
+    localStorage.setItem('rememberedPass', pass);
+  } else {
+    localStorage.removeItem('rememberedEmail');
+    localStorage.removeItem('rememberedPass');
+  }
   
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, pass);
@@ -287,6 +284,14 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 window.onload = function() {
+  const rememberedEmail = localStorage.getItem('rememberedEmail');
+  const rememberedPass = localStorage.getItem('rememberedPass');
+  if (rememberedEmail) {
+    document.getElementById('loginEmail').value = rememberedEmail;
+    document.getElementById('loginPass').value = rememberedPass;
+    document.getElementById('rememberMe').checked = true;
+  }
+  
   hideModal('dayModal');
   setLanguage(currentLanguage);
   setTimeout(() => {
@@ -331,12 +336,17 @@ function buildCalendar() {
   let firstDay = new Date(currentYear, currentMonth, 1).getDay();
   firstDay = firstDay === 0 ? 6 : firstDay - 1;
   const today = new Date(); today.setHours(0,0,0,0);
-  for (let i = 0; i < firstDay; i++) { let empty = document.createElement('div'); empty.className = 'day empty'; grid.appendChild(empty); }
+  for (let i = 0; i < firstDay; i++) { 
+    let empty = document.createElement('div'); 
+    empty.className = 'day empty'; 
+    grid.appendChild(empty); 
+  }
   for (let d = 1; d <= daysInMonth; d++) {
     let cell = document.createElement('div');
     let date = new Date(currentYear, currentMonth, d); date.setHours(0,0,0,0);
     let isPast = date <= today;
-    cell.className = 'day'; if (!isPast) cell.classList.add('future');
+    cell.className = 'day'; 
+    if (!isPast) cell.classList.add('future');
     cell.innerHTML = `<span class="day-number">${d}</span><span class="day-icon">📅</span>`;
     if (currentUser && currentUser.records) {
       let dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -344,12 +354,21 @@ function buildCalendar() {
       if (record) {
         cell.classList.add(record.type);
         let iconSpan = cell.querySelector('.day-icon');
-        if (iconSpan) { const icons = { work:'💼', night:'🌙', overtime:'⏰', sat:'📆', sun:'☀️', extra:'➕', sick:'🤒', vacation:'🏖️', doctor:'🩺', off:'❌' };
+        if (iconSpan) { 
+          const icons = { 
+            work:'💼', night:'🌙', overtime:'⏰', sat:'📆', sun:'☀️', 
+            extra:'➕', sick:'🤒', vacation:'🏖️', doctor:'🩺', off:'❌' 
+          };
           iconSpan.textContent = icons[record.type] || '📅';
         }
       }
     }
-    if (isPast) cell.onclick = () => { selectedDay = d; showModal('dayModal'); };
+    if (isPast) {
+      cell.onclick = () => { 
+        selectedDay = d; 
+        showModal('dayModal'); 
+      };
+    }
     grid.appendChild(cell);
   }
 }
@@ -431,24 +450,61 @@ function calculateDashboardStats() {
 }
 
 window.quickAddSalary = async function() {
-  if (!currentUser) return;
-  let gross = parseFloat(document.getElementById('quickGross').value);
-  let net = parseFloat(document.getElementById('quickNet').value);
-  if (isNaN(gross) || isNaN(net)) return showMessage('Введите оба значения!', true);
+  if (!currentUser) return showMessage('Сначала войдите!', true);
+  
+  const gross = parseFloat(document.getElementById('quickGross').value);
+  const net = parseFloat(document.getElementById('quickNet').value);
+  
+  if (isNaN(gross) || isNaN(net)) {
+    return showMessage('Введите оба значения!', true);
+  }
+  
   if (!currentUser.quickSalaries) currentUser.quickSalaries = [];
-  let existingIndex = currentUser.quickSalaries.findIndex(s => s.month === currentMonth && s.year === currentYear);
-  if (existingIndex !== -1) currentUser.quickSalaries[existingIndex] = { month: currentMonth, year: currentYear, gross, net, date: new Date().toISOString() };
-  else currentUser.quickSalaries.push({ month: currentMonth, year: currentYear, gross, net, date: new Date().toISOString() });
-  await updateDoc(doc(db, "users", currentUser.uid), { quickSalaries: currentUser.quickSalaries });
-  document.getElementById('quickGross').value = ''; document.getElementById('quickNet').value = '';
+  
+  const existingIndex = currentUser.quickSalaries.findIndex(
+    s => s.month === currentMonth && s.year === currentYear
+  );
+  
+  const salaryData = {
+    month: currentMonth,
+    year: currentYear,
+    gross,
+    net,
+    date: new Date().toISOString()
+  };
+  
+  if (existingIndex !== -1) {
+    currentUser.quickSalaries[existingIndex] = salaryData;
+    showMessage('Зарплата обновлена!');
+  } else {
+    currentUser.quickSalaries.push(salaryData);
+    showMessage('Зарплата сохранена!');
+  }
+  
+  await updateDoc(doc(db, "users", currentUser.uid), {
+    quickSalaries: currentUser.quickSalaries
+  });
+  
+  document.getElementById('quickGross').value = '';
+  document.getElementById('quickNet').value = '';
+  
   updateFinanceStats();
 };
 
 window.clearQuickSalary = async function() {
   if (!currentUser) return;
-  currentUser.quickSalaries = currentUser.quickSalaries?.filter(s => !(s.month === currentMonth && s.year === currentYear)) || [];
-  await updateDoc(doc(db, "users", currentUser.uid), { quickSalaries: currentUser.quickSalaries });
-  showMessage('Зарплата удалена');
+  
+  currentUser.quickSalaries = currentUser.quickSalaries?.filter(
+    s => !(s.month === currentMonth && s.year === currentYear)
+  ) || [];
+  
+  await updateDoc(doc(db, "users", currentUser.uid), {
+    quickSalaries: currentUser.quickSalaries
+  });
+  
+  document.getElementById('quickGross').value = '';
+  document.getElementById('quickNet').value = '';
+  showMessage('Зарплата за этот месяц удалена');
   updateFinanceStats();
 };
 
@@ -474,9 +530,26 @@ function buildPieChart(net, tax, lunch, savings) {
   let canvas = document.getElementById('pieChart'); if (!canvas) return;
   if (pieChart) pieChart.destroy();
   let ctx = canvas.getContext('2d');
-  pieChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Чистый доход','Налоги','Обеды','Сбережения'],
-    datasets: [{ data: [net, tax, lunch, savings], backgroundColor: ['#00b060','#f59e0b','#ef4444','#8b5cf6'], borderWidth: 0 }] },
-    options: { responsive: true, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
+  pieChart = new Chart(ctx, { 
+    type: 'doughnut', 
+    data: { 
+      labels: ['Чистый доход','Налоги','Обеды','Сбережения'],
+      datasets: [{ 
+        data: [net, tax, lunch, savings], 
+        backgroundColor: ['#00b060','#f59e0b','#ef4444','#8b5cf6'], 
+        borderWidth: 0 
+      }] 
+    },
+    options: { 
+      responsive: true, 
+      cutout: '70%', 
+      plugins: { 
+        legend: { 
+          position: 'bottom', 
+          labels: { color: '#fff' } 
+        } 
+      } 
+    }
   });
 }
 
