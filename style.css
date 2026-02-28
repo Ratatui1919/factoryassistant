@@ -178,3 +178,119 @@ main { flex: 1; padding: 1rem; max-width: 1400px; margin: 0 auto; width: 100%; }
 .stats-card i { font-size: 2rem; color: var(--primary); }
 .stats-label { display: block; font-size: 0.85rem; color: var(--text-muted); }
 .stats-value { display: block; font-size: 1.5rem; font-weight: 700; }
+
+/* ===== МОДАЛКА ДНЯ ===== */
+.day-modal {
+  max-width: 500px;
+  width: 95%;
+}
+
+.day-types {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+@media (min-width: 600px) {
+  .day-types {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.day-type {
+  background: var(--dark-light);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 15px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.day-type:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: 0 5px 15px rgba(0,176,96,0.2);
+}
+
+.day-type i {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.day-type small {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.day-type.work { border-left: 4px solid #f39c12; }
+.day-type.night { border-left: 4px solid #3498db; }
+.day-type.overtime { border-left: 4px solid #e67e22; }
+.day-type.saturday { border-left: 4px solid #9b59b6; }
+.day-type.sunday { border-left: 4px solid #f39c12; }
+.day-type.extra { border-left: 4px solid #27ae60; }
+.day-type.sick { border-left: 4px solid #7f8c8d; }
+.day-type.vacation { border-left: 4px solid #f1c40f; }
+.day-type.doctor { border-left: 4px solid #9b59b6; }
+.day-type.off { border-left: 4px solid #2c3e50; }
+
+.cancel-btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ===== ЧЕКБОКС ===== */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+/* ===== БЫСТРЫЙ ВВОД ===== */
+.quick-salary-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.quick-salary-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 480px) {
+  .quick-salary-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quick-salary-actions {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .quick-salary-actions {
+    flex-direction: column;
+  }
+}
+
