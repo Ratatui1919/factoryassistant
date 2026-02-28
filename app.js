@@ -202,6 +202,11 @@ window.login = async function() {
       
       updateUserDisplay();
       
+      updateMonthDisplay();
+      buildCalendar();
+      calculateAllStats();
+      loadFinancialGoal();
+      
       showMessage('Добро пожаловать!');
     } else {
       showMessage('Данные пользователя не найдены!', true);
@@ -229,7 +234,10 @@ window.logout = async function() {
 
 window.setView = function(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(view)?.classList.add('active');
+  document.querySelector(`.nav-btn[data-view="${view}"]`)?.classList.add('active');
+  
   if (view === 'calendar') buildCalendar();
   if (view === 'stats') loadYearStats();
   if (view === 'finance') updateFinanceStats();
@@ -330,17 +338,25 @@ window.changeMonth = function(delta) {
 
 function buildCalendar() {
   const grid = document.getElementById('calendarGrid');
+  const monthEl = document.getElementById('calendarMonth');
   if (!grid) return;
+  
+  const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                      'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  if (monthEl) monthEl.innerText = monthNames[currentMonth] + ' ' + currentYear;
+  
   grid.innerHTML = '';
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   let firstDay = new Date(currentYear, currentMonth, 1).getDay();
   firstDay = firstDay === 0 ? 6 : firstDay - 1;
   const today = new Date(); today.setHours(0,0,0,0);
+  
   for (let i = 0; i < firstDay; i++) { 
     let empty = document.createElement('div'); 
     empty.className = 'day empty'; 
     grid.appendChild(empty); 
   }
+  
   for (let d = 1; d <= daysInMonth; d++) {
     let cell = document.createElement('div');
     let date = new Date(currentYear, currentMonth, d); date.setHours(0,0,0,0);
@@ -348,6 +364,7 @@ function buildCalendar() {
     cell.className = 'day'; 
     if (!isPast) cell.classList.add('future');
     cell.innerHTML = `<span class="day-number">${d}</span><span class="day-icon">📅</span>`;
+    
     if (currentUser && currentUser.records) {
       let dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       let record = currentUser.records.find(r => r.date === dateStr);
@@ -363,6 +380,7 @@ function buildCalendar() {
         }
       }
     }
+    
     if (isPast) {
       cell.onclick = () => { 
         selectedDay = d; 
@@ -587,10 +605,29 @@ function loadYearStats() {
 function buildStatsChart(monthTotals) {
   let canvas = document.getElementById('statsChart'); if (!canvas) return;
   if (statsChart) statsChart.destroy();
-  statsChart = new Chart(canvas, { type: 'bar', data: { labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
-    datasets: [{ label: 'Доход €', data: monthTotals, backgroundColor: 'rgba(0,176,96,0.7)', borderColor: '#00b060', borderWidth: 1 }] },
-    options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } },
-      scales: { y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+  statsChart = new Chart(canvas, { 
+    type: 'bar', 
+    data: { 
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+      datasets: [{ 
+        label: 'Доход €', 
+        data: monthTotals, 
+        backgroundColor: 'rgba(0,176,96,0.7)', 
+        borderColor: '#00b060', 
+        borderWidth: 1 
+      }] 
+    },
+    options: { 
+      responsive: true, 
+      plugins: { 
+        legend: { 
+          labels: { color: '#fff' } 
+        } 
+      },
+      scales: { 
+        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
+        x: { ticks: { color: '#94a3b8' } } 
+      }
     }
   });
 }
@@ -740,7 +777,11 @@ function buildYearChart() {
     },
     options: { 
       responsive: true, 
-      plugins: { legend: { labels: { color: '#fff' } } },
+      plugins: { 
+        legend: { 
+          labels: { color: '#fff' } 
+        } 
+      },
       scales: { 
         y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
         x: { ticks: { color: '#94a3b8' } } 
