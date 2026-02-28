@@ -21,6 +21,7 @@ let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let selectedDay = null;
 let currentLanguage = localStorage.getItem('vaillant_language') || 'ru';
+let currentTheme = localStorage.getItem('vaillant_theme') || 'dark';
 let yearChart = null, statsChart = null, pieChart = null;
 
 const BASE_RATE = 6.10;
@@ -448,6 +449,49 @@ window.setLanguage = function(lang) {
   buildCalendar();
 };
 
+// ===== ФУНКЦИЯ ДЛЯ ТЕМЫ =====
+window.setTheme = function(theme) {
+  currentTheme = theme;
+  localStorage.setItem('vaillant_theme', theme);
+  
+  // Удаляем предыдущие классы темы
+  document.body.classList.remove('theme-dark', 'theme-light', 'theme-auto');
+  
+  if (theme === 'auto') {
+    // Определяем системную тему
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('theme-dark');
+    } else {
+      document.body.classList.add('theme-light');
+    }
+    
+    // Следим за изменением системной темы
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (currentTheme === 'auto') {
+        document.body.classList.remove('theme-dark', 'theme-light');
+        document.body.classList.add(e.matches ? 'theme-dark' : 'theme-light');
+      }
+    });
+  } else {
+    document.body.classList.add(`theme-${theme}`);
+  }
+  
+  // Подсветка активной кнопки
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.theme === theme) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Если пользователь авторизован — сохраняем в Firebase
+  if (currentUser) {
+    updateDoc(doc(db, "users", currentUser.uid), {
+      theme: theme
+    });
+  }
+};
+
 function getAvatarUrl(email) { 
   let name = email.split('@')[0];
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`; 
@@ -507,6 +551,7 @@ window.register = async function() {
       records: [],
       quickSalaries: [],
       financialGoal: null,
+      theme: 'dark',
       settings: { 
         hourlyRate: BASE_RATE, 
         lunchCost: LUNCH_COST_REAL, 
@@ -594,6 +639,13 @@ window.login = async function() {
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
       
+      // Устанавливаем тему пользователя
+      if (currentUser.theme) {
+        setTheme(currentUser.theme);
+      } else {
+        setTheme(currentTheme);
+      }
+      
       updateUserDisplay();
       
       updateMonthDisplay();
@@ -670,6 +722,13 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
       
+      // Устанавливаем тему пользователя
+      if (currentUser.theme) {
+        setTheme(currentUser.theme);
+      } else {
+        setTheme(currentTheme);
+      }
+      
       updateUserDisplay();
       
       updateMonthDisplay();
@@ -696,6 +755,8 @@ window.onload = function() {
   
   hideModal('dayModal');
   setLanguage(currentLanguage);
+  setTheme(currentTheme);
+  
   setTimeout(() => {
     let profileActions = document.querySelector('.profile-actions');
     if (profileActions && !document.getElementById('clearAllDataBtn')) {
@@ -707,6 +768,7 @@ window.onload = function() {
       profileActions.appendChild(clearBtn);
     }
   }, 500);
+  
   showModal('authModal');
   window.showLoginForm();
 };
@@ -781,7 +843,7 @@ function buildCalendar() {
     let isPast = false;
     if (currentYear < todayYear) isPast = true;
     else if (currentYear === todayYear && currentMonth < todayMonth) isPast = true;
-    else if (currentYear === todayYear && currentMonth === todayMonth && d <= todayDate) isPast = true;
+    else if (currentYear === todayYear && currentMonth === todayMonth && d < todayDate) isPast = true;
     
     if (!isPast) cell.classList.add('future');
     
@@ -1192,7 +1254,7 @@ function updateWeekendStats() {
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(currentYear, currentMonth, d);
     date.setHours(0,0,0,0);
-    if ((date.getDay() === 0 || date.getDay() === 6) && date <= today) weekendsThisMonth++;
+    if ((date.getDay() === 0 || date.getDay() === 6) && date < today) weekendsThisMonth++;
   }
   
   document.getElementById('weekendsThisMonth').innerText = weekendsThisMonth;
