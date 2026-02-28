@@ -23,6 +23,8 @@ let selectedDay = null;
 let currentLanguage = localStorage.getItem('vaillant_language') || 'ru';
 let currentTheme = localStorage.getItem('vaillant_theme') || 'dark';
 let yearChart = null, statsChart = null, pieChart = null;
+let notificationTimeout = null;
+let updateInterval = null;
 
 const BASE_RATE = 6.10;
 const LUNCH_COST_REAL = 1.31;
@@ -72,7 +74,7 @@ const translations = {
     sundayBonus: 'Коэф. воскресенья',
     extraBonus: 'Бонус за надчас (€)',
     vacations: 'Отпуска и перепустки',
-    accruedWeekendsLabel: 'Накоплено выходных (1.67/мес)',
+    accruedWeekendsLabel: 'Накоплено выходных',
     usedWeekends: 'Использовано выходных',
     personalDoctor: 'Перепустки (личные)',
     usedPersonalDoctor: 'Использовано личных',
@@ -130,7 +132,12 @@ const translations = {
     october: 'Октябрь',
     november: 'Ноябрь',
     december: 'Декабрь',
-    clearAllData: 'Очистить все данные'
+    clearAllData: 'Очистить все данные',
+    goodMorning: 'Доброе утро',
+    goodAfternoon: 'Добрый день',
+    goodEvening: 'Добрый вечер',
+    exportToExcel: 'Экспорт в Excel',
+    exportToPDF: 'Экспорт в PDF'
   },
   sk: {
     dashboard: 'Nástenka',
@@ -170,7 +177,7 @@ const translations = {
     sundayBonus: 'Nedeľa koeficient',
     extraBonus: 'Extra blok bonus (€)',
     vacations: 'Dovolenka a lekár',
-    accruedWeekendsLabel: 'Nahromadené víkendy (1.67/mes)',
+    accruedWeekendsLabel: 'Nahromadené víkendy',
     usedWeekends: 'Použité víkendy',
     personalDoctor: 'Lekár (osobné)',
     usedPersonalDoctor: 'Použité osobné',
@@ -228,7 +235,12 @@ const translations = {
     october: 'Október',
     november: 'November',
     december: 'December',
-    clearAllData: 'Vymazať všetky dáta'
+    clearAllData: 'Vymazať všetky dáta',
+    goodMorning: 'Dobré ráno',
+    goodAfternoon: 'Dobrý deň',
+    goodEvening: 'Dobrý večer',
+    exportToExcel: 'Export do Excel',
+    exportToPDF: 'Export do PDF'
   },
   en: {
     dashboard: 'Dashboard',
@@ -268,7 +280,7 @@ const translations = {
     sundayBonus: 'Sunday coeff',
     extraBonus: 'Extra block bonus (€)',
     vacations: 'Vacations & doctor',
-    accruedWeekendsLabel: 'Accrued weekends (1.67/month)',
+    accruedWeekendsLabel: 'Accrued weekends',
     usedWeekends: 'Used weekends',
     personalDoctor: 'Doctor (personal)',
     usedPersonalDoctor: 'Used personal',
@@ -326,7 +338,12 @@ const translations = {
     october: 'October',
     november: 'November',
     december: 'December',
-    clearAllData: 'Clear all data'
+    clearAllData: 'Clear all data',
+    goodMorning: 'Good morning',
+    goodAfternoon: 'Good afternoon',
+    goodEvening: 'Good evening',
+    exportToExcel: 'Export to Excel',
+    exportToPDF: 'Export to PDF'
   },
   uk: {
     dashboard: 'Панель',
@@ -366,7 +383,7 @@ const translations = {
     sundayBonus: 'Коеф. неділі',
     extraBonus: 'Бонус за надгодини (€)',
     vacations: 'Відпустки та перепустки',
-    accruedWeekendsLabel: 'Накопичено вихідних (1.67/міс)',
+    accruedWeekendsLabel: 'Накопичено вихідних',
     usedWeekends: 'Використано вихідних',
     personalDoctor: 'Перепустки (особисті)',
     usedPersonalDoctor: 'Використано особистих',
@@ -424,13 +441,44 @@ const translations = {
     october: 'Жовтень',
     november: 'Листопад',
     december: 'Грудень',
-    clearAllData: 'Очистити всі дані'
+    clearAllData: 'Очистити всі дані',
+    goodMorning: 'Доброго ранку',
+    goodAfternoon: 'Доброго дня',
+    goodEvening: 'Доброго вечора',
+    exportToExcel: 'Експорт в Excel',
+    exportToPDF: 'Експорт в PDF'
   }
 };
 
 function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 function showMessage(msg, isError = false) { alert(isError ? '❌ ' + msg : '✅ ' + msg); }
+
+// Уведомления
+function showNotification(msg, duration = 3000) {
+  const notification = document.getElementById('notification');
+  const messageEl = document.getElementById('notificationMessage');
+  if (!notification || !messageEl) return;
+  
+  messageEl.textContent = msg;
+  notification.classList.remove('hidden');
+  
+  if (notificationTimeout) clearTimeout(notificationTimeout);
+  notificationTimeout = setTimeout(() => {
+    notification.classList.add('hidden');
+  }, duration);
+}
+
+window.hideNotification = function() {
+  const notification = document.getElementById('notification');
+  if (notification) notification.classList.add('hidden');
+};
+
+// Бургер-меню
+window.toggleMobileMenu = function() {
+  const nav = document.getElementById('mainNav');
+  nav.classList.toggle('active');
+};
 
 window.setLanguage = function(lang) {
   currentLanguage = lang;
@@ -447,36 +495,26 @@ window.setLanguage = function(lang) {
   
   updateMonthDisplay();
   buildCalendar();
+  updateWelcomeMessage();
 };
 
-// ===== ФУНКЦИЯ ДЛЯ ТЕМЫ =====
+// ===== ТЕМЫ =====
 window.setTheme = function(theme) {
   currentTheme = theme;
   localStorage.setItem('vaillant_theme', theme);
   
-  // Удаляем предыдущие классы темы
   document.body.classList.remove('theme-dark', 'theme-light', 'theme-auto');
   
   if (theme === 'auto') {
-    // Определяем системную тему
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.body.classList.add('theme-dark');
     } else {
       document.body.classList.add('theme-light');
     }
-    
-    // Следим за изменением системной темы
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      if (currentTheme === 'auto') {
-        document.body.classList.remove('theme-dark', 'theme-light');
-        document.body.classList.add(e.matches ? 'theme-dark' : 'theme-light');
-      }
-    });
   } else {
     document.body.classList.add(`theme-${theme}`);
   }
   
-  // Подсветка активной кнопки
   document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.classList.remove('active');
     if (btn.dataset.theme === theme) {
@@ -484,12 +522,130 @@ window.setTheme = function(theme) {
     }
   });
   
-  // Если пользователь авторизован — сохраняем в Firebase
   if (currentUser) {
     updateDoc(doc(db, "users", currentUser.uid), {
       theme: theme
     });
   }
+};
+
+// ===== ВРЕМЯ И ПОГОДА =====
+function updateTimeWidget() {
+  const widget = document.getElementById('timeWidget');
+  if (!widget) return;
+  
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  widget.innerHTML = `<i class="far fa-clock"></i> ${timeStr}`;
+}
+
+function updateWelcomeMessage() {
+  const welcomeEl = document.getElementById('welcomeMessage');
+  if (!welcomeEl || !currentUser) return;
+  
+  const hour = new Date().getHours();
+  let greeting = '';
+  
+  if (hour < 12) greeting = translations[currentLanguage]?.goodMorning || 'Доброе утро';
+  else if (hour < 18) greeting = translations[currentLanguage]?.goodAfternoon || 'Добрый день';
+  else greeting = translations[currentLanguage]?.goodEvening || 'Добрый вечер';
+  
+  const name = currentUser.fullName || currentUser.name || '';
+  welcomeEl.textContent = `${greeting}${name ? ', ' + name : ''}!`;
+  
+  const dateEl = document.getElementById('welcomeDate');
+  if (dateEl) {
+    const now = new Date();
+    dateEl.textContent = now.toLocaleDateString(currentLanguage === 'ru' ? 'ru-RU' : 
+                                               currentLanguage === 'sk' ? 'sk-SK' : 
+                                               currentLanguage === 'uk' ? 'uk-UA' : 'en-US', 
+                                               { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+}
+
+// ===== АНИМИРОВАННЫЕ СЧЕТЧИКИ =====
+function animateCounter(element, target, suffix = '', duration = 1000) {
+  const start = 0;
+  const startTime = performance.now();
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const current = Math.floor(start + (target - start) * progress);
+    element.textContent = current + suffix;
+    
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      element.textContent = target.toFixed(2) + suffix;
+    }
+  }
+  
+  requestAnimationFrame(update);
+}
+
+function animateAllCounters() {
+  document.querySelectorAll('.counter').forEach(el => {
+    const id = el.id;
+    const value = parseFloat(el.textContent) || 0;
+    animateCounter(el, value, el.textContent.includes('€') ? ' €' : '');
+  });
+}
+
+// ===== ЭКСПОРТ =====
+window.exportToExcel = function() {
+  if (!currentUser) return;
+  
+  const data = [
+    ['Показатель', 'Значение'],
+    ['Всего заработано', document.getElementById('totalEarned').textContent],
+    ['Всего часов', document.getElementById('totalHours').textContent],
+    ['Потрачено на обеды', document.getElementById('totalLunch').textContent],
+    ['Лучший месяц', document.getElementById('bestMonth').textContent],
+    ['Чистая зарплата (текущий месяц)', document.getElementById('net').textContent],
+    ['Грязная (текущий месяц)', document.getElementById('gross').textContent],
+  ];
+  
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, 'Статистика');
+  XLSX.writeFile(wb, `vaillant_stats_${new Date().toISOString().split('T')[0]}.xlsx`);
+  
+  showNotification('Excel файл сохранён');
+};
+
+window.exportToPDF = function() {
+  if (!currentUser) return;
+  
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(18);
+  doc.setTextColor(0, 176, 96);
+  doc.text('Vaillant Assistant - Статистика', 20, 20);
+  
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Дата: ${new Date().toLocaleDateString()}`, 20, 30);
+  
+  const data = [
+    ['Показатель', 'Значение'],
+    ['Всего заработано', document.getElementById('totalEarned').textContent],
+    ['Всего часов', document.getElementById('totalHours').textContent],
+    ['Потрачено на обеды', document.getElementById('totalLunch').textContent],
+    ['Лучший месяц', document.getElementById('bestMonth').textContent],
+  ];
+  
+  doc.autoTable({
+    startY: 40,
+    head: [data[0]],
+    body: data.slice(1),
+    theme: 'grid',
+    headStyles: { fillColor: [0, 176, 96] }
+  });
+  
+  doc.save(`vaillant_stats_${new Date().toISOString().split('T')[0]}.pdf`);
+  showNotification('PDF файл сохранён');
 };
 
 function getAvatarUrl(email) { 
@@ -509,6 +665,7 @@ function updateUserDisplay() {
   const displayName = getDisplayName(currentUser);
   document.getElementById('userName').textContent = displayName;
   document.getElementById('profileName').textContent = displayName;
+  updateWelcomeMessage();
 }
 
 window.showLoginForm = function() {
@@ -639,7 +796,6 @@ window.login = async function() {
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
       
-      // Устанавливаем тему пользователя
       if (currentUser.theme) {
         setTheme(currentUser.theme);
       } else {
@@ -653,7 +809,12 @@ window.login = async function() {
       calculateAllStats();
       loadFinancialGoal();
       
-      showMessage('Добро пожаловать!');
+      // Запускаем обновление времени
+      if (updateInterval) clearInterval(updateInterval);
+      updateInterval = setInterval(updateTimeWidget, 1000);
+      updateTimeWidget();
+      
+      showNotification('Добро пожаловать!');
     } else {
       showMessage('Данные пользователя не найдены!', true);
     }
@@ -674,7 +835,8 @@ window.logout = async function() {
     currentUser = null; 
     document.getElementById('app').classList.add('hidden'); 
     showModal('authModal'); 
-    window.showLoginForm(); 
+    window.showLoginForm();
+    if (updateInterval) clearInterval(updateInterval);
   }
 };
 
@@ -683,6 +845,9 @@ window.setView = function(view) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(view)?.classList.add('active');
   document.querySelector(`.nav-btn[data-view="${view}"]`)?.classList.add('active');
+  
+  // Закрываем мобильное меню
+  document.getElementById('mainNav').classList.remove('active');
   
   if (view === 'calendar') buildCalendar();
   if (view === 'stats') loadYearStats();
@@ -722,7 +887,6 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById('avatarPreview').src = avatarUrl;
       document.getElementById('profileAvatar').src = avatarUrl;
       
-      // Устанавливаем тему пользователя
       if (currentUser.theme) {
         setTheme(currentUser.theme);
       } else {
@@ -735,12 +899,17 @@ onAuthStateChanged(auth, async (user) => {
       buildCalendar();
       calculateAllStats();
       loadFinancialGoal();
+      
+      if (updateInterval) clearInterval(updateInterval);
+      updateInterval = setInterval(updateTimeWidget, 1000);
+      updateTimeWidget();
     }
   } else {
     currentUser = null;
     document.getElementById('app').classList.add('hidden');
     showModal('authModal');
     window.showLoginForm();
+    if (updateInterval) clearInterval(updateInterval);
   }
 });
 
@@ -908,6 +1077,7 @@ window.addRecord = async function(type) {
   hideModal('dayModal');
   buildCalendar();
   calculateAllStats();
+  showNotification('Запись добавлена');
 };
 
 window.closeModal = function() { hideModal('dayModal'); };
@@ -989,6 +1159,8 @@ function calculateDashboardStats() {
   document.getElementById('satCount').innerText = stats.saturdays + stats.sundays;
   document.getElementById('doctorCount').innerText = stats.doctorDays;
   document.getElementById('lunchCost').innerText = lunchCost.toFixed(2) + ' €';
+  
+  animateAllCounters();
 }
 
 function updateFinanceStats() {
@@ -1015,11 +1187,11 @@ function updateFinanceStats() {
   );
   
   const tips = [
-    'Откладывай минимум 10% от зарплаты',
-    'Используй надчасы для дополнительного дохода',
-    'Субботние смены приносят +25€ бонуса',
-    'Ночные смены оплачиваются на 20% выше',
-    'Следи за количеством перепусток'
+    translations[currentLanguage]?.financialTip1 || 'Откладывай минимум 10% от зарплаты',
+    translations[currentLanguage]?.financialTip2 || 'Используй надчасы для дополнительного дохода',
+    translations[currentLanguage]?.financialTip3 || 'Субботние смены приносят +25€ бонуса',
+    translations[currentLanguage]?.financialTip4 || 'Ночные смены оплачиваются на 20% выше',
+    translations[currentLanguage]?.financialTip5 || 'Следи за количеством перепусток'
   ];
   document.getElementById('financeTip').innerText = tips[Math.floor(Math.random() * tips.length)];
 }
@@ -1041,16 +1213,21 @@ function buildPieChart(net, tax, lunch, savings) {
       datasets: [{
         data: [net, tax, lunch, savings],
         backgroundColor: ['#00b060', '#f59e0b', '#ef4444', '#8b5cf6'],
-        borderWidth: 0
+        borderWidth: 0,
+        hoverOffset: 10
       }]
     },
     options: {
       responsive: true,
       cutout: '70%',
+      animation: {
+        animateScale: true,
+        animateRotate: true
+      },
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { color: '#fff' }
+          labels: { color: getComputedStyle(document.body).getPropertyValue('--text').trim() }
         }
       }
     }
@@ -1111,12 +1288,19 @@ function loadYearStats() {
   document.getElementById('bestMonth').innerText = bestMonth.name + ' ' + bestMonth.value.toFixed(0) + '€';
   
   buildStatsChart(monthTotals);
+  animateAllCounters();
 }
 
 function buildStatsChart(monthTotals) {
   const canvas = document.getElementById('statsChart');
   if (!canvas) return;
   if (statsChart) statsChart.destroy();
+  
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(0, 176, 96, 0.8)');
+  gradient.addColorStop(1, 'rgba(0, 176, 96, 0.2)');
+  
   statsChart = new Chart(canvas, {
     type: 'bar',
     data: {
@@ -1124,25 +1308,31 @@ function buildStatsChart(monthTotals) {
       datasets: [{
         label: translations[currentLanguage]?.monthlyIncome || 'Доход €',
         data: monthTotals,
-        backgroundColor: 'rgba(0,176,96,0.7)',
+        backgroundColor: gradient,
         borderColor: '#00b060',
-        borderWidth: 1
+        borderWidth: 2,
+        borderRadius: 8,
+        hoverBackgroundColor: '#00b060'
       }]
     },
     options: {
       responsive: true,
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuart'
+      },
       plugins: {
         legend: {
-          labels: { color: '#fff' }
+          labels: { color: getComputedStyle(document.body).getPropertyValue('--text').trim() }
         }
       },
       scales: {
         y: {
-          grid: { color: '#334155' },
-          ticks: { color: '#94a3b8' }
+          grid: { color: getComputedStyle(document.body).getPropertyValue('--border').trim() },
+          ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() }
         },
         x: {
-          ticks: { color: '#94a3b8' }
+          ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() }
         }
       }
     }
@@ -1177,7 +1367,7 @@ window.saveProfile = async function() {
   });
   
   updateUserDisplay();
-  showMessage('Профиль сохранён!');
+  showNotification('Профиль сохранён!');
   calculateAllStats();
 };
 
@@ -1199,7 +1389,7 @@ window.clearAllData = async function() {
     buildCalendar();
     calculateAllStats();
     loadFinancialGoal();
-    showMessage('Все данные очищены');
+    showNotification('Все данные очищены');
   }
 };
 
@@ -1219,6 +1409,7 @@ window.exportData = function() {
   a.href = url;
   a.download = `vaillant_${currentUser.name}_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
+  showNotification('Данные экспортированы');
 };
 
 window.previewAvatar = function(input) {
@@ -1230,6 +1421,7 @@ window.previewAvatar = function(input) {
       if (currentUser) {
         currentUser.avatar = e.target.result;
         await updateDoc(doc(db, "users", currentUser.uid), { avatar: currentUser.avatar });
+        showNotification('Аватар обновлён');
       }
     };
     reader.readAsDataURL(input.files[0]);
@@ -1259,19 +1451,8 @@ function updateWeekendStats() {
   
   document.getElementById('weekendsThisMonth').innerText = weekendsThisMonth;
   
-  const joinDate = new Date(currentUser.joinDate || Date.now());
-  joinDate.setHours(0,0,0,0);
-  let monthsWorked = 0;
-  const currentDate = new Date();
-  
-  for (let y = joinDate.getFullYear(); y <= currentDate.getFullYear(); y++) {
-    for (let m = (y === joinDate.getFullYear() ? joinDate.getMonth() : 0);
-         m <= (y === currentDate.getFullYear() ? currentDate.getMonth() : 11); m++) {
-      monthsWorked++;
-    }
-  }
-  
-  const accruedWeekends = Math.floor(monthsWorked * 1.67);
+  // Больше не рассчитываем автоматически - используем ручные значения из профиля
+  const accruedWeekends = currentUser.settings?.accruedWeekends || 0;
   document.getElementById('accruedWeekends').innerText = accruedWeekends;
   document.getElementById('accruedWeekendsInput').value = accruedWeekends;
   
@@ -1304,6 +1485,12 @@ function buildYearChart() {
   }
   
   if (yearChart) yearChart.destroy();
+  
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(0, 176, 96, 0.3)');
+  gradient.addColorStop(1, 'rgba(0, 176, 96, 0)');
+  
   yearChart = new Chart(canvas, {
     type: 'line',
     data: {
@@ -1312,25 +1499,34 @@ function buildYearChart() {
         label: translations[currentLanguage]?.monthlyIncome || 'Доход €',
         data: months,
         borderColor: '#00b060',
-        backgroundColor: 'rgba(0,176,96,0.15)',
+        backgroundColor: gradient,
         fill: true,
-        tension: 0.4
+        tension: 0.4,
+        pointBackgroundColor: '#00b060',
+        pointBorderColor: '#fff',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 3
       }]
     },
     options: {
       responsive: true,
+      animation: {
+        duration: 1500,
+        easing: 'easeInOutQuart'
+      },
       plugins: {
         legend: {
-          labels: { color: '#fff' }
+          labels: { color: getComputedStyle(document.body).getPropertyValue('--text').trim() }
         }
       },
       scales: {
         y: {
-          grid: { color: '#334155' },
-          ticks: { color: '#94a3b8' }
+          grid: { color: getComputedStyle(document.body).getPropertyValue('--border').trim() },
+          ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() }
         },
         x: {
-          ticks: { color: '#94a3b8' }
+          ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() }
         }
       }
     }
@@ -1428,7 +1624,7 @@ window.saveGoal = async function() {
     financialGoal: currentUser.financialGoal
   });
   
-  showMessage('Цель сохранена');
+  showNotification('Цель сохранена');
   loadFinancialGoal();
 };
 
@@ -1440,7 +1636,7 @@ window.clearGoal = async function() {
     await updateDoc(doc(db, "users", currentUser.uid), {
       financialGoal: null
     });
-    showMessage('Цель удалена');
+    showNotification('Цель удалена');
     loadFinancialGoal();
   }
 };
@@ -1465,7 +1661,7 @@ window.addToGoal = async function() {
   });
   
   loadFinancialGoal();
-  showMessage(`Добавлено ${amount} €`);
+  showNotification(`Добавлено ${amount} €`);
 };
 
 window.withdrawFromGoal = async function() {
@@ -1489,7 +1685,7 @@ window.withdrawFromGoal = async function() {
   });
   
   loadFinancialGoal();
-  showMessage(`Снято ${amount} €`);
+  showNotification(`Снято ${amount} €`);
 };
 
 window.importFromPDF = function(input) {
@@ -1539,6 +1735,7 @@ window.importFromPDF = function(input) {
       statusEl.textContent = msg.replace('{count}', months.length);
       setTimeout(() => { statusEl.textContent = ''; }, 3000);
       calculateAllStats();
+      showNotification('Данные импортированы');
     } catch (error) {
       statusEl.textContent = translations[currentLanguage]?.importError || 'Ошибка при обработке PDF';
     }
