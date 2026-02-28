@@ -1208,4 +1208,28 @@ window.onload = function() {
     showLoginForm();
 };
 
+// Делаем функции доступными глобально
+window.showLoginForm = showLoginForm;
+window.showRegisterForm = showRegisterForm;
+window.login = login;
+window.register = register;
+window.logout = logout;
+window.setView = setView;
+window.changeMonth = changeMonth;
+window.changeMonthFromSelect = changeMonthFromSelect;
+window.addRecord = addRecord;
+window.closeModal = closeModal;
+window.quickAddSalary = quickAddSalary;
+window.clearQuickSalary = clearQuickSalary;
+window.saveProfile = saveProfile;
+window.previewAvatar = previewAvatar;
+window.exportData = exportData;
+window.setLanguage = setLanguage;
+window.addToGoal = addToGoal;
+window.withdrawFromGoal = withdrawFromGoal;
+window.saveGoal = saveGoal;
+window.clearGoal = clearGoal;
+window.loadYearStats = loadYearStats;
+window.clearAllData = clearAllData;
+
 
