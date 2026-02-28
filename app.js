@@ -8,7 +8,11 @@ import {
   doc,
   setDoc,
   getDoc,
-  updateDoc
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs
 } from './firebase-config.js';
 
 // ===== ДАННЫЕ =====
@@ -51,23 +55,40 @@ window.register = async function() {
   
   if (!name || !pass || !confirm) return showMessage('Заполните все поля!', true);
   if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
+  if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
   
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, `${name}@temp.com`, pass);
+    // Создаём безопасный email из имени
+    const cleanName = name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    const email = `${cleanName}${Math.floor(Math.random() * 1000)}@vaillant.app`;
+    
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
     
     const userData = {
       uid: user.uid,
       name: name,
+      email: email,
       fullName: '',
       employeeId: '',
       records: [],
-      settings: { hourlyRate: 6.10 }
+      settings: { 
+        hourlyRate: 6.10, 
+        lunchCost: 1.31 
+      },
+      createdAt: new Date().toISOString()
     };
     
     await setDoc(doc(db, "users", user.uid), userData);
     showMessage('Регистрация успешна!');
+    
+    document.getElementById('regName').value = '';
+    document.getElementById('regPass').value = '';
+    document.getElementById('regConfirm').value = '';
+    window.showLoginForm();
+    
   } catch (error) {
+    console.error("Registration error:", error);
     showMessage('Ошибка: ' + error.message, true);
   }
 };
@@ -80,23 +101,34 @@ window.login = async function() {
   if (!name || !pass) return showMessage('Введите имя и пароль!', true);
   
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, `${name}@temp.com`, pass);
+    // Ищем пользователя по имени
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("name", "==", name));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      return showMessage('Пользователь не найден!', true);
+    }
+    
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    
+    const userCredential = await signInWithEmailAndPassword(auth, userData.email, pass);
     const user = userCredential.user;
     
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      currentUserData = userDoc.data();
-      currentUser = { uid: user.uid, ...currentUserData };
-      
-      hideModal('authModal');
-      document.getElementById('app').classList.remove('hidden');
-      
-      document.getElementById('fullName').value = currentUser.fullName || '';
-      document.getElementById('employeeId').value = currentUser.employeeId || '';
-      
-      showMessage('Добро пожаловать!');
-    }
+    currentUserData = userData;
+    currentUser = { uid: user.uid, ...userData };
+    
+    hideModal('authModal');
+    document.getElementById('app').classList.remove('hidden');
+    
+    document.getElementById('fullName').value = currentUser.fullName || '';
+    document.getElementById('employeeId').value = currentUser.employeeId || '';
+    
+    showMessage('Добро пожаловать!');
+    
   } catch (error) {
+    console.error("Login error:", error);
     showMessage('Ошибка входа: ' + error.message, true);
   }
 };
@@ -160,7 +192,21 @@ window.onload = function() {
   window.showLoginForm();
 };
 
-// ===== КАЛЕНДАРЬ (ПРОСТАЯ ВЕРСИЯ) =====
-window.changeMonth = function() {};
+// ===== ПУСТЫЕ ФУНКЦИИ ДЛЯ КАЛЕНДАРЯ =====
+window.changeMonth = function() { console.log('changeMonth'); };
+window.changeMonthFromSelect = function() {};
 window.addRecord = function() {};
 window.closeModal = function() {};
+window.quickAddSalary = function() {};
+window.clearQuickSalary = function() {};
+window.previewAvatar = function() {};
+window.exportData = function() {};
+window.setLanguage = function(lang) { 
+  console.log('Language:', lang);
+};
+window.addToGoal = function() {};
+window.withdrawFromGoal = function() {};
+window.saveGoal = function() {};
+window.clearGoal = function() {};
+window.loadYearStats = function() {};
+window.clearAllData = function() {};
