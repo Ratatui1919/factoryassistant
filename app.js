@@ -216,7 +216,7 @@ window.onload = function() {
   window.showLoginForm();
 };
 
-// ===== ПРОСТЫЕ ФУНКЦИИ КАЛЕНДАРЯ =====
+// ===== ФУНКЦИИ КАЛЕНДАРЯ =====
 window.changeMonth = function(delta) {
   currentMonth += delta;
   if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -230,13 +230,33 @@ window.buildCalendar = function() {
   grid.innerHTML = '';
   
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
+  
+  for (let i = 0; i < firstDayIndex; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'day empty';
+    grid.appendChild(empty);
+  }
   
   for (let d = 1; d <= daysInMonth; d++) {
     const cell = document.createElement('div');
     cell.className = 'day';
     cell.textContent = d;
+    
+    const today = new Date();
+    const date = new Date(currentYear, currentMonth, d);
+    
+    if (date < today) {
+      cell.onclick = () => window.openDayModal(d);
+    }
+    
     grid.appendChild(cell);
   }
+};
+
+window.openDayModal = function(day) {
+  showModal('dayModal');
 };
 
 window.addRecord = function(type) {
@@ -248,7 +268,7 @@ window.closeModal = function() {
   hideModal('dayModal');
 };
 
-// Заглушки для остальных функций
+// ===== ЗАГЛУШКИ =====
 window.quickAddSalary = function() { console.log('quickAddSalary'); };
 window.clearQuickSalary = function() { console.log('clearQuickSalary'); };
 window.previewAvatar = function() { console.log('previewAvatar'); };
