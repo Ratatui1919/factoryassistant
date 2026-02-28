@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Vaillant • Factory Assistant</title>
+    
+    <!-- Фавикон -->
+    <link rel="icon" type="image/png" href="assets/vaillant-logo.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,7 +18,7 @@
     <div class="modal" id="authModal">
         <div class="modal-content auth-card">
             <div class="auth-logo">
-                <i class="fas fa-industry"></i>
+                <img src="assets/vaillant-logo.png" alt="Vaillant" style="height: 40px;">
                 <h2>Vaillant<span>Assistant</span></h2>
             </div>
             <div class="auth-tabs">
@@ -61,7 +65,7 @@
         <header>
             <div class="header-left">
                 <div class="logo">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Vaillant_Logo_2017.svg/2560px-Vaillant_Logo_2017.svg.png" alt="Vaillant" style="height: 30px;">
+                    <img src="assets/vaillant-logo.png" alt="Vaillant">
                     <h1>Assistant</h1>
                 </div>
                 <div class="header-badge">FACTORY PRO</div>
@@ -326,6 +330,16 @@
                             <div class="profile-field"><label data-lang="accompanyDoctor">Перепустки (сопровождение)</label><input type="number" id="accompanyDoctorDays" value="6" min="0"></div>
                             <div class="profile-field"><label data-lang="usedAccompanyDoctor">Использовано сопровождения</label><input type="number" id="usedAccompanyDoctor" value="0" min="0"></div>
                         </div>
+                        
+                        <!-- БЛОК ТЕМ -->
+                        <div class="profile-card">
+                            <h3><i class="fas fa-palette"></i> Тема оформления</h3>
+                            <div class="theme-selector">
+                                <button class="theme-btn" data-theme="dark" onclick="window.setTheme('dark')">🌙 Тёмная</button>
+                                <button class="theme-btn" data-theme="light" onclick="window.setTheme('light')">☀️ Светлая</button>
+                                <button class="theme-btn" data-theme="auto" onclick="window.setTheme('auto')">⚙️ Как в системе</button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="profile-actions">
@@ -401,7 +415,7 @@
                         <h3><i class="fas fa-file-pdf"></i> <span data-lang="importPDF">Импорт из PDF</span></h3>
                         <p><span data-lang="uploadPDF">Загрузите PDF с зарплатой за последние 4 месяца</span></p>
                         <div class="pdf-upload-area">
-                            <input type="file" id="pdfUpload" accept=".pdf" onchange="window.importFromPDF(this)">
+                            <input type="file" id="pdfUpload" accept=".pdf">
                             <label for="pdfUpload" class="pdf-label"><i class="fas fa-cloud-upload-alt"></i> <span data-lang="chooseFile">Выберите файл</span></label>
                         </div>
                         <div class="pdf-status" id="pdfStatus"></div>
@@ -416,6 +430,7 @@
         <div class="modal-content day-modal">
             <div class="modal-header">
                 <h3><i class="fas fa-calendar-day"></i> <span data-lang="selectDayType">Выберите тип дня</span></h3>
+                <!-- КНОПКА КРЕСТИКА УДАЛЕНА -->
             </div>
             <div class="day-types">
                 <button class="day-type work" onclick="window.addRecord('work')"><i class="fas fa-briefcase"></i><span data-lang="work">Смена</span><small>7.5ч</small></button>
@@ -437,4 +452,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-
