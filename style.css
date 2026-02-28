@@ -1,6 +1,6 @@
 /* ======================
-   Vaillant Assistant PRO v17.0
-   ФИНАЛЬНАЯ ВЕРСИЯ - ВСЁ ИСПРАВЛЕНО
+   Vaillant Assistant PRO v18.0
+   ФИНАЛЬНАЯ ВЕРСИЯ - ТЁМНАЯ И СВЕТЛАЯ ТЕМЫ
    ====================== */
 
 * {
@@ -9,6 +9,7 @@
     box-sizing: border-box;
 }
 
+/* Тёмная тема (по умолчанию) */
 :root {
     --primary: #00b060;
     --primary-dark: #009048;
@@ -26,12 +27,39 @@
     --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
 }
 
+/* Светлая тема */
+.theme-light {
+    --primary: #00b060;
+    --primary-dark: #009048;
+    --primary-light: #00d070;
+    --secondary: #3b82f6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --dark: #f5f7fa;
+    --dark-light: #ffffff;
+    --dark-card: #ffffff;
+    --text: #1a1e2a;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.theme-light body {
+    background: #f5f7fa;
+}
+
+.theme-light .day.future {
+    opacity: 0.2;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background: var(--dark);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 ::-webkit-scrollbar {
@@ -77,7 +105,7 @@ body {
 .auth-card { text-align: center; }
 .auth-logo { margin-bottom: 30px; }
 .auth-logo img { height: 40px; margin-bottom: 10px; }
-.auth-logo h2 { font-size: 1.8rem; color: white; }
+.auth-logo h2 { font-size: 1.8rem; color: var(--text); }
 .auth-logo span { color: var(--primary); font-weight: 300; }
 .auth-tabs {
     display: flex; gap: 10px; margin-bottom: 20px;
@@ -147,10 +175,6 @@ header {
     font-weight: 600; 
     white-space: nowrap;
 }
-.logo span { 
-    color: var(--primary); 
-    font-weight: 300; 
-}
 .header-badge {
     background: var(--primary);
     padding: 4px 12px;
@@ -159,6 +183,7 @@ header {
     font-weight: 600;
     text-transform: uppercase;
     white-space: nowrap;
+    color: white;
 }
 .header-right { 
     display: flex; 
@@ -338,7 +363,7 @@ main {
     height: 36px; 
     background: var(--dark-light); 
     border: 1px solid var(--border);
-    color: white; 
+    color: var(--text); 
     border-radius: 50%; 
     cursor: pointer; 
     transition: all 0.3s;
@@ -351,6 +376,7 @@ main {
     background: var(--primary); 
     border-color: var(--primary); 
     transform: scale(1.1); 
+    color: white;
 }
 .month-selector h2 {
     font-size: 1.3rem; 
@@ -398,13 +424,25 @@ main {
     background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
     border: none; 
 }
+.kpi-card.primary .kpi-label,
+.kpi-card.primary .kpi-value {
+    color: white;
+}
 .kpi-card.warning { 
     background: linear-gradient(135deg, #f59e0b, #d97706); 
     border: none; 
 }
+.kpi-card.warning .kpi-label,
+.kpi-card.warning .kpi-value {
+    color: white;
+}
 .kpi-card.success { 
     background: linear-gradient(135deg, #10b981, #059669); 
     border: none; 
+}
+.kpi-card.success .kpi-label,
+.kpi-card.success .kpi-value {
+    color: white;
 }
 .kpi-icon {
     width: 45px; 
@@ -415,6 +453,7 @@ main {
     align-items: center; 
     justify-content: center; 
     font-size: 1.3rem;
+    color: white;
 }
 .kpi-content { 
     flex: 1; 
@@ -423,7 +462,7 @@ main {
 .kpi-label { 
     display: block; 
     font-size: 0.8rem; 
-    color: rgba(255,255,255,0.7); 
+    color: var(--text-muted); 
     margin-bottom: 5px; 
     white-space: nowrap;
 }
@@ -431,6 +470,7 @@ main {
     display: block; 
     font-size: 1.3rem; 
     font-weight: 700; 
+    color: var(--text);
     white-space: nowrap;
 }
 
@@ -471,7 +511,7 @@ main {
     justify-content: center;
     gap: 4px;
     aspect-ratio: 1;
-    color: white;
+    color: var(--text);
     font-weight: 500;
     font-size: 0.85rem;
     min-height: 45px;
@@ -479,7 +519,7 @@ main {
 .day:hover { 
     transform: translateY(-3px); 
     border-color: var(--primary); 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+    box-shadow: 0 5px 15px rgba(0,176,96,0.2); 
 }
 .day.empty { 
     background: transparent; 
@@ -505,16 +545,16 @@ main {
 }
 
 /* Цвета для типов дней */
-.day.work { background: linear-gradient(145deg,#f39c12,#e67e22) !important; border: 2px solid #f1c40f !important; }
-.day.night { background: linear-gradient(145deg,#2c3e50,#1a2634) !important; border: 2px solid #3498db !important; }
-.day.overtime { background: linear-gradient(145deg,#c0392b,#a93226) !important; border: 2px solid #e67e22 !important; }
-.day.sat { background: linear-gradient(145deg,#6c3483,#512e5f) !important; border: 2px solid #9b59b6 !important; }
-.day.sun { background: linear-gradient(145deg,#b86d1b,#9e5c17) !important; border: 2px solid #f39c12 !important; }
-.day.extra { background: linear-gradient(145deg,#1e8449,#166638) !important; border: 2px solid #27ae60 !important; }
-.day.sick { background: linear-gradient(145deg,#5d6d7e,#4a5b6b) !important; border: 2px solid #7f8c8d !important; }
-.day.vacation { background: linear-gradient(145deg,#b7950b,#9e7e0a) !important; border: 2px solid #f1c40f !important; }
-.day.doctor { background: linear-gradient(145deg,#76448a,#5e3b70) !important; border: 2px solid #9b59b6 !important; }
-.day.off { background: #2c3e50 !important; border: 2px dashed #7f8c8d !important; }
+.day.work { background: linear-gradient(145deg,#f39c12,#e67e22) !important; border: 2px solid #f1c40f !important; color: white; }
+.day.night { background: linear-gradient(145deg,#2c3e50,#1a2634) !important; border: 2px solid #3498db !important; color: white; }
+.day.overtime { background: linear-gradient(145deg,#c0392b,#a93226) !important; border: 2px solid #e67e22 !important; color: white; }
+.day.sat { background: linear-gradient(145deg,#6c3483,#512e5f) !important; border: 2px solid #9b59b6 !important; color: white; }
+.day.sun { background: linear-gradient(145deg,#b86d1b,#9e5c17) !important; border: 2px solid #f39c12 !important; color: white; }
+.day.extra { background: linear-gradient(145deg,#1e8449,#166638) !important; border: 2px solid #27ae60 !important; color: white; }
+.day.sick { background: linear-gradient(145deg,#5d6d7e,#4a5b6b) !important; border: 2px solid #7f8c8d !important; color: white; }
+.day.vacation { background: linear-gradient(145deg,#b7950b,#9e7e0a) !important; border: 2px solid #f1c40f !important; color: white; }
+.day.doctor { background: linear-gradient(145deg,#76448a,#5e3b70) !important; border: 2px solid #9b59b6 !important; color: white; }
+.day.off { background: #2c3e50 !important; border: 2px dashed #7f8c8d !important; color: white; }
 
 /* Легенда календаря */
 .calendar-legend {
@@ -538,6 +578,7 @@ main {
     font-size: 0.8rem;
     border: 1px solid var(--border);
     transition: all 0.2s;
+    color: var(--text);
 }
 .legend-item:hover { 
     transform: translateY(-2px); 
@@ -646,8 +687,9 @@ main {
     align-items: center;
     justify-content: center; 
     cursor: pointer; 
-    border: 2px solid var(--dark);
+    border: 2px solid var(--dark-card);
     transition: all 0.3s;
+    color: white;
 }
 .avatar-upload:hover {
     transform: scale(1.1);
@@ -664,6 +706,7 @@ main {
 .profile-title h2 { 
     font-size: 1.8rem; 
     margin-bottom: 5px; 
+    color: var(--text);
 }
 .profile-title p { 
     color: var(--text-muted);
@@ -712,7 +755,7 @@ main {
     background: var(--dark-light); 
     border: 1px solid var(--border);
     border-radius: 8px; 
-    color: white; 
+    color: var(--text); 
     font-size: 0.95rem; 
     transition: all 0.3s;
 }
@@ -720,6 +763,10 @@ main {
     outline: none; 
     border-color: var(--primary); 
     box-shadow: 0 0 0 3px rgba(0,176,96,0.2); 
+}
+.profile-field input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 .profile-actions { 
     display: flex; 
@@ -767,7 +814,7 @@ main {
 .btn-secondary { 
     background: var(--dark-light); 
     border: 1px solid var(--border); 
-    color: white; 
+    color: var(--text); 
 }
 .btn-secondary:hover { 
     background: var(--border); 
@@ -821,7 +868,7 @@ main {
     background: var(--dark-light);
     border: 1px solid var(--border); 
     border-radius: 12px; 
-    color: white; 
+    color: var(--text); 
     font-size: 0.95rem;
     transition: all 0.3s;
 }
@@ -908,6 +955,7 @@ main {
     justify-content: space-between; 
     padding: 10px 0; 
     border-bottom: 1px solid var(--border);
+    color: var(--text);
 }
 .finance-item:last-child { 
     border-bottom: none; 
@@ -1052,6 +1100,7 @@ main {
     border-bottom: 1px solid var(--border);
     font-size: 0.8rem;
     gap: 2px;
+    color: var(--text);
 }
 @media (min-width: 768px) {
     .history-item {
@@ -1148,7 +1197,7 @@ main {
 .stats-header select {
     background: var(--dark-card); 
     border: 1px solid var(--border); 
-    color: white;
+    color: var(--text);
     padding: 10px 20px; 
     border-radius: 30px; 
     cursor: pointer; 
@@ -1194,6 +1243,7 @@ main {
     display: block; 
     font-size: 1.5rem; 
     font-weight: 700; 
+    color: var(--text);
 }
 
 /* Графики */
@@ -1249,17 +1299,9 @@ main {
     align-items: center;
     margin-bottom: 20px;
 }
-.modal-close {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-.modal-close:hover {
-    color: var(--danger);
-    transform: scale(1.1);
+.modal-header h3 {
+    color: var(--primary);
+    font-size: 1.3rem;
 }
 .day-types {
     display: grid;
@@ -1283,7 +1325,7 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    color: white;
+    color: var(--text);
     font-size: 0.9rem;
     border-left: 4px solid transparent;
 }
@@ -1321,6 +1363,33 @@ main {
     margin-top: 10px;
 }
 
+/* ТЕМЫ - кнопки выбора */
+.theme-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.theme-btn {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--dark-light);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+    text-align: left;
+}
+.theme-btn:hover {
+    border-color: var(--primary);
+}
+.theme-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
 /* Адаптация для мобильных */
 @media (max-width: 480px) {
     .kpi-value { font-size: 1.1rem; }
@@ -1333,6 +1402,7 @@ main {
     .finance-item { font-size: 0.9rem; }
     .nav-btn { padding: 8px 10px; font-size: 0.8rem; }
     .nav-btn i { font-size: 1rem; }
+    .theme-btn { font-size: 0.85rem; padding: 10px; }
 }
 
 /* Анимации */
@@ -1343,29 +1413,4 @@ main {
 
 .pulse {
     animation: pulse 2s infinite;
-}
-
-/* Уведомления */
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    background: var(--dark-card);
-    border: 1px solid var(--primary);
-    border-radius: 12px;
-    color: white;
-    z-index: 2000;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
 }
