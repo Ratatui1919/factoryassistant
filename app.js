@@ -97,7 +97,7 @@ window.register = async function() {
   }
 };
 
-// ===== ВХОД (ИСПРАВЛЕННЫЙ) =====
+// ===== ВХОД (ЗАЩИЩЁННАЯ ВЕРСИЯ) =====
 window.login = async function() {
   const name = document.getElementById('loginName')?.value.trim();
   const pass = document.getElementById('loginPass')?.value.trim();
