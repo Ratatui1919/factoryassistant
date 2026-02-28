@@ -12,15 +12,18 @@ import {
   doc, 
   setDoc, 
   getDoc, 
-  updateDoc 
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ИСПРАВЛЕННАЯ КОНФИГУРАЦИЯ
 const firebaseConfig = {
   apiKey: "AIzaSyBn6fbSjjlT8dM41ov_uHEYPIDUfFgijo",
   authDomain: "vaillant-assistant.firebaseapp.com",
   projectId: "vaillant-assistant",
-  storageBucket: "vaillant-assistant.appspot.com",  // ✅ ИСПРАВЛЕНО!
+  storageBucket: "vaillant-assistant.appspot.com",
   messagingSenderId: "94125964883",
   appId: "1:94125964883:web:972621f4bfeaf2ab6e10a6"
 };
@@ -39,5 +42,9 @@ export {
   doc,
   setDoc,
   getDoc,
-  updateDoc
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs
 };
