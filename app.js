@@ -54,7 +54,10 @@ window.setLanguage = function(lang) {
   });
 };
 
-function getAvatarUrl(name) { return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`; }
+function getAvatarUrl(email) { 
+  let name = email.split('@')[0];
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`; 
+}
 
 window.showLoginForm = function() {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -70,73 +73,138 @@ window.showRegisterForm = function() {
   document.getElementById('registerForm')?.classList.add('active');
 };
 
+// ===== НОВАЯ РЕГИСТРАЦИЯ (ПО EMAIL) =====
 window.register = async function() {
+  const email = document.getElementById('regEmail')?.value.trim();
   const name = document.getElementById('regName')?.value.trim();
   const pass = document.getElementById('regPass')?.value.trim();
   const confirm = document.getElementById('regConfirm')?.value.trim();
-  if (!name || !pass || !confirm) return showMessage('Заполните все поля!', true);
+  
+  if (!email || !name || !pass || !confirm) return showMessage('Заполните все поля!', true);
+  if (!email.includes('@')) return showMessage('Введите корректный email!', true);
   if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
   if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
+  
   try {
-    const randomNum = Math.floor(Math.random() * 10000);
-    const email = `user${randomNum}@vaillant.app`;
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
+    
     const userData = {
-      uid: user.uid, name, email, fullName: '', employeeId: '', cardId: '', email: '',
-      records: [], quickSalaries: [], financialGoal: null,
-      settings: { hourlyRate: BASE_RATE, lunchCost: LUNCH_COST_REAL, nightBonus: NIGHT_BONUS_PERCENT,
-        saturdayBonus: 1.5, sundayBonus: 2.0, extraBonus: 25,
-        personalDoctorDays: 7, accompanyDoctorDays: 6, usedPersonalDoctor: 0, usedAccompanyDoctor: 0, usedWeekends: 0 },
-      joinDate: new Date().toISOString(), createdAt: new Date().toISOString()
+      uid: user.uid,
+      name: name,
+      email: email,
+      fullName: '',
+      employeeId: '',
+      cardId: '',
+      records: [],
+      quickSalaries: [],
+      financialGoal: null,
+      settings: { 
+        hourlyRate: BASE_RATE, 
+        lunchCost: LUNCH_COST_REAL, 
+        nightBonus: NIGHT_BONUS_PERCENT,
+        saturdayBonus: 1.5, 
+        sundayBonus: 2.0, 
+        extraBonus: 25,
+        personalDoctorDays: 7, 
+        accompanyDoctorDays: 6, 
+        usedPersonalDoctor: 0, 
+        usedAccompanyDoctor: 0, 
+        usedWeekends: 0 
+      },
+      joinDate: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     };
+    
     await setDoc(doc(db, "users", user.uid), userData);
     showMessage('Регистрация успешна! Теперь войдите.');
-    document.getElementById('regName').value = ''; document.getElementById('regPass').value = ''; document.getElementById('regConfirm').value = '';
+    
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regName').value = '';
+    document.getElementById('regPass').value = '';
+    document.getElementById('regConfirm').value = '';
+    
     window.showLoginForm();
-  } catch (error) { showMessage('Ошибка: ' + error.message, true); }
-};
-
-window.login = async function() {
-  const name = document.getElementById('loginName')?.value.trim();
-  const pass = document.getElementById('loginPass')?.value.trim();
-  if (!name || !pass) return showMessage('Введите имя и пароль!', true);
-  try {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("name", "==", name));
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) return showMessage('Пользователь не найден!', true);
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
-    const userCredential = await signInWithEmailAndPassword(auth, userData.email, pass);
-    const user = userCredential.user;
-    currentUserData = userData;
-    currentUser = { uid: user.uid, ...userData };
-    hideModal('authModal');
-    document.getElementById('app').classList.remove('hidden');
-    document.getElementById('fullName').value = currentUser.fullName || '';
-    document.getElementById('employeeId').value = currentUser.employeeId || '';
-    document.getElementById('cardId').value = currentUser.cardId || '';
-    document.getElementById('email').value = currentUser.email || '';
-    if (currentUser.settings) {
-      document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
-      document.getElementById('lunchCost').value = currentUser.settings.lunchCost || LUNCH_COST_REAL;
-      document.getElementById('nightBonus').value = currentUser.settings.nightBonus || NIGHT_BONUS_PERCENT;
-      document.getElementById('saturdayBonus').value = currentUser.settings.saturdayBonus || 1.5;
-      document.getElementById('sundayBonus').value = currentUser.settings.sundayBonus || 2.0;
-      document.getElementById('extraBonus').value = currentUser.settings.extraBonus || 25;
-      document.getElementById('personalDoctorDays').value = currentUser.settings.personalDoctorDays || 7;
-      document.getElementById('accompanyDoctorDays').value = currentUser.settings.accompanyDoctorDays || 6;
-      document.getElementById('usedPersonalDoctor').value = currentUser.settings.usedPersonalDoctor || 0;
-      document.getElementById('usedAccompanyDoctor').value = currentUser.settings.usedAccompanyDoctor || 0;
-      document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
+    
+  } catch (error) {
+    console.error("Registration error:", error);
+    if (error.code === 'auth/email-already-in-use') {
+      showMessage('Этот email уже зарегистрирован!', true);
+    } else {
+      showMessage('Ошибка: ' + error.message, true);
     }
-    showMessage('Добро пожаловать!');
-  } catch (error) { showMessage('Ошибка входа: ' + error.message, true); }
+  }
 };
 
+// ===== НОВЫЙ ВХОД (ПО EMAIL) =====
+window.login = async function() {
+  const email = document.getElementById('loginEmail')?.value.trim();
+  const pass = document.getElementById('loginPass')?.value.trim();
+  
+  if (!email || !pass) return showMessage('Введите email и пароль!', true);
+  if (!email.includes('@')) return showMessage('Введите корректный email!', true);
+  
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+    const user = userCredential.user;
+    
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      currentUserData = userDoc.data();
+      currentUser = { uid: user.uid, ...currentUserData };
+      
+      hideModal('authModal');
+      document.getElementById('app').classList.remove('hidden');
+      
+      document.getElementById('fullName').value = currentUser.fullName || '';
+      document.getElementById('employeeId').value = currentUser.employeeId || '';
+      document.getElementById('cardId').value = currentUser.cardId || '';
+      document.getElementById('email').value = currentUser.email || '';
+      
+      if (currentUser.settings) {
+        document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
+        document.getElementById('lunchCost').value = currentUser.settings.lunchCost || LUNCH_COST_REAL;
+        document.getElementById('nightBonus').value = currentUser.settings.nightBonus || NIGHT_BONUS_PERCENT;
+        document.getElementById('saturdayBonus').value = currentUser.settings.saturdayBonus || 1.5;
+        document.getElementById('sundayBonus').value = currentUser.settings.sundayBonus || 2.0;
+        document.getElementById('extraBonus').value = currentUser.settings.extraBonus || 25;
+        document.getElementById('personalDoctorDays').value = currentUser.settings.personalDoctorDays || 7;
+        document.getElementById('accompanyDoctorDays').value = currentUser.settings.accompanyDoctorDays || 6;
+        document.getElementById('usedPersonalDoctor').value = currentUser.settings.usedPersonalDoctor || 0;
+        document.getElementById('usedAccompanyDoctor').value = currentUser.settings.usedAccompanyDoctor || 0;
+        document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
+      }
+      
+      document.getElementById('userName').textContent = currentUser.name || email.split('@')[0];
+      document.getElementById('profileName').textContent = currentUser.name || email.split('@')[0];
+      let avatarUrl = currentUser.avatar || getAvatarUrl(email);
+      document.getElementById('avatarPreview').src = avatarUrl;
+      document.getElementById('profileAvatar').src = avatarUrl;
+      
+      showMessage('Добро пожаловать!');
+    } else {
+      showMessage('Данные пользователя не найдены!', true);
+    }
+    
+  } catch (error) {
+    console.error("Login error:", error);
+    if (error.code === 'auth/invalid-credential') {
+      showMessage('Неверный email или пароль!', true);
+    } else {
+      showMessage('Ошибка входа: ' + error.message, true);
+    }
+  }
+};
+
+// ===== ОСТАЛЬНОЙ КОД БЕЗ ИЗМЕНЕНИЙ =====
 window.logout = async function() {
-  if (confirm('Выйти?')) { await signOut(auth); currentUser = null; document.getElementById('app').classList.add('hidden'); showModal('authModal'); window.showLoginForm(); }
+  if (confirm('Выйти?')) { 
+    await signOut(auth); 
+    currentUser = null; 
+    document.getElementById('app').classList.add('hidden'); 
+    showModal('authModal'); 
+    window.showLoginForm(); 
+  }
 };
 
 window.setView = function(view) {
@@ -153,17 +221,15 @@ onAuthStateChanged(auth, async (user) => {
     if (userDoc.exists()) {
       currentUserData = userDoc.data();
       currentUser = { uid: user.uid, ...currentUserData };
+      
       hideModal('authModal');
       document.getElementById('app').classList.remove('hidden');
+      
       document.getElementById('fullName').value = currentUser.fullName || '';
       document.getElementById('employeeId').value = currentUser.employeeId || '';
       document.getElementById('cardId').value = currentUser.cardId || '';
       document.getElementById('email').value = currentUser.email || '';
-      document.getElementById('userName').textContent = currentUser.name || '';
-      document.getElementById('profileName').textContent = currentUser.name || '';
-      let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.name);
-      document.getElementById('avatarPreview').src = avatarUrl;
-      document.getElementById('profileAvatar').src = avatarUrl;
+      
       if (currentUser.settings) {
         document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
         document.getElementById('lunchCost').value = currentUser.settings.lunchCost || LUNCH_COST_REAL;
@@ -177,6 +243,13 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('usedAccompanyDoctor').value = currentUser.settings.usedAccompanyDoctor || 0;
         document.getElementById('usedWeekends').value = currentUser.settings.usedWeekends || 0;
       }
+      
+      document.getElementById('userName').textContent = currentUser.name || currentUser.email.split('@')[0];
+      document.getElementById('profileName').textContent = currentUser.name || currentUser.email.split('@')[0];
+      let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.email);
+      document.getElementById('avatarPreview').src = avatarUrl;
+      document.getElementById('profileAvatar').src = avatarUrl;
+      
       updateMonthDisplay();
       buildCalendar();
       calculateAllStats();
