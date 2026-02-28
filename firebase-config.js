@@ -43,8 +43,8 @@ export {
   setDoc,
   getDoc,
   updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  collection,    // ✅ ДОБАВЛЕНО
+  query,         // ✅ ДОБАВЛЕНО
+  where,         // ✅ ДОБАВЛЕНО
+  getDocs        // ✅ ДОБАВЛЕНО
 };
