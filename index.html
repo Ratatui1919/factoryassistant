@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Vaillant • Factory Assistant</title>
     
     <!-- Fonts & Icons -->
@@ -14,6 +14,17 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- АВТОРИЗАЦИЯ -->
@@ -187,7 +198,7 @@
                     <div class="kpi-card success">
                         <div class="kpi-icon"><i class="fas fa-plus-circle"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="extraBlocks">Экстра блоки</span>
+                            <span class="kpi-label" data-lang="extraBlocks">Надчасы</span>
                             <span class="kpi-value" id="extraCount">0</span>
                         </div>
                     </div>
@@ -439,7 +450,7 @@
                             </div>
                             <div class="profile-field">
                                 <label data-lang="cardId">Номер карты</label>
-                                <input type="text" id="cardId" placeholder="SK15 0900 0000 0052 3968 0549">
+                                <input type="text" id="cardId" placeholder="SK19 0900 0000 0052 3968">
                             </div>
                             <div class="profile-field">
                                 <label data-lang="email">Email</label>
@@ -451,7 +462,7 @@
                             <h3><i class="fas fa-cog"></i> <span data-lang="salarySettings">Настройки зарплаты</span></h3>
                             <div class="profile-field">
                                 <label data-lang="hourlyRate">Базовая ставка (€/час)</label>
-                                <input type="number" id="hourlyRate" value="5.80" step="0.01">
+                                <input type="number" id="hourlyRate" value="6.10" step="0.01">
                             </div>
                             <div class="profile-field">
                                 <label data-lang="lunchCost">Стоимость обеда (€/день)</label>
@@ -622,66 +633,66 @@
             </div>
             
             <div class="day-types">
-    <button class="day-type work" onclick="addRecord('work')">
-        <i class="fas fa-briefcase"></i>
-        <span data-lang="work">Смена</span>
-        <small>7.5ч</small>
-    </button>
-    
-    <button class="day-type night" onclick="addRecord('night')">
-        <i class="fas fa-moon"></i>
-        <span data-lang="nightShift">Ночная смена</span>
-        <small>+20%</small>
-    </button>
-    
-    <button class="day-type overtime" onclick="addRecord('overtime')">
-        <i class="fas fa-clock"></i>
-        <span data-lang="overtime">Переработка</span>
-        <small>×1.5</small>
-    </button>
-    
-    <button class="day-type saturday" onclick="addRecord('sat')">
-        <i class="fas fa-calendar-day"></i>
-        <span data-lang="saturday">Суббота</span>
-        <small>×1.5 + €25</small>
-    </button>
-    
-    <button class="day-type sunday" onclick="addRecord('sun')">
-        <i class="fas fa-sun"></i>
-        <span data-lang="sunday">Воскресенье</span>
-        <small>×2.0</small>
-    </button>
-    
-    <button class="day-type extra" onclick="addRecord('extra')">
-        <i class="fas fa-plus-circle"></i>
-        <span>Надчас</span>
-        <small>+3.75ч ×1.36</small>
-    </button>
-    
-    <button class="day-type sick" onclick="addRecord('sick')">
-        <i class="fas fa-hospital"></i>
-        <span data-lang="sick">Больничный</span>
-        <small>60%</small>
-    </button>
-    
-    <button class="day-type vacation" onclick="addRecord('vacation')">
-        <i class="fas fa-umbrella-beach"></i>
-        <span data-lang="vacation">Отпуск</span>
-        <small>100%</small>
-    </button>
-    
-    <button class="day-type doctor" onclick="addRecord('doctor')">
-        <i class="fas fa-stethoscope"></i>
-        <span data-lang="doctor">Перепустка</span>
-        <small>100%</small>
-    </button>
-    
-    <button class="day-type off" onclick="addRecord('off')">
-        <i class="fas fa-times"></i>
-        <span data-lang="dayOff">Выходной</span>
-        <small>0 €</small>
-    </button>
-</div>
+                <button class="day-type work" onclick="addRecord('work')">
+                    <i class="fas fa-briefcase"></i>
+                    <span data-lang="work">Смена</span>
+                    <small>7.5ч</small>
+                </button>
+                
+                <button class="day-type night" onclick="addRecord('night')">
+                    <i class="fas fa-moon"></i>
+                    <span data-lang="nightShift">Ночная смена</span>
+                    <small>+20%</small>
+                </button>
+                
+                <button class="day-type overtime" onclick="addRecord('overtime')">
+                    <i class="fas fa-clock"></i>
+                    <span data-lang="overtime">Переработка</span>
+                    <small>×1.5</small>
+                </button>
+                
+                <button class="day-type saturday" onclick="addRecord('sat')">
+                    <i class="fas fa-calendar-day"></i>
+                    <span data-lang="saturday">Суббота</span>
+                    <small>×1.5 + €25</small>
+                </button>
+                
+                <button class="day-type sunday" onclick="addRecord('sun')">
+                    <i class="fas fa-sun"></i>
+                    <span data-lang="sunday">Воскресенье</span>
+                    <small>×2.0</small>
+                </button>
+                
+                <button class="day-type extra" onclick="addRecord('extra')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Надчас</span>
+                    <small>+3.75ч ×1.36</small>
+                </button>
+                
+                <button class="day-type sick" onclick="addRecord('sick')">
+                    <i class="fas fa-hospital"></i>
+                    <span data-lang="sick">Больничный</span>
+                    <small>60%</small>
+                </button>
+                
+                <button class="day-type vacation" onclick="addRecord('vacation')">
+                    <i class="fas fa-umbrella-beach"></i>
+                    <span data-lang="vacation">Отпуск</span>
+                    <small>100%</small>
+                </button>
+                
+                <button class="day-type doctor" onclick="addRecord('doctor')">
+                    <i class="fas fa-stethoscope"></i>
+                    <span data-lang="doctor">Перепустка</span>
+                    <small>100%</small>
+                </button>
+                
+                <button class="day-type off" onclick="addRecord('off')">
+                    <i class="fas fa-times"></i>
+                    <span data-lang="dayOff">Выходной</span>
+                    <small>0 €</small>
+                </button>
+            </div>
             
             <button class="btn-secondary cancel-btn" onclick="closeModal()">
                 <i class="fas fa-times"></i> <span data-lang="cancel">Отмена</span>
@@ -689,6 +700,8 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Firebase SDK и ваши скрипты -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
