@@ -22,7 +22,7 @@
                 <button class="auth-tab" onclick="window.showRegisterForm()">Регистрация</button>
             </div>
             
-            <!-- ВХОД ПО EMAIL -->
+            <!-- ВХОД -->
             <div id="loginForm" class="auth-form active">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
@@ -32,10 +32,14 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" id="loginPass" placeholder="Пароль">
                 </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Запомнить меня</label>
+                </div>
                 <button class="btn-primary" onclick="window.login()">Войти</button>
             </div>
             
-            <!-- РЕГИСТРАЦИЯ ПО EMAIL (БЕЗ ИМЕНИ) -->
+            <!-- РЕГИСТРАЦИЯ -->
             <div id="registerForm" class="auth-form">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
@@ -115,11 +119,18 @@
                     <div class="kpi-card"><div class="kpi-icon"><i class="fas fa-stethoscope"></i></div><div class="kpi-content"><span class="kpi-label" data-lang="doctorVisits">Перепустки</span><span class="kpi-value" id="doctorCount">0</span></div></div>
                 </div>
 
+                <!-- БЫСТРЫЙ ВВОД ЗАРПЛАТЫ -->
                 <div class="quick-salary-card">
-                    <h3><i class="fas fa-bolt"></i> <span data-lang="quickSalary">Быстрый ввод зарплаты</span></h3>
+                    <h3><i class="fas fa-bolt"></i> Быстрый ввод зарплаты</h3>
                     <div class="quick-salary-inputs">
-                        <div class="input-group"><label data-lang="gross">Брутто €</label><input type="number" id="quickGross" step="0.01"></div>
-                        <div class="input-group"><label data-lang="net">Нетто €</label><input type="number" id="quickNet" step="0.01"></div>
+                        <div class="input-group">
+                            <label>Брутто (грязная) €</label>
+                            <input type="number" id="quickGross" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="input-group">
+                            <label>Нетто (чистая) €</label>
+                            <input type="number" id="quickNet" step="0.01" placeholder="0.00">
+                        </div>
                     </div>
                     <div class="quick-salary-actions">
                         <button class="btn-primary" onclick="window.quickAddSalary()"><i class="fas fa-save"></i> Сохранить</button>
@@ -295,7 +306,10 @@
     <!-- МОДАЛКА ДНЯ -->
     <div class="modal" id="dayModal">
         <div class="modal-content day-modal">
-            <div class="modal-header"><h3><i class="fas fa-calendar-day"></i> Выберите тип дня</h3><button class="modal-close" onclick="window.closeModal()"><i class="fas fa-times"></i></button></div>
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-day"></i> Выберите тип дня</h3>
+                <button class="modal-close" onclick="window.closeModal()"><i class="fas fa-times"></i></button>
+            </div>
             <div class="day-types">
                 <button class="day-type work" onclick="window.addRecord('work')"><i class="fas fa-briefcase"></i><span>Смена</span><small>7.5ч</small></button>
                 <button class="day-type night" onclick="window.addRecord('night')"><i class="fas fa-moon"></i><span>Ночная смена</span><small>+20%</small></button>
@@ -316,4 +330,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-
