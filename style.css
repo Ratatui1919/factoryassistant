@@ -1,5 +1,5 @@
 /* ======================
-   Vaillant Assistant PRO v16.0
+   Vaillant Assistant PRO v17.0
    ФИНАЛЬНАЯ ВЕРСИЯ - ВСЁ ИСПРАВЛЕНО
    ====================== */
 
@@ -76,7 +76,7 @@ body {
 /* ===== АВТОРИЗАЦИЯ ===== */
 .auth-card { text-align: center; }
 .auth-logo { margin-bottom: 30px; }
-.auth-logo i { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
+.auth-logo img { height: 40px; margin-bottom: 10px; }
 .auth-logo h2 { font-size: 1.8rem; color: white; }
 .auth-logo span { color: var(--primary); font-weight: 300; }
 .auth-tabs {
@@ -138,9 +138,9 @@ header {
     align-items: center; 
     gap: 10px; 
 }
-.logo i { 
-    font-size: 2rem; 
-    color: var(--primary); 
+.logo img { 
+    height: 30px; 
+    width: auto;
 }
 .logo h1 { 
     font-size: 1.5rem; 
@@ -202,6 +202,7 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 120px;
 }
 .logout-btn {
     background: var(--dark-light); 
@@ -350,17 +351,6 @@ main {
     background: var(--primary); 
     border-color: var(--primary); 
     transform: scale(1.1); 
-}
-.month-selector select {
-    background: var(--dark-light); 
-    border: 1px solid var(--border); 
-    color: white;
-    padding: 8px 15px; 
-    border-radius: 30px; 
-    font-size: 0.9rem; 
-    cursor: pointer; 
-    min-width: 100px;
-    text-align: center;
 }
 .month-selector h2 {
     font-size: 1.3rem; 
@@ -657,6 +647,7 @@ main {
     justify-content: center; 
     cursor: pointer; 
     border: 2px solid var(--dark);
+    transition: all 0.3s;
 }
 .avatar-upload:hover {
     transform: scale(1.1);
@@ -723,6 +714,7 @@ main {
     border-radius: 8px; 
     color: white; 
     font-size: 0.95rem; 
+    transition: all 0.3s;
 }
 .profile-field input:focus { 
     outline: none; 
@@ -831,6 +823,7 @@ main {
     border-radius: 12px; 
     color: white; 
     font-size: 0.95rem;
+    transition: all 0.3s;
 }
 .input-group input:focus { 
     outline: none; 
@@ -1090,19 +1083,47 @@ main {
     margin-bottom: 15px;
     font-size: 0.9rem;
 }
-.pdf-import input[type="file"] {
+.pdf-upload-area {
+    position: relative;
     width: 100%;
-    padding: 10px;
+    margin-bottom: 10px;
+}
+.pdf-upload-area input[type="file"] {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+.pdf-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px;
     background: var(--dark-light);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: white;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-size: 1rem;
     cursor: pointer;
+    transition: all 0.3s;
+}
+.pdf-label:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--dark);
+}
+.pdf-label i {
+    font-size: 1.5rem;
 }
 .pdf-status {
     margin-top: 10px;
     font-size: 0.9rem;
     color: var(--primary);
+    text-align: center;
 }
 
 /* СТАТИСТИКА */
@@ -1222,6 +1243,24 @@ main {
     width: 95%;
     padding: 20px;
 }
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.modal-close:hover {
+    color: var(--danger);
+    transform: scale(1.1);
+}
 .day-types {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1292,4 +1331,41 @@ main {
     .stats-value { font-size: 1.2rem; }
     .profile-title h2 { font-size: 1.5rem; }
     .finance-item { font-size: 0.9rem; }
+    .nav-btn { padding: 8px 10px; font-size: 0.8rem; }
+    .nav-btn i { font-size: 1rem; }
+}
+
+/* Анимации */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Уведомления */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background: var(--dark-card);
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    color: white;
+    z-index: 2000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
