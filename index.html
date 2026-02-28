@@ -37,26 +37,20 @@
             
             <!-- ФОРМА РЕГИСТРАЦИИ (С EMAIL) -->
             <div id="registerForm" class="auth-form">
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="regEmail" placeholder="Email">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="regName" placeholder="Имя (для отображения)">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="regPass" placeholder="Пароль">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-check-circle"></i>
-                    <input type="password" id="regConfirm" placeholder="Подтвердите пароль">
-                </div>
-                <button class="btn-primary" onclick="window.register()">Зарегистрироваться</button>
-            </div>
-        </div>
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="regEmail" placeholder="Email">
     </div>
+    <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="regPass" placeholder="Пароль">
+    </div>
+    <div class="input-group">
+        <i class="fas fa-check-circle"></i>
+        <input type="password" id="regConfirm" placeholder="Подтвердите пароль">
+    </div>
+    <button class="btn-primary" onclick="window.register()">Зарегистрироваться</button>
+</div>
 
     <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div id="app" class="hidden">
@@ -320,3 +314,4 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
+
