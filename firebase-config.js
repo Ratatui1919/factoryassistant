@@ -12,14 +12,10 @@ import {
   doc, 
   setDoc, 
   getDoc, 
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs 
+  updateDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ВАША КОНФИГУРАЦИЯ ИЗ FIREBASE
+// ВАША КОНФИГУРАЦИЯ (должна быть ТОЧНО такой, как в Firebase)
 const firebaseConfig = {
   apiKey: "AIzaSyBn6fbSjjlT8dM41ov_uHEYPIDUfFgijo",
   authDomain: "vaillant-assistant.firebaseapp.com",
@@ -43,9 +39,5 @@ export {
   doc,
   setDoc,
   getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  updateDoc
 };
