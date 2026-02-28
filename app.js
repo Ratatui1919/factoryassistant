@@ -1,17 +1,34 @@
 // ======================
-// Vaillant Assistant PRO v12.0
-// ФИНАЛЬНАЯ ВЕРСИЯ - ВСЁ ИСПРАВЛЕНО
+// Vaillant Assistant PRO v16.0
+// С Firebase БД - аккаунты сохраняются в облаке
 // ======================
 
+import { 
+  auth, 
+  db,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs
+} from './firebase-config.js';
+
 // ===== ДАННЫЕ =====
-let users = JSON.parse(localStorage.getItem('vaillant_users')) || [];
 let currentUser = null;
+let currentUserData = null;
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let selectedDay = null;
 let currentLanguage = localStorage.getItem('vaillant_language') || 'ru';
 
-// Константы (ЦЕНА ОБЕДА ИСПРАВЛЕНА НА 1.31)
+// Константы
 const BASE_RATE = 6.10;
 const LUNCH_COST_REAL = 1.31;
 const SATURDAY_BONUS = 25;
@@ -31,7 +48,7 @@ const translations = {
         dashboard: 'Дашборд', calendar: 'Календарь', stats: 'Статистика',
         profile: 'Профиль', finance: 'Финансы', netSalary: 'Чистая зарплата',
         grossSalary: 'Грязная', hours: 'Часов', lunches: 'Обеды',
-        overtime: 'Переработки', extraBlocks: 'Экстра блоки', saturdays: 'Субботы',
+        overtime: 'Переработки', extraBlocks: 'Надчасы', saturdays: 'Субботы',
         doctorVisits: 'Перепустки', quickSalary: 'Быстрый ввод зарплаты',
         gross: 'Брутто', net: 'Нетто', save: 'Сохранить', clear: 'Очистить',
         weekendsThisMonth: 'Выходные в этом месяце', accruedWeekends: 'Накоплено выходных',
@@ -46,14 +63,14 @@ const translations = {
         salarySettings: 'Настройки зарплаты', hourlyRate: 'Базовая ставка (€/час)',
         lunchCost: 'Стоимость обеда (€/день)', nightBonus: 'Ночная доплата (%)',
         saturdayBonus: 'Коэф. субботы', sundayBonus: 'Коэф. воскресенья',
-        extraBonus: 'Бонус за экстра блок (€)', vacations: 'Отпуска и перепустки',
+        extraBonus: 'Бонус за надчас (€)', vacations: 'Отпуска и перепустки',
         accruedWeekendsLabel: 'Накоплено выходных (1.67/мес)', usedWeekends: 'Использовано выходных',
         personalDoctor: 'Перепустки (личные)', usedPersonalDoctor: 'Использовано личных',
         accompanyDoctor: 'Перепустки (сопровождение)', usedAccompanyDoctor: 'Использовано сопровождения',
         export: 'Экспорт данных', financeAnalytics: 'Финансовая аналитика',
         netIncome: 'Чистый доход', taxes: 'Налоги', savings: 'Сбережения',
         financialTip: 'Финансовый совет', selectDayType: 'Выберите тип дня',
-        work: 'Смена', nightShift: 'Ночная смена', extraBlock: 'Экстра блок',
+        work: 'Смена', nightShift: 'Ночная смена', extraBlock: 'Надчас',
         sick: 'Больничный', vacation: 'Отпуск', cancel: 'Отмена',
         saveChanges: 'Сохранить изменения', clearAllData: 'Очистить все данные',
         goal: 'Моя финансовая цель', goalName: 'Название цели', goalAmount: 'Сумма цели',
@@ -65,7 +82,7 @@ const translations = {
         dashboard: 'Nástenka', calendar: 'Kalendár', stats: 'Štatistika',
         profile: 'Profil', finance: 'Financie', netSalary: 'Čistá mzda',
         grossSalary: 'Hrubá', hours: 'Hodiny', lunches: 'Obed',
-        overtime: 'Nadčasy', extraBlocks: 'Extra bloky', saturdays: 'Soboty',
+        overtime: 'Nadčasy', extraBlocks: 'Nadčasy', saturdays: 'Soboty',
         doctorVisits: 'Lekár', quickSalary: 'Rýchly vstup mzdy',
         gross: 'Hrubá', net: 'Čistá', save: 'Uložiť', clear: 'Vymazať',
         weekendsThisMonth: 'Víkendy tento mesiac', accruedWeekends: 'Nahromadené víkendy',
@@ -81,14 +98,14 @@ const translations = {
         salarySettings: 'Nastavenia mzdy', hourlyRate: 'Základná sadzba (€/hod)',
         lunchCost: 'Cena obeda (€/deň)', nightBonus: 'Nočný príplatok (%)',
         saturdayBonus: 'Sobota koeficient', sundayBonus: 'Nedeľa koeficient',
-        extraBonus: 'Extra blok bonus (€)', vacations: 'Dovolenka a lekár',
+        extraBonus: 'Bonus za nadčas (€)', vacations: 'Dovolenka a lekár',
         accruedWeekendsLabel: 'Nahromadené víkendy (1.67/mes)', usedWeekends: 'Použité víkendy',
         personalDoctor: 'Lekár (osobné)', usedPersonalDoctor: 'Použité osobné',
         accompanyDoctor: 'Lekár (sprievod)', usedAccompanyDoctor: 'Použité sprievod',
         export: 'Export dát', financeAnalytics: 'Finančná analýza',
         netIncome: 'Čistý príjem', taxes: 'Dane', savings: 'Úspory',
         financialTip: 'Finančná rada', selectDayType: 'Vyberte typ dňa',
-        work: 'Zmena', nightShift: 'Nočná zmena', extraBlock: 'Extra blok',
+        work: 'Zmena', nightShift: 'Nočná zmena', extraBlock: 'Nadčas',
         sick: 'PN', vacation: 'Dovolenka', cancel: 'Zrušiť',
         saveChanges: 'Uložiť zmeny',
         goal: 'Môj finančný cieľ', goalName: 'Názov cieľa', goalAmount: 'Suma cieľa',
@@ -123,7 +140,7 @@ const translations = {
         export: 'Export data', financeAnalytics: 'Finance analytics',
         netIncome: 'Net income', taxes: 'Taxes', savings: 'Savings',
         financialTip: 'Financial tip', selectDayType: 'Select day type',
-        work: 'Shift', nightShift: 'Night shift', extraBlock: 'Extra block',
+        work: 'Shift', nightShift: 'Night shift', extraBlock: 'Overtime block',
         sick: 'Sick', vacation: 'Vacation', cancel: 'Cancel',
         saveChanges: 'Save changes',
         goal: 'My financial goal', goalName: 'Goal name', goalAmount: 'Goal amount',
@@ -135,7 +152,7 @@ const translations = {
         dashboard: 'Панель', calendar: 'Календар', stats: 'Статистика',
         profile: 'Профіль', finance: 'Фінанси', netSalary: 'Чиста зарплата',
         grossSalary: 'Брутто', hours: 'Годин', lunches: 'Обіди',
-        overtime: 'Понаднормові', extraBlocks: 'Екстра блоки', saturdays: 'Суботи',
+        overtime: 'Понаднормові', extraBlocks: 'Надгодини', saturdays: 'Суботи',
         doctorVisits: 'Перепустки', quickSalary: 'Швидке введення зарплати',
         gross: 'Брутто', net: 'Нетто', save: 'Зберегти', clear: 'Очистити',
         weekendsThisMonth: 'Вихідні цього місяця', accruedWeekends: 'Накопичено вихідних',
@@ -151,14 +168,14 @@ const translations = {
         salarySettings: 'Налаштування зарплати', hourlyRate: 'Базова ставка (€/год)',
         lunchCost: 'Вартість обіду (€/день)', nightBonus: 'Нічна доплата (%)',
         saturdayBonus: 'Коеф. суботи', sundayBonus: 'Коеф. неділі',
-        extraBonus: 'Бонус за екстра блок (€)', vacations: 'Відпустки та перепустки',
+        extraBonus: 'Бонус за надгодини (€)', vacations: 'Відпустки та перепустки',
         accruedWeekendsLabel: 'Накопичено вихідних (1.67/міс)', usedWeekends: 'Використано вихідних',
         personalDoctor: 'Перепустки (особисті)', usedPersonalDoctor: 'Використано особистих',
         accompanyDoctor: 'Перепустки (супровід)', usedAccompanyDoctor: 'Використано супроводу',
         export: 'Експорт даних', financeAnalytics: 'Фінансова аналітика',
         netIncome: 'Чистий дохід', taxes: 'Податки', savings: 'Заощадження',
         financialTip: 'Фінансова порада', selectDayType: 'Виберіть тип дня',
-        work: 'Зміна', nightShift: 'Нічна зміна', extraBlock: 'Екстра блок',
+        work: 'Зміна', nightShift: 'Нічна зміна', extraBlock: 'Надгодини',
         sick: 'Лікарняний', vacation: 'Відпустка', cancel: 'Скасувати',
         saveChanges: 'Зберегти зміни',
         goal: 'Моя фінансова ціль', goalName: 'Назва цілі', goalAmount: 'Сума цілі',
@@ -198,21 +215,7 @@ function getAvatarUrl(name) {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`;
 }
 
-// ===== МИГРАЦИЯ ДАННЫХ =====
-function migrateUserData(user) {
-    if (!user.records) return;
-    user.records = user.records.map(record => {
-        if (record.type === 'afternoon') {
-            return { ...record, type: 'work' };
-        }
-        return record;
-    });
-    if (!user.financialGoal) {
-        user.financialGoal = null;
-    }
-}
-
-// ===== АВТОРИЗАЦИЯ =====
+// ===== АВТОРИЗАЦИЯ ЧЕРЕЗ FIREBASE =====
 function showLoginForm() {
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -227,80 +230,185 @@ function showRegisterForm() {
     document.getElementById('registerForm').classList.add('active');
 }
 
-function register() {
+async function register() {
     let name = document.getElementById('regName').value.trim();
     let pass = document.getElementById('regPass').value.trim();
     let confirm = document.getElementById('regConfirm').value.trim();
+    
     if (!name || !pass || !confirm) return showMessage('Заполни все поля!', true);
     if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
     if (pass.length < 3) return showMessage('Пароль должен быть минимум 3 символа!', true);
-    if (users.find(u => u.name === name)) return showMessage('Пользователь уже существует!', true);
     
-    let newUser = {
-        name, password: pass,
-        fullName: '', employeeId: '', cardId: '', email: '',
-        avatar: getAvatarUrl(name),
-        records: [],
-        quickSalaries: [],
-        financialGoal: null,
-        settings: {
-            hourlyRate: BASE_RATE,
-            lunchCost: LUNCH_COST_REAL,
-            nightBonus: NIGHT_BONUS_PERCENT,
-            saturdayBonus: 1.5,
-            sundayBonus: 2.0,
-            extraBonus: 25,
-            personalDoctorDays: 7,
-            accompanyDoctorDays: 6,
-            usedPersonalDoctor: 0,
-            usedAccompanyDoctor: 0,
-            usedWeekends: 0
-        },
-        joinDate: new Date().toISOString()
-    };
-    users.push(newUser);
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
-    showMessage('Регистрация успешна! Теперь войди.');
-    document.getElementById('regName').value = '';
-    document.getElementById('regPass').value = '';
-    document.getElementById('regConfirm').value = '';
-    showLoginForm();
+    try {
+        // Создаем пользователя в Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, `${name}@vaillant.app`, pass);
+        const user = userCredential.user;
+        
+        // Создаем запись в Firestore
+        const userData = {
+            uid: user.uid,
+            name: name,
+            fullName: '',
+            employeeId: '',
+            cardId: '',
+            email: `${name}@vaillant.app`,
+            avatar: getAvatarUrl(name),
+            records: [],
+            quickSalaries: [],
+            financialGoal: null,
+            settings: {
+                hourlyRate: BASE_RATE,
+                lunchCost: LUNCH_COST_REAL,
+                nightBonus: NIGHT_BONUS_PERCENT,
+                saturdayBonus: 1.5,
+                sundayBonus: 2.0,
+                extraBonus: 25,
+                personalDoctorDays: 7,
+                accompanyDoctorDays: 6,
+                usedPersonalDoctor: 0,
+                usedAccompanyDoctor: 0,
+                usedWeekends: 0
+            },
+            joinDate: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+        };
+        
+        await setDoc(doc(db, "users", user.uid), userData);
+        
+        showMessage('Регистрация успешна! Теперь войдите.');
+        
+        document.getElementById('regName').value = '';
+        document.getElementById('regPass').value = '';
+        document.getElementById('regConfirm').value = '';
+        
+        showLoginForm();
+        
+    } catch (error) {
+        console.error("Registration error:", error);
+        if (error.code === 'auth/email-already-in-use') {
+            showMessage('Пользователь с таким именем уже существует!', true);
+        } else {
+            showMessage('Ошибка регистрации: ' + error.message, true);
+        }
+    }
 }
 
-function login() {
+async function login() {
     let name = document.getElementById('loginName').value.trim();
     let pass = document.getElementById('loginPass').value.trim();
-    if (!name || !pass) return showMessage('Введи имя и пароль!', true);
-    let user = users.find(u => u.name === name);
-    if (!user) return showMessage('Пользователь не найден!', true);
-    if (user.password !== pass) return showMessage('Неверный пароль!', true);
     
-    currentUser = user;
-    migrateUserData(currentUser);
-    localStorage.setItem('vaillant_current', user.name);
-    hideModal('authModal');
-    document.getElementById('app').classList.remove('hidden');
-    updateUserInfo();
-    updateMonthDisplay();
-    buildCalendar();
-    calculateAllStats();
-    loadFinancialGoal();
+    if (!name || !pass) return showMessage('Введи имя и пароль!', true);
+    
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, `${name}@vaillant.app`, pass);
+        const user = userCredential.user;
+        
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+            currentUserData = userDoc.data();
+            currentUser = {
+                uid: user.uid,
+                ...currentUserData
+            };
+            
+            hideModal('authModal');
+            document.getElementById('app').classList.remove('hidden');
+            
+            updateUserInfo();
+            updateMonthDisplay();
+            buildCalendar();
+            calculateAllStats();
+            loadFinancialGoal();
+        } else {
+            showMessage('Данные пользователя не найдены!', true);
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        if (error.code === 'auth/invalid-credential') {
+            showMessage('Неверное имя пользователя или пароль!', true);
+        } else {
+            showMessage('Ошибка входа: ' + error.message, true);
+        }
+    }
 }
 
-function logout() {
+async function logout() {
     if (confirm('Вы уверены, что хотите выйти?')) {
+        try {
+            await signOut(auth);
+            currentUser = null;
+            currentUserData = null;
+            document.getElementById('app').classList.add('hidden');
+            showModal('authModal');
+            showLoginForm();
+        } catch (error) {
+            console.error("Logout error:", error);
+            showMessage('Ошибка при выходе', true);
+        }
+    }
+}
+
+// Следим за состоянием авторизации
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // Пользователь уже вошел
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+            currentUserData = userDoc.data();
+            currentUser = {
+                uid: user.uid,
+                ...currentUserData
+            };
+            
+            hideModal('authModal');
+            document.getElementById('app').classList.remove('hidden');
+            
+            updateUserInfo();
+            updateMonthDisplay();
+            buildCalendar();
+            calculateAllStats();
+            loadFinancialGoal();
+        }
+    } else {
+        // Пользователь вышел
         currentUser = null;
-        localStorage.removeItem('vaillant_current');
+        currentUserData = null;
         document.getElementById('app').classList.add('hidden');
         showModal('authModal');
+        showLoginForm();
+    }
+});
+
+// ===== СОХРАНЕНИЕ ДАННЫХ В FIRESTORE =====
+async function saveUserData() {
+    if (!currentUser || !currentUser.uid) return;
+    try {
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+            fullName: currentUser.fullName || '',
+            employeeId: currentUser.employeeId || '',
+            cardId: currentUser.cardId || '',
+            email: currentUser.email || '',
+            avatar: currentUser.avatar || '',
+            records: currentUser.records || [],
+            quickSalaries: currentUser.quickSalaries || [],
+            financialGoal: currentUser.financialGoal || null,
+            settings: currentUser.settings || {},
+            lastUpdated: new Date().toISOString()
+        });
+        console.log("Data saved to Firebase");
+    } catch (error) {
+        console.error("Error saving user data:", error);
     }
 }
 
 function updateUserInfo() {
     if (!currentUser) return;
-    document.getElementById('userName').textContent = currentUser.name;
-    document.getElementById('profileName').textContent = currentUser.name;
-    let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.name);
+    
+    document.getElementById('userName').textContent = currentUser.name || 'Пользователь';
+    document.getElementById('profileName').textContent = currentUser.name || 'Пользователь';
+    
+    let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.name || 'User');
     document.getElementById('avatarPreview').src = avatarUrl;
     document.getElementById('profileAvatar').src = avatarUrl;
     
@@ -460,18 +568,37 @@ function closeModal() {
     selectedDay = null;
 }
 
-function addRecord(type) {
+async function addRecord(type) {
     if (!currentUser || !selectedDay) return;
+    
     const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(selectedDay).padStart(2,'0')}`;
+    
     if (!currentUser.records) currentUser.records = [];
+    
+    // Проверяем, была ли запись раньше
+    const oldRecord = currentUser.records.find(r => r.date === dateStr);
+    
+    // Обновляем счетчики использованных дней
+    if (oldRecord) {
+        if (oldRecord.type === 'doctor') {
+            currentUser.settings.usedPersonalDoctor = (currentUser.settings.usedPersonalDoctor || 0) - 1;
+        }
+        if (oldRecord.type === 'sat' || oldRecord.type === 'sun') {
+            currentUser.settings.usedWeekends = (currentUser.settings.usedWeekends || 0) - 1;
+        }
+    }
+    
+    // Удаляем старую запись
     currentUser.records = currentUser.records.filter(r => r.date !== dateStr);
     
+    // Добавляем новую, если не выходной
     if (type !== 'off') {
         currentUser.records.push({
             date: dateStr,
             type: type,
             hours: 7.5
         });
+        
         if (type === 'doctor') {
             currentUser.settings.usedPersonalDoctor = (currentUser.settings.usedPersonalDoctor || 0) + 1;
         }
@@ -479,7 +606,10 @@ function addRecord(type) {
             currentUser.settings.usedWeekends = (currentUser.settings.usedWeekends || 0) + 1;
         }
     }
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
+    
+    // Сохраняем в Firebase
+    await saveUserData();
+    
     closeModal();
     buildCalendar();
     calculateAllStats();
@@ -607,7 +737,7 @@ function updateWeekendStats() {
 }
 
 // ===== БЫСТРЫЙ ВВОД ЗАРПЛАТЫ =====
-function quickAddSalary() {
+async function quickAddSalary() {
     if (!currentUser) return;
     let gross = parseFloat(document.getElementById('quickGross').value);
     let net = parseFloat(document.getElementById('quickNet').value);
@@ -621,22 +751,22 @@ function quickAddSalary() {
         currentUser.quickSalaries.push({ month: currentMonth, year: currentYear, gross, net, date: new Date().toISOString() });
         showMessage('Зарплата сохранена!');
     }
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
+    await saveUserData();
     document.getElementById('quickGross').value = '';
     document.getElementById('quickNet').value = '';
     calculateAllStats();
 }
 
-function clearQuickSalary() {
+async function clearQuickSalary() {
     if (!currentUser) return;
     if (!currentUser.quickSalaries) currentUser.quickSalaries = [];
     currentUser.quickSalaries = currentUser.quickSalaries.filter(s => !(s.month === currentMonth && s.year === currentYear));
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
+    await saveUserData();
     showMessage('Зарплата за этот месяц удалена!');
     calculateAllStats();
 }
 
-// ===== ФИНАНСЫ (БЕРУТ ДАННЫЕ ИЗ ДАШБОРДА) =====
+// ===== ФИНАНСЫ =====
 function updateFinanceStats() {
     if (!currentUser) return;
     
@@ -663,7 +793,7 @@ function updateFinanceStats() {
     
     let tips = [
         'Откладывай минимум 10% от зарплаты',
-        'Используй экстра блоки для дополнительного дохода',
+        'Используй надчасы для дополнительного дохода',
         'Субботние смены приносят +25€ бонуса',
         'Ночные смены оплачиваются на 20% выше',
         'Следи за количеством перепусток',
@@ -695,7 +825,7 @@ function buildPieChart(net, tax, lunch, savings) {
     });
 }
 
-// ===== ФИНАНСОВЫЕ ЦЕЛИ (С РУЧНЫМ УПРАВЛЕНИЕМ) =====
+// ===== ФИНАНСОВЫЕ ЦЕЛИ =====
 function loadFinancialGoal() {
     if (!currentUser) return;
     
@@ -743,11 +873,9 @@ function updateGoalDisplay() {
     document.getElementById('goalProgressBar').style.width = percent + '%';
     
     updateHistoryList();
-    
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
 }
 
-function addToGoal() {
+async function addToGoal() {
     if (!currentUser || !currentUser.financialGoal) return;
     
     let amount = parseFloat(prompt('Сколько добавить к цели? (€)', '100'));
@@ -763,11 +891,12 @@ function addToGoal() {
         balance: currentUser.financialGoal.saved
     });
     
+    await saveUserData();
     updateGoalDisplay();
     showMessage(`✅ Добавлено ${amount.toFixed(2)} € к цели`);
 }
 
-function withdrawFromGoal() {
+async function withdrawFromGoal() {
     if (!currentUser || !currentUser.financialGoal) return;
     
     let amount = parseFloat(prompt('Сколько снять с цели? (€)', '50'));
@@ -787,6 +916,7 @@ function withdrawFromGoal() {
         balance: currentUser.financialGoal.saved
     });
     
+    await saveUserData();
     updateGoalDisplay();
     showMessage(`💰 Снято ${amount.toFixed(2)} € с цели`);
 }
@@ -817,7 +947,7 @@ function updateHistoryList() {
     historyList.innerHTML = html;
 }
 
-function saveGoal() {
+async function saveGoal() {
     if (!currentUser) return;
     
     let name = document.getElementById('goalName').value.trim();
@@ -834,17 +964,17 @@ function saveGoal() {
         date: new Date().toISOString()
     };
     
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
+    await saveUserData();
     showMessage('Цель сохранена! 🎯');
     loadFinancialGoal();
 }
 
-function clearGoal() {
+async function clearGoal() {
     if (!currentUser) return;
     
     if (confirm('Удалить финансовую цель?')) {
         currentUser.financialGoal = null;
-        localStorage.setItem('vaillant_users', JSON.stringify(users));
+        await saveUserData();
         showMessage('Цель удалена');
         loadFinancialGoal();
     }
@@ -934,13 +1064,13 @@ function previewAvatar(input) {
             document.getElementById('avatarPreview').src = e.target.result;
             document.getElementById('profileAvatar').src = e.target.result;
             if (currentUser) currentUser.avatar = e.target.result;
-            localStorage.setItem('vaillant_users', JSON.stringify(users));
+            saveUserData();
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
 
-function saveProfile() {
+async function saveProfile() {
     if (!currentUser) return;
     
     currentUser.fullName = document.getElementById("fullName").value;
@@ -961,7 +1091,7 @@ function saveProfile() {
     currentUser.settings.usedAccompanyDoctor = parseInt(document.getElementById("usedAccompanyDoctor").value) || 0;
     currentUser.settings.usedWeekends = parseInt(document.getElementById("usedWeekends").value) || 0;
     
-    localStorage.setItem('vaillant_users', JSON.stringify(users));
+    await saveUserData();
     showMessage('Профиль сохранен!');
     calculateAllStats();
 }
@@ -1030,7 +1160,7 @@ function buildYearChart() {
 }
 
 // ===== ОЧИСТКА ВСЕХ ДАННЫХ =====
-function clearAllData() {
+async function clearAllData() {
     if (!currentUser) return;
     if (confirm('⚠️ Это удалит ВСЕ записи о работе и зарплате! Продолжить?')) {
         currentUser.records = [];
@@ -1039,7 +1169,7 @@ function clearAllData() {
         currentUser.settings.usedPersonalDoctor = 0;
         currentUser.settings.usedAccompanyDoctor = 0;
         currentUser.settings.usedWeekends = 0;
-        localStorage.setItem('vaillant_users', JSON.stringify(users));
+        await saveUserData();
         buildCalendar();
         calculateAllStats();
         loadFinancialGoal();
@@ -1073,21 +1203,7 @@ window.onload = function() {
         }
     }, 500);
     
-    let lastUser = localStorage.getItem('vaillant_current');
-    if (lastUser) {
-        currentUser = users.find(u => u.name === lastUser);
-        if (currentUser) {
-            migrateUserData(currentUser);
-            hideModal('authModal');
-            document.getElementById('app').classList.remove('hidden');
-            updateUserInfo();
-            updateMonthDisplay();
-            buildCalendar();
-            calculateAllStats();
-            loadFinancialGoal();
-            return;
-        }
-    }
+    // Не проверяем localStorage, Firebase сам восстановит сессию
     showModal('authModal');
     showLoginForm();
 };
