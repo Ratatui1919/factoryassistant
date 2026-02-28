@@ -58,9 +58,13 @@ window.register = async function() {
   if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
   
   try {
-    // Создаём безопасный email из имени
-    const cleanName = name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    const email = `${cleanName}${Math.floor(Math.random() * 1000)}@vaillant.app`;
+    // Убираем все пробелы и спецсимволы из имени для email
+    const cleanName = name.replace(/[^a-zA-Z0-9]/g, '');
+    // Добавляем случайное число, чтобы избежать конфликтов
+    const randomNum = Math.floor(Math.random() * 10000);
+    const email = `user${randomNum}@vaillant.app`;
+    
+    console.log("Registering with email:", email);
     
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
@@ -80,7 +84,7 @@ window.register = async function() {
     };
     
     await setDoc(doc(db, "users", user.uid), userData);
-    showMessage('Регистрация успешна!');
+    showMessage('Регистрация успешна! Теперь войдите.');
     
     document.getElementById('regName').value = '';
     document.getElementById('regPass').value = '';
@@ -101,7 +105,7 @@ window.login = async function() {
   if (!name || !pass) return showMessage('Введите имя и пароль!', true);
   
   try {
-    // Ищем пользователя по имени
+    // Ищем пользователя по имени в Firestore
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("name", "==", name));
     const querySnapshot = await getDocs(q);
@@ -113,6 +117,7 @@ window.login = async function() {
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
     
+    // Входим по email из базы данных
     const userCredential = await signInWithEmailAndPassword(auth, userData.email, pass);
     const user = userCredential.user;
     
@@ -140,6 +145,7 @@ window.logout = async function() {
     currentUser = null;
     document.getElementById('app').classList.add('hidden');
     showModal('authModal');
+    window.showLoginForm();
   }
 };
 
@@ -182,11 +188,13 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = null;
     document.getElementById('app').classList.add('hidden');
     showModal('authModal');
+    window.showLoginForm();
   }
 });
 
 // ===== ЗАПУСК =====
 window.onload = function() {
+  console.log("App starting...");
   hideModal('dayModal');
   showModal('authModal');
   window.showLoginForm();
