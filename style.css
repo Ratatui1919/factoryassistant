@@ -293,4 +293,250 @@ main { flex: 1; padding: 1rem; max-width: 1400px; margin: 0 auto; width: 100%; }
     flex-direction: column;
   }
 }
+/* ===== МОДАЛКА ДНЯ ===== */
+.day-modal {
+  max-width: 500px;
+  width: 95%;
+  padding: 20px;
+}
+
+.day-types {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+@media (min-width: 600px) {
+  .day-types {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.day-type {
+  background: var(--dark-light);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 15px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  font-size: 0.9rem;
+  border-left: 4px solid transparent;
+}
+
+.day-type:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(0,176,96,0.2);
+  background: var(--dark);
+}
+
+.day-type i {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+  color: var(--primary);
+}
+
+.day-type span {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.day-type small {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.day-type.work { border-left-color: #f39c12; }
+.day-type.night { border-left-color: #3498db; }
+.day-type.overtime { border-left-color: #e67e22; }
+.day-type.saturday { border-left-color: #9b59b6; }
+.day-type.sunday { border-left-color: #f39c12; }
+.day-type.extra { border-left-color: #27ae60; }
+.day-type.sick { border-left-color: #7f8c8d; }
+.day-type.vacation { border-left-color: #f1c40f; }
+.day-type.doctor { border-left-color: #9b59b6; }
+.day-type.off { border-left-color: #2c3e50; }
+
+.cancel-btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ===== КАЛЕНДАРЬ ===== */
+#calendarMonth {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0 10px;
+  min-width: 180px;
+  text-align: center;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.calendar-weekdays span {
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 10px 5px;
+  background: var(--dark-card);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.day {
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  aspect-ratio: 1;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  min-height: 50px;
+}
+
+.day:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.day.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.day.future {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.day-number {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.day-icon {
+  font-size: 1.2rem;
+}
+
+/* Цвета для типов дней */
+.day.work { background: linear-gradient(145deg,#f39c12,#e67e22) !important; border-color: #f1c40f !important; }
+.day.night { background: linear-gradient(145deg,#2c3e50,#1a2634) !important; border-color: #3498db !important; }
+.day.overtime { background: linear-gradient(145deg,#c0392b,#a93226) !important; border-color: #e67e22 !important; }
+.day.sat { background: linear-gradient(145deg,#6c3483,#512e5f) !important; border-color: #9b59b6 !important; }
+.day.sun { background: linear-gradient(145deg,#b86d1b,#9e5c17) !important; border-color: #f39c12 !important; }
+.day.extra { background: linear-gradient(145deg,#1e8449,#166638) !important; border-color: #27ae60 !important; }
+.day.sick { background: linear-gradient(145deg,#5d6d7e,#4a5b6b) !important; border-color: #7f8c8d !important; }
+.day.vacation { background: linear-gradient(145deg,#b7950b,#9e7e0a) !important; border-color: #f1c40f !important; }
+.day.doctor { background: linear-gradient(145deg,#76448a,#5e3b70) !important; border-color: #9b59b6 !important; }
+.day.off { background: #2c3e50 !important; border: 2px dashed #7f8c8d !important; }
+
+/* Легенда календаря */
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--dark-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--dark-light);
+  border-radius: 30px;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+/* ===== ЧЕКБОКС ===== */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+/* ===== БЫСТРЫЙ ВВОД ===== */
+.quick-salary-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.quick-salary-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 480px) {
+  .quick-salary-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quick-salary-actions {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .quick-salary-actions {
+    flex-direction: column;
+  }
+}
 
