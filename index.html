@@ -8,7 +8,7 @@
     <!-- Фавикон -->
     <link rel="icon" type="image/png" href="assets/vaillant-logo.png">
     
-    <!-- Open Graph для красивого превью ссылки -->
+    <!-- Open Graph -->
     <meta property="og:title" content="Vaillant Factory Assistant" />
     <meta property="og:description" content="Мой личный помощник для учёта смен, зарплаты и финансов на заводе Vaillant." />
     <meta property="og:image" content="https://raw.githubusercontent.com/Ratatui1919/factoryassistant/main/assets/vaillant-logo.png" />
@@ -19,9 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Для экспорта в Excel -->
+    <!-- Экспорт -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Для экспорта в PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -31,7 +30,7 @@
     <div class="modal" id="authModal">
         <div class="modal-content auth-card">
             <div class="auth-logo">
-                <img src="assets/vaillant-logo.png" alt="Vaillant" style="height: 40px;">
+                <img src="assets/vaillant-logo.png" alt="Vaillant">
                 <h2>Vaillant<span>Assistant</span></h2>
             </div>
             <div class="auth-tabs">
@@ -72,8 +71,7 @@
             </div>
         </div>
     </div>
-
-    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+        <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div id="app" class="hidden">
         <header>
             <div class="header-left">
@@ -89,22 +87,40 @@
                     <button class="lang-btn" data-lang="uk" onclick="window.setLanguage('uk')">UA</button>
                 </div>
             </div>
+            
             <div class="header-right">
-                <!-- Виджет времени -->
-                <div class="time-widget" id="timeWidget"></div>
+                <!-- УНИВЕРСАЛЬНЫЙ ВИДЖЕТ (ПК + ТЕЛЕФОН) -->
+                <div class="header-widget">
+                    <!-- Время и приветствие -->
+                    <div class="widget-time">
+                        <span class="greeting" id="greeting"></span>
+                        <span class="time" id="time"></span>
+                    </div>
+                    <!-- Дата и погода (Тренчин) -->
+                    <div class="widget-date-weather">
+                        <span class="date" id="date"></span>
+                        <span class="weather" id="weather">
+                            <i class="fas fa-cloud-sun"></i>
+                            <span id="weatherTemp">--°C</span>
+                            <span class="weather-location">Trenčín</span>
+                        </span>
+                    </div>
+                </div>
+                
                 <div class="user-info" id="userInfo">
                     <img id="avatarPreview" src="" alt="avatar">
                     <span id="userName">Гость</span>
                 </div>
                 <button class="logout-btn" onclick="window.logout()" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
+                
+                <!-- Бургер для телефона -->
+                <div class="mobile-menu-toggle" onclick="window.toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
             </div>
         </header>
 
-        <!-- Бургер-меню для мобильных -->
-        <div class="mobile-menu-toggle" onclick="window.toggleMobileMenu()">
-            <i class="fas fa-bars"></i>
-        </div>
-        
+        <!-- Навигация (скрывается на телефоне, пока не нажмут бургер) -->
         <nav id="mainNav">
             <button class="nav-btn" data-view="dashboard" onclick="window.setView('dashboard')"><i class="fas fa-chart-pie"></i><span data-lang="dashboard">Дашборд</span></button>
             <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')"><i class="fas fa-calendar-alt"></i><span data-lang="calendar">Календарь</span></button>
@@ -116,18 +132,6 @@
         <main>
             <!-- ДАШБОРД -->
             <section id="dashboard" class="view active">
-                <!-- Приветствие пользователя -->
-                <div class="welcome-card" id="welcomeCard">
-                    <div class="welcome-content">
-                        <h2 class="gradient-text" id="welcomeMessage">Добро пожаловать!</h2>
-                        <p id="welcomeDate"></p>
-                    </div>
-                    <div class="weather-widget" id="weatherWidget">
-                        <i class="fas fa-sun"></i>
-                        <span id="weatherTemp">--°C</span>
-                    </div>
-                </div>
-
                 <div class="month-selector glass-effect">
                     <button onclick="window.changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
                     <h2 id="currentMonth"></h2>
@@ -269,7 +273,6 @@
                     <div class="legend-item"><span class="legend-color" style="background:#2c3e50;"></span><span class="legend-icon">❌</span><span class="legend-text" data-lang="dayOff">Выходной</span></div>
                 </div>
             </section>
-
             <!-- СТАТИСТИКА -->
             <section id="stats" class="view">
                 <div class="stats-header">
@@ -320,8 +323,8 @@
 
                 <!-- Кнопки экспорта -->
                 <div class="export-buttons">
-                    <button class="btn-secondary" onclick="window.exportToExcel()"><i class="fas fa-file-excel"></i> Экспорт в Excel</button>
-                    <button class="btn-secondary" onclick="window.exportToPDF()"><i class="fas fa-file-pdf"></i> Экспорт в PDF</button>
+                    <button class="btn-secondary" onclick="window.exportToExcel()"><i class="fas fa-file-excel"></i> <span data-lang="exportToExcel">Экспорт в Excel</span></button>
+                    <button class="btn-secondary" onclick="window.exportToPDF()"><i class="fas fa-file-pdf"></i> <span data-lang="exportToPDF">Экспорт в PDF</span></button>
                 </div>
             </section>
 
@@ -361,21 +364,46 @@
                         
                         <div class="profile-card glass-effect">
                             <h3><i class="fas fa-calendar-alt"></i> <span data-lang="vacations">Отпуска и перепустки</span></h3>
-                            <div class="profile-field"><label data-lang="accruedWeekendsLabel">Накоплено выходных (1.67/мес)</label><input type="number" id="accruedWeekendsInput" value="0" disabled></div>
-                            <div class="profile-field"><label data-lang="usedWeekends">Использовано выходных</label><input type="number" id="usedWeekends" value="0" min="0"></div>
-                            <div class="profile-field"><label data-lang="personalDoctor">Перепустки (личные)</label><input type="number" id="personalDoctorDays" value="7" min="0"></div>
-                            <div class="profile-field"><label data-lang="usedPersonalDoctor">Использовано личных</label><input type="number" id="usedPersonalDoctor" value="0" min="0"></div>
-                            <div class="profile-field"><label data-lang="accompanyDoctor">Перепустки (сопровождение)</label><input type="number" id="accompanyDoctorDays" value="6" min="0"></div>
-                            <div class="profile-field"><label data-lang="usedAccompanyDoctor">Использовано сопровождения</label><input type="number" id="usedAccompanyDoctor" value="0" min="0"></div>
+                            <div class="profile-field">
+                                <label data-lang="accruedWeekendsLabel">Накоплено выходных</label>
+                                <input type="number" id="accruedWeekendsInput" value="0" min="0" step="1">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="usedWeekends">Использовано выходных</label>
+                                <input type="number" id="usedWeekends" value="0" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="personalDoctor">Перепустки (личные, в год)</label>
+                                <input type="number" id="personalDoctorDays" value="7" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="usedPersonalDoctor">Использовано личных</label>
+                                <input type="number" id="usedPersonalDoctor" value="0" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="accompanyDoctor">Перепустки (сопровождение, в год)</label>
+                                <input type="number" id="accompanyDoctorDays" value="6" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="usedAccompanyDoctor">Использовано сопровождения</label>
+                                <input type="number" id="usedAccompanyDoctor" value="0" min="0">
+                            </div>
                         </div>
                         
-                        <!-- БЛОК ТЕМ -->
+                        <!-- БЛОК ТЕМ (10 тем) -->
                         <div class="profile-card glass-effect">
                             <h3><i class="fas fa-palette"></i> Тема оформления</h3>
                             <div class="theme-selector">
-                                <button class="theme-btn" data-theme="dark" onclick="window.setTheme('dark')">🌙 Тёмная</button>
+                                <button class="theme-btn" data-theme="dark" onclick="window.setTheme('dark')">🌑 Тёмная</button>
                                 <button class="theme-btn" data-theme="light" onclick="window.setTheme('light')">☀️ Светлая</button>
-                                <button class="theme-btn" data-theme="auto" onclick="window.setTheme('auto')">⚙️ Как в системе</button>
+                                <button class="theme-btn" data-theme="blue" onclick="window.setTheme('blue')">🔵 Синяя</button>
+                                <button class="theme-btn" data-theme="purple" onclick="window.setTheme('purple')">🟣 Фиолетовая</button>
+                                <button class="theme-btn" data-theme="orange" onclick="window.setTheme('orange')">🟠 Оранжевая</button>
+                                <button class="theme-btn" data-theme="red" onclick="window.setTheme('red')">🔴 Красная</button>
+                                <button class="theme-btn" data-theme="green" onclick="window.setTheme('green')">🟢 Зелёная</button>
+                                <button class="theme-btn" data-theme="pink" onclick="window.setTheme('pink')">🌸 Розовая</button>
+                                <button class="theme-btn" data-theme="mint" onclick="window.setTheme('mint')">🌿 Мятная</button>
+                                <button class="theme-btn" data-theme="gray" onclick="window.setTheme('gray')">⚪ Серая</button>
                             </div>
                         </div>
                     </div>
@@ -445,9 +473,10 @@
                         </div>
                     </div>
                     
-                    <div class="finance-tips glass-effect">
+                    <div class="finance-tips glass-effect" id="financeTips">
                         <h4><i class="fas fa-lightbulb"></i> <span data-lang="financialTip">Финансовый совет</span></h4>
                         <p id="financeTip">Откладывай минимум 10% от зарплаты</p>
+                        <div class="tip-date" id="tipDate"></div>
                     </div>
 
                     <!-- PDF ИМПОРТ -->
@@ -464,8 +493,7 @@
             </section>
         </main>
     </div>
-
-    <!-- МОДАЛКА ДНЯ -->
+        <!-- МОДАЛКА ДНЯ -->
     <div class="modal" id="dayModal">
         <div class="modal-content day-modal glass-effect">
             <div class="modal-header">
