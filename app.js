@@ -23,11 +23,13 @@ let currentYear = new Date().getFullYear();
 
 // ===== ВСПОМОГАТЕЛЬНЫЕ =====
 function showModal(id) {
-  document.getElementById(id).style.display = 'flex';
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = 'flex';
 }
 
 function hideModal(id) {
-  document.getElementById(id).style.display = 'none';
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = 'none';
 }
 
 function showMessage(msg, isError = false) {
@@ -35,32 +37,37 @@ function showMessage(msg, isError = false) {
 }
 
 // ===== ФОРМЫ =====
-function showLoginForm() {
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-  document.querySelectorAll('.auth-tab')[0].classList.add('active');
-  document.getElementById('loginForm').classList.add('active');
-}
+window.showLoginForm = function() {
+  const tabs = document.querySelectorAll('.auth-tab');
+  const forms = document.querySelectorAll('.auth-form');
+  tabs.forEach(t => t.classList.remove('active'));
+  forms.forEach(f => f.classList.remove('active'));
+  if (tabs[0]) tabs[0].classList.add('active');
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) loginForm.classList.add('active');
+};
 
-function showRegisterForm() {
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-  document.querySelectorAll('.auth-tab')[1].classList.add('active');
-  document.getElementById('registerForm').classList.add('active');
-}
+window.showRegisterForm = function() {
+  const tabs = document.querySelectorAll('.auth-tab');
+  const forms = document.querySelectorAll('.auth-form');
+  tabs.forEach(t => t.classList.remove('active'));
+  forms.forEach(f => f.classList.remove('active'));
+  if (tabs[1]) tabs[1].classList.add('active');
+  const registerForm = document.getElementById('registerForm');
+  if (registerForm) registerForm.classList.add('active');
+};
 
 // ===== РЕГИСТРАЦИЯ =====
-async function register() {
-  const name = document.getElementById('regName').value.trim();
-  const pass = document.getElementById('regPass').value.trim();
-  const confirm = document.getElementById('regConfirm').value.trim();
+window.register = async function() {
+  const name = document.getElementById('regName')?.value.trim();
+  const pass = document.getElementById('regPass')?.value.trim();
+  const confirm = document.getElementById('regConfirm')?.value.trim();
   
   if (!name || !pass || !confirm) return showMessage('Заполните все поля!', true);
   if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
   if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
   
   try {
-    const cleanName = name.replace(/[^a-zA-Z0-9]/g, '');
     const randomNum = Math.floor(Math.random() * 10000);
     const email = `user${randomNum}@vaillant.app`;
     
@@ -84,21 +91,22 @@ async function register() {
     await setDoc(doc(db, "users", user.uid), userData);
     showMessage('Регистрация успешна! Теперь войдите.');
     
-    document.getElementById('regName').value = '';
-    document.getElementById('regPass').value = '';
-    document.getElementById('regConfirm').value = '';
-    showLoginForm();
+    if (document.getElementById('regName')) document.getElementById('regName').value = '';
+    if (document.getElementById('regPass')) document.getElementById('regPass').value = '';
+    if (document.getElementById('regConfirm')) document.getElementById('regConfirm').value = '';
+    
+    window.showLoginForm();
     
   } catch (error) {
     console.error("Registration error:", error);
     showMessage('Ошибка: ' + error.message, true);
   }
-}
+};
 
 // ===== ВХОД =====
-async function login() {
-  const name = document.getElementById('loginName').value.trim();
-  const pass = document.getElementById('loginPass').value.trim();
+window.login = async function() {
+  const name = document.getElementById('loginName')?.value.trim();
+  const pass = document.getElementById('loginPass')?.value.trim();
   
   if (!name || !pass) return showMessage('Введите имя и пароль!', true);
   
@@ -121,10 +129,13 @@ async function login() {
     currentUser = { uid: user.uid, ...userData };
     
     hideModal('authModal');
-    document.getElementById('app').classList.remove('hidden');
+    const app = document.getElementById('app');
+    if (app) app.classList.remove('hidden');
     
-    document.getElementById('fullName').value = currentUser.fullName || '';
-    document.getElementById('employeeId').value = currentUser.employeeId || '';
+    const fullNameInput = document.getElementById('fullName');
+    const employeeIdInput = document.getElementById('employeeId');
+    if (fullNameInput) fullNameInput.value = currentUser.fullName || '';
+    if (employeeIdInput) employeeIdInput.value = currentUser.employeeId || '';
     
     showMessage('Добро пожаловать!');
     
@@ -132,39 +143,44 @@ async function login() {
     console.error("Login error:", error);
     showMessage('Ошибка входа: ' + error.message, true);
   }
-}
+};
 
 // ===== ВЫХОД =====
-async function logout() {
+window.logout = async function() {
   if (confirm('Выйти?')) {
     await signOut(auth);
     currentUser = null;
-    document.getElementById('app').classList.add('hidden');
+    const app = document.getElementById('app');
+    if (app) app.classList.add('hidden');
     showModal('authModal');
-    showLoginForm();
+    window.showLoginForm();
   }
-}
+};
 
 // ===== ПРОФИЛЬ =====
-async function saveProfile() {
+window.saveProfile = async function() {
   if (!currentUser) return;
   
-  currentUser.fullName = document.getElementById('fullName').value;
-  currentUser.employeeId = document.getElementById('employeeId').value;
+  const fullName = document.getElementById('fullName')?.value || '';
+  const employeeId = document.getElementById('employeeId')?.value || '';
+  
+  currentUser.fullName = fullName;
+  currentUser.employeeId = employeeId;
   
   await updateDoc(doc(db, "users", currentUser.uid), {
-    fullName: currentUser.fullName,
-    employeeId: currentUser.employeeId
+    fullName: fullName,
+    employeeId: employeeId
   });
   
   showMessage('Профиль сохранён!');
-}
+};
 
 // ===== НАВИГАЦИЯ =====
-function setView(view) {
+window.setView = function(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(view).classList.add('active');
-}
+  const selectedView = document.getElementById(view);
+  if (selectedView) selectedView.classList.add('active');
+};
 
 // ===== СЛЕДИМ ЗА СОСТОЯНИЕМ =====
 onAuthStateChanged(auth, async (user) => {
@@ -175,35 +191,40 @@ onAuthStateChanged(auth, async (user) => {
       currentUser = { uid: user.uid, ...currentUserData };
       
       hideModal('authModal');
-      document.getElementById('app').classList.remove('hidden');
+      const app = document.getElementById('app');
+      if (app) app.classList.remove('hidden');
       
-      document.getElementById('fullName').value = currentUser.fullName || '';
-      document.getElementById('employeeId').value = currentUser.employeeId || '';
+      const fullNameInput = document.getElementById('fullName');
+      const employeeIdInput = document.getElementById('employeeId');
+      if (fullNameInput) fullNameInput.value = currentUser.fullName || '';
+      if (employeeIdInput) employeeIdInput.value = currentUser.employeeId || '';
     }
   } else {
     currentUser = null;
-    document.getElementById('app').classList.add('hidden');
+    const app = document.getElementById('app');
+    if (app) app.classList.add('hidden');
     showModal('authModal');
-    showLoginForm();
+    window.showLoginForm();
   }
 });
 
 // ===== ЗАПУСК =====
 window.onload = function() {
+  console.log("App started");
   hideModal('dayModal');
   showModal('authModal');
-  showLoginForm();
+  window.showLoginForm();
 };
 
 // ===== ПРОСТЫЕ ФУНКЦИИ КАЛЕНДАРЯ =====
-function changeMonth(delta) {
+window.changeMonth = function(delta) {
   currentMonth += delta;
   if (currentMonth < 0) { currentMonth = 11; currentYear--; }
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-  buildCalendar();
-}
+  window.buildCalendar();
+};
 
-function buildCalendar() {
+window.buildCalendar = function() {
   const grid = document.getElementById('calendarGrid');
   if (!grid) return;
   grid.innerHTML = '';
@@ -213,41 +234,29 @@ function buildCalendar() {
   for (let d = 1; d <= daysInMonth; d++) {
     const cell = document.createElement('div');
     cell.className = 'day';
-    cell.innerHTML = d;
+    cell.textContent = d;
     grid.appendChild(cell);
   }
-}
-
-function addRecord(type) {
-  console.log('addRecord', type);
-  closeModal();
-}
-
-function closeModal() {
-  hideModal('dayModal');
-}
-
-// ===== ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ =====
-window.showLoginForm = showLoginForm;
-window.showRegisterForm = showRegisterForm;
-window.login = login;
-window.register = register;
-window.logout = logout;
-window.setView = setView;
-window.saveProfile = saveProfile;
-window.changeMonth = changeMonth;
-window.addRecord = addRecord;
-window.closeModal = closeModal;
-window.quickAddSalary = function() {};
-window.clearQuickSalary = function() {};
-window.previewAvatar = function() {};
-window.exportData = function() {};
-window.setLanguage = function(lang) { 
-  console.log('Language:', lang);
 };
-window.addToGoal = function() {};
-window.withdrawFromGoal = function() {};
-window.saveGoal = function() {};
-window.clearGoal = function() {};
-window.loadYearStats = function() {};
-window.clearAllData = function() {};
+
+window.addRecord = function(type) {
+  console.log('addRecord', type);
+  window.closeModal();
+};
+
+window.closeModal = function() {
+  hideModal('dayModal');
+};
+
+// Заглушки для остальных функций
+window.quickAddSalary = function() { console.log('quickAddSalary'); };
+window.clearQuickSalary = function() { console.log('clearQuickSalary'); };
+window.previewAvatar = function() { console.log('previewAvatar'); };
+window.exportData = function() { console.log('exportData'); };
+window.setLanguage = function(lang) { console.log('Language:', lang); };
+window.addToGoal = function() { console.log('addToGoal'); };
+window.withdrawFromGoal = function() { console.log('withdrawFromGoal'); };
+window.saveGoal = function() { console.log('saveGoal'); };
+window.clearGoal = function() { console.log('clearGoal'); };
+window.loadYearStats = function() { console.log('loadYearStats'); };
+window.clearAllData = function() { console.log('clearAllData'); };
