@@ -76,11 +76,10 @@ window.showRegisterForm = function() {
 // ===== НОВАЯ РЕГИСТРАЦИЯ (ПО EMAIL) =====
 window.register = async function() {
   const email = document.getElementById('regEmail')?.value.trim();
-  const name = document.getElementById('regName')?.value.trim();
   const pass = document.getElementById('regPass')?.value.trim();
   const confirm = document.getElementById('regConfirm')?.value.trim();
   
-  if (!email || !name || !pass || !confirm) return showMessage('Заполните все поля!', true);
+  if (!email || !pass || !confirm) return showMessage('Заполните все поля!', true);
   if (!email.includes('@')) return showMessage('Введите корректный email!', true);
   if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
   if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
@@ -89,9 +88,12 @@ window.register = async function() {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
     
+    // Используем часть email как имя для отображения
+    const displayName = email.split('@')[0];
+    
     const userData = {
       uid: user.uid,
-      name: name,
+      name: displayName,
       email: email,
       fullName: '',
       employeeId: '',
@@ -120,7 +122,6 @@ window.register = async function() {
     showMessage('Регистрация успешна! Теперь войдите.');
     
     document.getElementById('regEmail').value = '';
-    document.getElementById('regName').value = '';
     document.getElementById('regPass').value = '';
     document.getElementById('regConfirm').value = '';
     
@@ -679,3 +680,4 @@ window.withdrawFromGoal = async function() {
   await updateDoc(doc(db, "users", currentUser.uid), { financialGoal: currentUser.financialGoal });
   loadFinancialGoal(); showMessage(`Снято ${amount} €`);
 };
+
