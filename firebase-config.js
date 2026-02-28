@@ -14,7 +14,7 @@ import {
   updateDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ВАША КОНФИГУРАЦИЯ ИЗ FIREBASE
+// ВАША КОНФИГУРАЦИЯ
 const firebaseConfig = {
   apiKey: "AIzaSyBn6fbSjjLTt8dm41ov_uHEYPIDUfFgiio",
   authDomain: "vaillant-assistant.firebaseapp.com",
