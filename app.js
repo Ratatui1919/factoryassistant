@@ -18,6 +18,8 @@ import {
 // ===== ДАННЫЕ =====
 let currentUser = null;
 let currentUserData = null;
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
 // ===== ВСПОМОГАТЕЛЬНЫЕ =====
 function showModal(id) {
@@ -33,22 +35,22 @@ function showMessage(msg, isError = false) {
 }
 
 // ===== ФОРМЫ =====
-window.showLoginForm = function() {
+function showLoginForm() {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
   document.querySelectorAll('.auth-tab')[0].classList.add('active');
   document.getElementById('loginForm').classList.add('active');
-};
+}
 
-window.showRegisterForm = function() {
+function showRegisterForm() {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
   document.querySelectorAll('.auth-tab')[1].classList.add('active');
   document.getElementById('registerForm').classList.add('active');
-};
+}
 
 // ===== РЕГИСТРАЦИЯ =====
-window.register = async function() {
+async function register() {
   const name = document.getElementById('regName').value.trim();
   const pass = document.getElementById('regPass').value.trim();
   const confirm = document.getElementById('regConfirm').value.trim();
@@ -58,13 +60,9 @@ window.register = async function() {
   if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
   
   try {
-    // Убираем все пробелы и спецсимволы из имени для email
     const cleanName = name.replace(/[^a-zA-Z0-9]/g, '');
-    // Добавляем случайное число, чтобы избежать конфликтов
     const randomNum = Math.floor(Math.random() * 10000);
     const email = `user${randomNum}@vaillant.app`;
-    
-    console.log("Registering with email:", email);
     
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
@@ -89,23 +87,22 @@ window.register = async function() {
     document.getElementById('regName').value = '';
     document.getElementById('regPass').value = '';
     document.getElementById('regConfirm').value = '';
-    window.showLoginForm();
+    showLoginForm();
     
   } catch (error) {
     console.error("Registration error:", error);
     showMessage('Ошибка: ' + error.message, true);
   }
-};
+}
 
 // ===== ВХОД =====
-window.login = async function() {
+async function login() {
   const name = document.getElementById('loginName').value.trim();
   const pass = document.getElementById('loginPass').value.trim();
   
   if (!name || !pass) return showMessage('Введите имя и пароль!', true);
   
   try {
-    // Ищем пользователя по имени в Firestore
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("name", "==", name));
     const querySnapshot = await getDocs(q);
@@ -117,7 +114,6 @@ window.login = async function() {
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
     
-    // Входим по email из базы данных
     const userCredential = await signInWithEmailAndPassword(auth, userData.email, pass);
     const user = userCredential.user;
     
@@ -136,21 +132,21 @@ window.login = async function() {
     console.error("Login error:", error);
     showMessage('Ошибка входа: ' + error.message, true);
   }
-};
+}
 
 // ===== ВЫХОД =====
-window.logout = async function() {
+async function logout() {
   if (confirm('Выйти?')) {
     await signOut(auth);
     currentUser = null;
     document.getElementById('app').classList.add('hidden');
     showModal('authModal');
-    window.showLoginForm();
+    showLoginForm();
   }
-};
+}
 
 // ===== ПРОФИЛЬ =====
-window.saveProfile = async function() {
+async function saveProfile() {
   if (!currentUser) return;
   
   currentUser.fullName = document.getElementById('fullName').value;
@@ -162,13 +158,13 @@ window.saveProfile = async function() {
   });
   
   showMessage('Профиль сохранён!');
-};
+}
 
 // ===== НАВИГАЦИЯ =====
-window.setView = function(view) {
+function setView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(view).classList.add('active');
-};
+}
 
 // ===== СЛЕДИМ ЗА СОСТОЯНИЕМ =====
 onAuthStateChanged(auth, async (user) => {
@@ -188,23 +184,60 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = null;
     document.getElementById('app').classList.add('hidden');
     showModal('authModal');
-    window.showLoginForm();
+    showLoginForm();
   }
 });
 
 // ===== ЗАПУСК =====
 window.onload = function() {
-  console.log("App starting...");
   hideModal('dayModal');
   showModal('authModal');
-  window.showLoginForm();
+  showLoginForm();
 };
 
-// ===== ПУСТЫЕ ФУНКЦИИ ДЛЯ КАЛЕНДАРЯ =====
-window.changeMonth = function() { console.log('changeMonth'); };
-window.changeMonthFromSelect = function() {};
-window.addRecord = function() {};
-window.closeModal = function() {};
+// ===== ПРОСТЫЕ ФУНКЦИИ КАЛЕНДАРЯ =====
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  buildCalendar();
+}
+
+function buildCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement('div');
+    cell.className = 'day';
+    cell.innerHTML = d;
+    grid.appendChild(cell);
+  }
+}
+
+function addRecord(type) {
+  console.log('addRecord', type);
+  closeModal();
+}
+
+function closeModal() {
+  hideModal('dayModal');
+}
+
+// ===== ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ =====
+window.showLoginForm = showLoginForm;
+window.showRegisterForm = showRegisterForm;
+window.login = login;
+window.register = register;
+window.logout = logout;
+window.setView = setView;
+window.saveProfile = saveProfile;
+window.changeMonth = changeMonth;
+window.addRecord = addRecord;
+window.closeModal = closeModal;
 window.quickAddSalary = function() {};
 window.clearQuickSalary = function() {};
 window.previewAvatar = function() {};
