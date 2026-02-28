@@ -16,7 +16,7 @@ import {
 
 // ЭТОТ КЛЮЧ - ТОЧНО ПРАВИЛЬНЫЙ (с двумя t подряд)
 const firebaseConfig = {
-  apiKey: "AIzaSyBn6fbSjjlTt8dm41ov_uHEYPIDUfFgii",
+  apiKey: "AIzaSyBn6fbSjjlTt8dm41ov_uHEYPIDUfFgiio",
   authDomain: "vaillant-assistant.firebaseapp.com",
   projectId: "vaillant-assistant",
   storageBucket: "vaillant-assistant.firebasestorage.app",
