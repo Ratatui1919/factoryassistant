@@ -22,7 +22,7 @@
                 <button class="auth-tab" onclick="window.showRegisterForm()">Регистрация</button>
             </div>
             
-            <!-- ФОРМА ВХОДА (ПО EMAIL) -->
+            <!-- ВХОД ПО EMAIL -->
             <div id="loginForm" class="auth-form active">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
@@ -35,22 +35,24 @@
                 <button class="btn-primary" onclick="window.login()">Войти</button>
             </div>
             
-            <!-- ФОРМА РЕГИСТРАЦИИ (С EMAIL) -->
+            <!-- РЕГИСТРАЦИЯ ПО EMAIL (БЕЗ ИМЕНИ) -->
             <div id="registerForm" class="auth-form">
-    <div class="input-group">
-        <i class="fas fa-envelope"></i>
-        <input type="email" id="regEmail" placeholder="Email">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPass" placeholder="Пароль">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-check-circle"></i>
+                    <input type="password" id="regConfirm" placeholder="Подтвердите пароль">
+                </div>
+                <button class="btn-primary" onclick="window.register()">Зарегистрироваться</button>
+            </div>
+        </div>
     </div>
-    <div class="input-group">
-        <i class="fas fa-lock"></i>
-        <input type="password" id="regPass" placeholder="Пароль">
-    </div>
-    <div class="input-group">
-        <i class="fas fa-check-circle"></i>
-        <input type="password" id="regConfirm" placeholder="Подтвердите пароль">
-    </div>
-    <button class="btn-primary" onclick="window.register()">Зарегистрироваться</button>
-</div>
 
     <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div id="app" class="hidden">
@@ -314,4 +316,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-
