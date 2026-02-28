@@ -1207,3 +1207,4 @@ window.onload = function() {
     showModal('authModal');
     showLoginForm();
 };
+
