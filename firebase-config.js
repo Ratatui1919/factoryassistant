@@ -1,4 +1,3 @@
-// firebase-config.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
   getAuth, 
@@ -12,11 +11,7 @@ import {
   doc, 
   setDoc, 
   getDoc, 
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  updateDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -42,9 +37,5 @@ export {
   doc,
   setDoc,
   getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  updateDoc
 };
