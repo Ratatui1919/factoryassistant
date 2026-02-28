@@ -20,7 +20,7 @@ let currentUserData = null;
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let selectedDay = null;
-let currentLanguage = localStorage.getItem('vaillant_language') || 'en';
+let currentLanguage = localStorage.getItem('vaillant_language') || 'ru';
 let yearChart = null, statsChart = null, pieChart = null;
 
 const BASE_RATE = 6.10;
@@ -44,7 +44,7 @@ const translations = {
     hours: 'Часов',
     lunches: 'Обеды',
     overtime: 'Переработки',
-    extraBlocks: 'Экстра блоки',
+    extraBlocks: 'Надчасы',
     saturdays: 'Субботы',
     doctorVisits: 'Перепустки',
     weekendsThisMonth: 'Выходные в этом месяце',
@@ -69,7 +69,7 @@ const translations = {
     nightBonus: 'Ночная доплата (%)',
     saturdayBonus: 'Коэф. субботы',
     sundayBonus: 'Коэф. воскресенья',
-    extraBonus: 'Бонус за экстра блок (€)',
+    extraBonus: 'Бонус за надчас (€)',
     vacations: 'Отпуска и перепустки',
     accruedWeekendsLabel: 'Накоплено выходных (1.67/мес)',
     usedWeekends: 'Использовано выходных',
@@ -105,10 +105,31 @@ const translations = {
     history: 'Последние операции',
     currentMonth: 'Текущий месяц',
     importPDF: 'Импорт из PDF',
-    uploadPDF: 'Загрузить PDF с зарплатой',
+    uploadPDF: 'Загрузите PDF с зарплатой за последние 4 месяца',
     processing: 'Обработка...',
     importSuccess: 'Данные за {count} месяцев успешно импортированы',
-    importError: 'Ошибка при обработке PDF'
+    importError: 'Ошибка при обработке PDF',
+    chooseFile: 'Выберите файл',
+    mon: 'Пн',
+    tue: 'Вт',
+    wed: 'Ср',
+    thu: 'Чт',
+    fri: 'Пт',
+    sat: 'Сб',
+    sun: 'Вс',
+    january: 'Январь',
+    february: 'Февраль',
+    march: 'Март',
+    april: 'Апрель',
+    may: 'Май',
+    june: 'Июнь',
+    july: 'Июль',
+    august: 'Август',
+    september: 'Сентябрь',
+    october: 'Октябрь',
+    november: 'Ноябрь',
+    december: 'Декабрь',
+    clearAllData: 'Очистить все данные'
   },
   sk: {
     dashboard: 'Nástenka',
@@ -121,7 +142,7 @@ const translations = {
     hours: 'Hodiny',
     lunches: 'Obed',
     overtime: 'Nadčasy',
-    extraBlocks: 'Extra bloky',
+    extraBlocks: 'Nadčasy',
     saturdays: 'Soboty',
     doctorVisits: 'Lekár',
     weekendsThisMonth: 'Víkendy tento mesiac',
@@ -182,10 +203,31 @@ const translations = {
     history: 'História operácií',
     currentMonth: 'Aktuálny mesiac',
     importPDF: 'Import z PDF',
-    uploadPDF: 'Nahrajte PDF s platom',
+    uploadPDF: 'Nahrajte PDF s platom za posledné 4 mesiace',
     processing: 'Spracúvam...',
     importSuccess: 'Údaje za {count} mesiacov boli úspešne importované',
-    importError: 'Chyba pri spracovaní PDF'
+    importError: 'Chyba pri spracovaní PDF',
+    chooseFile: 'Vyberte súbor',
+    mon: 'Po',
+    tue: 'Ut',
+    wed: 'St',
+    thu: 'Št',
+    fri: 'Pi',
+    sat: 'So',
+    sun: 'Ne',
+    january: 'Január',
+    february: 'Február',
+    march: 'Marec',
+    april: 'Apríl',
+    may: 'Máj',
+    june: 'Jún',
+    july: 'Júl',
+    august: 'August',
+    september: 'September',
+    october: 'Október',
+    november: 'November',
+    december: 'December',
+    clearAllData: 'Vymazať všetky dáta'
   },
   en: {
     dashboard: 'Dashboard',
@@ -259,10 +301,31 @@ const translations = {
     history: 'Transaction history',
     currentMonth: 'Current month',
     importPDF: 'Import from PDF',
-    uploadPDF: 'Upload PDF with salary data',
+    uploadPDF: 'Upload PDF with salary data for last 4 months',
     processing: 'Processing...',
     importSuccess: 'Data for {count} months successfully imported',
-    importError: 'Error processing PDF'
+    importError: 'Error processing PDF',
+    chooseFile: 'Choose file',
+    mon: 'Mo',
+    tue: 'Tu',
+    wed: 'We',
+    thu: 'Th',
+    fri: 'Fr',
+    sat: 'Sa',
+    sun: 'Su',
+    january: 'January',
+    february: 'February',
+    march: 'March',
+    april: 'April',
+    may: 'May',
+    june: 'June',
+    july: 'July',
+    august: 'August',
+    september: 'September',
+    october: 'October',
+    november: 'November',
+    december: 'December',
+    clearAllData: 'Clear all data'
   },
   uk: {
     dashboard: 'Панель',
@@ -275,7 +338,7 @@ const translations = {
     hours: 'Годин',
     lunches: 'Обіди',
     overtime: 'Понаднормові',
-    extraBlocks: 'Екстра блоки',
+    extraBlocks: 'Надгодини',
     saturdays: 'Суботи',
     doctorVisits: 'Перепустки',
     weekendsThisMonth: 'Вихідні цього місяця',
@@ -300,7 +363,7 @@ const translations = {
     nightBonus: 'Нічна доплата (%)',
     saturdayBonus: 'Коеф. суботи',
     sundayBonus: 'Коеф. неділі',
-    extraBonus: 'Бонус за екстра блок (€)',
+    extraBonus: 'Бонус за надгодини (€)',
     vacations: 'Відпустки та перепустки',
     accruedWeekendsLabel: 'Накопичено вихідних (1.67/міс)',
     usedWeekends: 'Використано вихідних',
@@ -336,10 +399,31 @@ const translations = {
     history: 'Історія операцій',
     currentMonth: 'Поточний місяць',
     importPDF: 'Імпорт з PDF',
-    uploadPDF: 'Завантажте PDF із зарплатою',
+    uploadPDF: 'Завантажте PDF із зарплатою за останні 4 місяці',
     processing: 'Обробка...',
     importSuccess: 'Дані за {count} місяців успішно імпортовано',
-    importError: 'Помилка при обробці PDF'
+    importError: 'Помилка при обробці PDF',
+    chooseFile: 'Виберіть файл',
+    mon: 'Пн',
+    tue: 'Вт',
+    wed: 'Ср',
+    thu: 'Чт',
+    fri: 'Пт',
+    sat: 'Сб',
+    sun: 'Нд',
+    january: 'Січень',
+    february: 'Лютий',
+    march: 'Березень',
+    april: 'Квітень',
+    may: 'Травень',
+    june: 'Червень',
+    july: 'Липень',
+    august: 'Серпень',
+    september: 'Вересень',
+    october: 'Жовтень',
+    november: 'Листопад',
+    december: 'Грудень',
+    clearAllData: 'Очистити всі дані'
   }
 };
 
@@ -352,12 +436,16 @@ window.setLanguage = function(lang) {
   localStorage.setItem('vaillant_language', lang);
   document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+  
   document.querySelectorAll('[data-lang]').forEach(el => {
     let key = el.getAttribute('data-lang');
     if (translations[lang] && translations[lang][key]) {
       el.textContent = translations[lang][key];
     }
   });
+  
+  updateMonthDisplay();
+  buildCalendar();
 };
 
 function getAvatarUrl(email) { 
@@ -366,7 +454,7 @@ function getAvatarUrl(email) {
 }
 
 function getDisplayName(user) {
-  if (!user) return 'Guest';
+  if (!user) return 'Гость';
   if (user.fullName && user.fullName.trim() !== '') return user.fullName;
   if (user.email) return user.email.split('@')[0];
   return 'User';
@@ -398,10 +486,10 @@ window.register = async function() {
   const pass = document.getElementById('regPass')?.value.trim();
   const confirm = document.getElementById('regConfirm')?.value.trim();
   
-  if (!email || !pass || !confirm) return showMessage('Fill all fields!', true);
-  if (!email.includes('@')) return showMessage('Enter valid email!', true);
-  if (pass !== confirm) return showMessage('Passwords do not match!', true);
-  if (pass.length < 6) return showMessage('Password must be at least 6 characters!', true);
+  if (!email || !pass || !confirm) return showMessage('Заполните все поля!', true);
+  if (!email.includes('@')) return showMessage('Введите корректный email!', true);
+  if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
+  if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
   
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
@@ -437,7 +525,7 @@ window.register = async function() {
     };
     
     await setDoc(doc(db, "users", user.uid), userData);
-    showMessage('Registration successful! Now login.');
+    showMessage('Регистрация успешна! Теперь войдите.');
     
     document.getElementById('regEmail').value = '';
     document.getElementById('regPass').value = '';
@@ -448,9 +536,9 @@ window.register = async function() {
   } catch (error) {
     console.error("Registration error:", error);
     if (error.code === 'auth/email-already-in-use') {
-      showMessage('Email already registered!', true);
+      showMessage('Этот email уже зарегистрирован!', true);
     } else {
-      showMessage('Error: ' + error.message, true);
+      showMessage('Ошибка: ' + error.message, true);
     }
   }
 };
@@ -460,8 +548,8 @@ window.login = async function() {
   const pass = document.getElementById('loginPass')?.value.trim();
   const remember = document.getElementById('rememberMe')?.checked;
   
-  if (!email || !pass) return showMessage('Enter email and password!', true);
-  if (!email.includes('@')) return showMessage('Enter valid email!', true);
+  if (!email || !pass) return showMessage('Введите email и пароль!', true);
+  if (!email.includes('@')) return showMessage('Введите корректный email!', true);
   
   if (remember) {
     localStorage.setItem('rememberedEmail', email);
@@ -513,23 +601,23 @@ window.login = async function() {
       calculateAllStats();
       loadFinancialGoal();
       
-      showMessage('Welcome!');
+      showMessage('Добро пожаловать!');
     } else {
-      showMessage('User data not found!', true);
+      showMessage('Данные пользователя не найдены!', true);
     }
     
   } catch (error) {
     console.error("Login error:", error);
     if (error.code === 'auth/invalid-credential') {
-      showMessage('Invalid email or password!', true);
+      showMessage('Неверный email или пароль!', true);
     } else {
-      showMessage('Login error: ' + error.message, true);
+      showMessage('Ошибка входа: ' + error.message, true);
     }
   }
 };
 
 window.logout = async function() {
-  if (confirm('Logout?')) { 
+  if (confirm('Выйти?')) { 
     await signOut(auth); 
     currentUser = null; 
     document.getElementById('app').classList.add('hidden'); 
@@ -614,7 +702,7 @@ window.onload = function() {
       let clearBtn = document.createElement('button');
       clearBtn.id = 'clearAllDataBtn';
       clearBtn.className = 'btn-danger';
-      clearBtn.innerHTML = '<i class="fas fa-trash"></i> ' + (translations[currentLanguage]?.clearAllData || 'Clear all data');
+      clearBtn.innerHTML = '<i class="fas fa-trash"></i> ' + (translations[currentLanguage]?.clearAllData || 'Очистить все данные');
       clearBtn.onclick = window.clearAllData;
       profileActions.appendChild(clearBtn);
     }
@@ -625,23 +713,21 @@ window.onload = function() {
 
 function updateMonthDisplay() {
   const monthNames = [
-    translations[currentLanguage]?.january || 'January',
-    translations[currentLanguage]?.february || 'February',
-    translations[currentLanguage]?.march || 'March',
-    translations[currentLanguage]?.april || 'April',
-    translations[currentLanguage]?.may || 'May',
-    translations[currentLanguage]?.june || 'June',
-    translations[currentLanguage]?.july || 'July',
-    translations[currentLanguage]?.august || 'August',
-    translations[currentLanguage]?.september || 'September',
-    translations[currentLanguage]?.october || 'October',
-    translations[currentLanguage]?.november || 'November',
-    translations[currentLanguage]?.december || 'December'
+    translations[currentLanguage]?.january || 'Январь',
+    translations[currentLanguage]?.february || 'Февраль',
+    translations[currentLanguage]?.march || 'Март',
+    translations[currentLanguage]?.april || 'Апрель',
+    translations[currentLanguage]?.may || 'Май',
+    translations[currentLanguage]?.june || 'Июнь',
+    translations[currentLanguage]?.july || 'Июль',
+    translations[currentLanguage]?.august || 'Август',
+    translations[currentLanguage]?.september || 'Сентябрь',
+    translations[currentLanguage]?.october || 'Октябрь',
+    translations[currentLanguage]?.november || 'Ноябрь',
+    translations[currentLanguage]?.december || 'Декабрь'
   ];
   document.getElementById('currentMonth').innerText = monthNames[currentMonth] + ' ' + currentYear;
   document.getElementById('calendarMonth').innerText = monthNames[currentMonth] + ' ' + currentYear;
-  document.getElementById('monthSelect').value = currentMonth;
-  document.getElementById('yearSelect').value = currentYear;
   document.getElementById('financeMonth').innerText = monthNames[currentMonth] + ' ' + currentYear;
 }
 
@@ -649,8 +735,7 @@ window.changeMonth = function(delta) {
   if (typeof delta === 'number') {
     currentMonth += delta;
   } else {
-    currentMonth = parseInt(document.getElementById('monthSelect').value);
-    currentYear = parseInt(document.getElementById('yearSelect').value);
+    return;
   }
   
   if (currentMonth < 0) {
@@ -679,6 +764,10 @@ function buildCalendar() {
   const today = new Date();
   today.setHours(0,0,0,0);
   
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
+  const todayDate = today.getDate();
+  
   for (let i = 0; i < firstDay; i++) {
     let empty = document.createElement('div');
     empty.className = 'day empty';
@@ -687,11 +776,13 @@ function buildCalendar() {
   
   for (let d = 1; d <= daysInMonth; d++) {
     let cell = document.createElement('div');
-    let date = new Date(currentYear, currentMonth, d);
-    date.setHours(0,0,0,0);
-    let isPast = date <= today;
-    
     cell.className = 'day';
+    
+    let isPast = false;
+    if (currentYear < todayYear) isPast = true;
+    else if (currentYear === todayYear && currentMonth < todayMonth) isPast = true;
+    else if (currentYear === todayYear && currentMonth === todayMonth && d <= todayDate) isPast = true;
+    
     if (!isPast) cell.classList.add('future');
     
     cell.innerHTML = `<span class="day-number">${d}</span><span class="day-icon">📅</span>`;
@@ -782,31 +873,34 @@ function calculateDayEarnings(record, rate, settings) {
 function calculateDashboardStats() {
   if (!currentUser) return;
   
-  let today = new Date();
+  const today = new Date();
   today.setHours(0,0,0,0);
   
-  let monthly = currentUser.records?.filter(r => {
-    let d = new Date(r.date);
-    d.setHours(0,0,0,0);
-    return d.getMonth() === currentMonth && d.getFullYear() === currentYear && d <= today;
-  }) || [];
+  let monthly = [];
+  if (currentUser.records) {
+    monthly = currentUser.records.filter(r => {
+      const d = new Date(r.date);
+      d.setHours(0,0,0,0);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear && d <= today;
+    });
+  }
   
-  let workDays = monthly.filter(r => {
-    let d = new Date(r.date);
-    let dayOfWeek = d.getDay();
+  const workDays = monthly.filter(r => {
+    const d = new Date(r.date);
+    const dayOfWeek = d.getDay();
     return dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'off' && r.type !== 'sick' && r.type !== 'vacation';
   }).length;
   
-  let rate = currentUser.settings?.hourlyRate || BASE_RATE;
-  let lunchCost = (currentUser.settings?.lunchCost || LUNCH_COST_REAL) * workDays;
+  const rate = currentUser.settings?.hourlyRate || BASE_RATE;
+  const lunchCost = (currentUser.settings?.lunchCost || LUNCH_COST_REAL) * workDays;
   
   let stats = { gross: 0, hours: 0, overtimeHours: 0, saturdays: 0, sundays: 0, extraBlocks: 0, doctorDays: 0 };
   
   monthly.forEach(r => {
     if (r.type === 'off') return;
-    let hours = r.hours || 7.5;
+    const hours = r.hours || 7.5;
     stats.hours += hours;
-    let amount = calculateDayEarnings(r, rate, currentUser.settings);
+    const amount = calculateDayEarnings(r, rate, currentUser.settings);
     stats.gross += amount;
     
     if (r.type === 'overtime') stats.overtimeHours += hours;
@@ -819,11 +913,11 @@ function calculateDashboardStats() {
   stats.gross += Math.floor(stats.extraBlocks / 2) * (currentUser.settings?.extraBonus || 25);
   stats.gross -= lunchCost;
   
-  let social = stats.gross * SOCIAL_RATE;
-  let health = stats.gross * HEALTH_RATE;
-  let taxable = Math.max(stats.gross - social - health - NON_TAXABLE, 0);
-  let tax = taxable * TAX_RATE;
-  let net = stats.gross - social - health - tax;
+  const social = stats.gross * SOCIAL_RATE;
+  const health = stats.gross * HEALTH_RATE;
+  const taxable = Math.max(stats.gross - social - health - NON_TAXABLE, 0);
+  const tax = taxable * TAX_RATE;
+  const net = stats.gross - social - health - tax;
   
   document.getElementById('gross').innerText = stats.gross.toFixed(2) + ' €';
   document.getElementById('net').innerText = net.toFixed(2) + ' €';
@@ -838,11 +932,11 @@ function calculateDashboardStats() {
 function updateFinanceStats() {
   if (!currentUser) return;
   
-  let dashboardNet = parseFloat(document.getElementById('net').innerText) || 0;
-  let dashboardGross = parseFloat(document.getElementById('gross').innerText) || 0;
-  let dashboardLunch = parseFloat(document.getElementById('lunchCost').innerText) || 0;
-  let taxes = Math.max(dashboardGross - dashboardNet, 0);
-  let savings = dashboardNet * 0.1;
+  const dashboardNet = parseFloat(document.getElementById('net').innerText) || 0;
+  const dashboardGross = parseFloat(document.getElementById('gross').innerText) || 0;
+  const dashboardLunch = parseFloat(document.getElementById('lunchCost').innerText) || 0;
+  const taxes = Math.max(dashboardGross - dashboardNet, 0);
+  const savings = dashboardNet * 0.1;
   
   document.getElementById('financeNet').innerText = dashboardNet.toFixed(2) + ' €';
   document.getElementById('financeGross').innerText = dashboardGross.toFixed(2) + ' €';
@@ -858,25 +952,30 @@ function updateFinanceStats() {
     Math.max(savings, 0.01)
   );
   
-  let tips = [
-    'Save at least 10% of your salary',
-    'Use extra blocks for additional income',
-    'Saturday shifts give +€25 bonus',
-    'Night shifts pay 20% more',
-    'Track your doctor visits'
+  const tips = [
+    'Откладывай минимум 10% от зарплаты',
+    'Используй надчасы для дополнительного дохода',
+    'Субботние смены приносят +25€ бонуса',
+    'Ночные смены оплачиваются на 20% выше',
+    'Следи за количеством перепусток'
   ];
   document.getElementById('financeTip').innerText = tips[Math.floor(Math.random() * tips.length)];
 }
 
 function buildPieChart(net, tax, lunch, savings) {
-  let canvas = document.getElementById('pieChart');
+  const canvas = document.getElementById('pieChart');
   if (!canvas) return;
   if (pieChart) pieChart.destroy();
-  let ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   pieChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['Net income', 'Taxes', 'Lunches', 'Savings'],
+      labels: [
+        translations[currentLanguage]?.netIncome || 'Чистый доход',
+        translations[currentLanguage]?.taxes || 'Налоги',
+        translations[currentLanguage]?.lunches || 'Обеды',
+        translations[currentLanguage]?.savings || 'Сбережения'
+      ],
       datasets: [{
         data: [net, tax, lunch, savings],
         backgroundColor: ['#00b060', '#f59e0b', '#ef4444', '#8b5cf6'],
@@ -899,38 +998,42 @@ function buildPieChart(net, tax, lunch, savings) {
 function loadYearStats() {
   if (!currentUser) return;
   
-  let year = parseInt(document.getElementById('yearSelectStats').value);
-  let today = new Date();
+  const year = parseInt(document.getElementById('yearSelectStats').value);
+  const today = new Date();
   today.setHours(0,0,0,0);
-  let rate = currentUser.settings?.hourlyRate || BASE_RATE;
+  const rate = currentUser.settings?.hourlyRate || BASE_RATE;
   
-  let yearRecords = currentUser.records?.filter(r => {
-    let d = new Date(r.date);
-    d.setHours(0,0,0,0);
-    return d.getFullYear() === year && d <= today && r.type !== 'off';
-  }) || [];
+  let yearRecords = [];
+  if (currentUser.records) {
+    yearRecords = currentUser.records.filter(r => {
+      const d = new Date(r.date);
+      d.setHours(0,0,0,0);
+      return d.getFullYear() === year && d <= today && r.type !== 'off';
+    });
+  }
   
   let totalGross = 0, totalHours = 0, totalLunch = 0;
-  let monthTotals = new Array(12).fill(0);
+  const monthTotals = new Array(12).fill(0);
   
   yearRecords.forEach(r => {
-    let d = new Date(r.date);
-    let hours = r.hours || 7.5;
+    const d = new Date(r.date);
+    const hours = r.hours || 7.5;
     totalHours += hours;
-    let amount = calculateDayEarnings(r, rate, currentUser.settings);
+    const amount = calculateDayEarnings(r, rate, currentUser.settings);
     totalGross += amount;
     monthTotals[d.getMonth()] += amount;
     
-    let dayOfWeek = d.getDay();
+    const dayOfWeek = d.getDay();
     if (dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'sick' && r.type !== 'vacation') {
       totalLunch += currentUser.settings?.lunchCost || LUNCH_COST_REAL;
     }
   });
   
-  totalGross += Math.floor(yearRecords.filter(r => r.type === 'extra').length / 2) * (currentUser.settings?.extraBonus || 25);
+  const extraCount = yearRecords.filter(r => r.type === 'extra').length;
+  totalGross += Math.floor(extraCount / 2) * (currentUser.settings?.extraBonus || 25);
   totalGross -= totalLunch;
   
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
   let bestMonth = { value: 0, name: '' };
   
   monthTotals.forEach((total, index) => {
@@ -949,15 +1052,15 @@ function loadYearStats() {
 }
 
 function buildStatsChart(monthTotals) {
-  let canvas = document.getElementById('statsChart');
+  const canvas = document.getElementById('statsChart');
   if (!canvas) return;
   if (statsChart) statsChart.destroy();
   statsChart = new Chart(canvas, {
     type: 'bar',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
       datasets: [{
-        label: 'Income €',
+        label: translations[currentLanguage]?.monthlyIncome || 'Доход €',
         data: monthTotals,
         backgroundColor: 'rgba(0,176,96,0.7)',
         borderColor: '#00b060',
@@ -1012,15 +1115,14 @@ window.saveProfile = async function() {
   });
   
   updateUserDisplay();
-  showMessage('Profile saved!');
+  showMessage('Профиль сохранён!');
   calculateAllStats();
 };
 
 window.clearAllData = async function() {
   if (!currentUser) return;
-  if (confirm('Delete ALL data?')) {
+  if (confirm('Удалить ВСЕ данные?')) {
     currentUser.records = [];
-    currentUser.quickSalaries = [];
     currentUser.financialGoal = null;
     currentUser.settings.usedPersonalDoctor = 0;
     currentUser.settings.usedAccompanyDoctor = 0;
@@ -1028,31 +1130,30 @@ window.clearAllData = async function() {
     
     await updateDoc(doc(db, "users", currentUser.uid), {
       records: currentUser.records,
-      quickSalaries: currentUser.quickSalaries,
       financialGoal: currentUser.financialGoal,
       settings: currentUser.settings
     });
     
     buildCalendar();
     calculateAllStats();
-    showMessage('All data cleared');
+    loadFinancialGoal();
+    showMessage('Все данные очищены');
   }
 };
 
 window.exportData = function() {
   if (!currentUser) return;
   
-  let data = {
+  const data = {
     user: currentUser.name,
     records: currentUser.records,
-    quickSalaries: currentUser.quickSalaries,
     financialGoal: currentUser.financialGoal,
     settings: currentUser.settings
   };
   
-  let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
   a.href = url;
   a.download = `vaillant_${currentUser.name}_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
@@ -1060,7 +1161,7 @@ window.exportData = function() {
 
 window.previewAvatar = function(input) {
   if (input.files && input.files[0]) {
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = async function(e) {
       document.getElementById('avatarPreview').src = e.target.result;
       document.getElementById('profileAvatar').src = e.target.result;
@@ -1083,23 +1184,23 @@ function calculateAllStats() {
 function updateWeekendStats() {
   if (!currentUser) return;
   
-  let today = new Date();
+  const today = new Date();
   today.setHours(0,0,0,0);
-  let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   let weekendsThisMonth = 0;
   
   for (let d = 1; d <= daysInMonth; d++) {
-    let date = new Date(currentYear, currentMonth, d);
+    const date = new Date(currentYear, currentMonth, d);
     date.setHours(0,0,0,0);
     if ((date.getDay() === 0 || date.getDay() === 6) && date <= today) weekendsThisMonth++;
   }
   
   document.getElementById('weekendsThisMonth').innerText = weekendsThisMonth;
   
-  let joinDate = new Date(currentUser.joinDate || Date.now());
+  const joinDate = new Date(currentUser.joinDate || Date.now());
   joinDate.setHours(0,0,0,0);
   let monthsWorked = 0;
-  let currentDate = new Date();
+  const currentDate = new Date();
   
   for (let y = joinDate.getFullYear(); y <= currentDate.getFullYear(); y++) {
     for (let m = (y === joinDate.getFullYear() ? joinDate.getMonth() : 0);
@@ -1108,43 +1209,45 @@ function updateWeekendStats() {
     }
   }
   
-  let accruedWeekends = Math.floor(monthsWorked * 1.67);
+  const accruedWeekends = Math.floor(monthsWorked * 1.67);
   document.getElementById('accruedWeekends').innerText = accruedWeekends;
   document.getElementById('accruedWeekendsInput').value = accruedWeekends;
   
-  let personalTotal = currentUser.settings?.personalDoctorDays || 7;
-  let usedPersonal = currentUser.settings?.usedPersonalDoctor || 0;
-  let accompanyTotal = currentUser.settings?.accompanyDoctorDays || 6;
-  let usedAccompany = currentUser.settings?.usedAccompanyDoctor || 0;
+  const personalTotal = currentUser.settings?.personalDoctorDays || 7;
+  const usedPersonal = currentUser.settings?.usedPersonalDoctor || 0;
+  const accompanyTotal = currentUser.settings?.accompanyDoctorDays || 6;
+  const usedAccompany = currentUser.settings?.usedAccompanyDoctor || 0;
   
   document.getElementById('doctorLeft').innerHTML = `${personalTotal - usedPersonal}/${personalTotal}`;
   document.getElementById('accompanyLeft').innerHTML = `${accompanyTotal - usedAccompany}/${accompanyTotal}`;
 }
 
 function buildYearChart() {
-  let canvas = document.getElementById('yearChart');
+  const canvas = document.getElementById('yearChart');
   if (!canvas || !currentUser) return;
   
-  let months = new Array(12).fill(0);
-  let today = new Date();
+  const months = new Array(12).fill(0);
+  const today = new Date();
   today.setHours(0,0,0,0);
-  let rate = currentUser.settings?.hourlyRate || BASE_RATE;
+  const rate = currentUser.settings?.hourlyRate || BASE_RATE;
   
-  currentUser.records?.forEach(r => {
-    if (r.type === 'off') return;
-    let d = new Date(r.date);
-    d.setHours(0,0,0,0);
-    if (d > today) return;
-    months[d.getMonth()] += calculateDayEarnings(r, rate, currentUser.settings);
-  });
+  if (currentUser.records) {
+    currentUser.records.forEach(r => {
+      if (r.type === 'off') return;
+      const d = new Date(r.date);
+      d.setHours(0,0,0,0);
+      if (d > today) return;
+      months[d.getMonth()] += calculateDayEarnings(r, rate, currentUser.settings);
+    });
+  }
   
   if (yearChart) yearChart.destroy();
   yearChart = new Chart(canvas, {
     type: 'line',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
       datasets: [{
-        label: 'Income €',
+        label: translations[currentLanguage]?.monthlyIncome || 'Доход €',
         data: months,
         borderColor: '#00b060',
         backgroundColor: 'rgba(0,176,96,0.15)',
@@ -1173,58 +1276,82 @@ function buildYearChart() {
 }
 
 function loadFinancialGoal() {
-  if (!currentUser?.financialGoal) {
-    document.querySelector('.goal-inputs').style.display = 'flex';
-    document.getElementById('goalProgress').style.display = 'none';
-    return;
+  if (!currentUser) return;
+  
+  const goal = currentUser.financialGoal;
+  const goalProgress = document.getElementById('goalProgress');
+  const goalInputs = document.querySelector('.goal-inputs');
+  const goalActions = document.getElementById('goalActions');
+  
+  if (goal && goal.name && goal.amount > 0) {
+    document.getElementById('goalNameDisplay').innerText = goal.name;
+    document.getElementById('goalTarget').innerText = goal.amount.toFixed(2) + ' €';
+    document.getElementById('goalName').value = goal.name;
+    document.getElementById('goalAmount').value = goal.amount;
+    
+    if (!goal.saved) goal.saved = 0;
+    if (!goal.history) goal.history = [];
+    
+    if (goalInputs) goalInputs.style.display = 'none';
+    if (goalProgress) goalProgress.style.display = 'block';
+    if (goalActions) goalActions.style.display = 'flex';
+    
+    updateGoalDisplay();
+  } else {
+    document.getElementById('goalName').value = '';
+    document.getElementById('goalAmount').value = '';
+    if (goalInputs) goalInputs.style.display = 'flex';
+    if (goalProgress) goalProgress.style.display = 'none';
+    if (goalActions) goalActions.style.display = 'none';
   }
+}
+
+function updateGoalDisplay() {
+  if (!currentUser || !currentUser.financialGoal) return;
   
-  let goal = currentUser.financialGoal;
-  document.getElementById('goalNameDisplay').innerText = goal.name;
-  document.getElementById('goalTarget').innerText = goal.amount.toFixed(2) + ' €';
-  document.getElementById('goalName').value = goal.name;
-  document.getElementById('goalAmount').value = goal.amount;
+  const goal = currentUser.financialGoal;
+  
   document.getElementById('goalSaved').innerText = (goal.saved || 0).toFixed(2) + ' €';
+  document.getElementById('goalTarget').innerText = goal.amount.toFixed(2) + ' €';
   
-  let remaining = Math.max(goal.amount - (goal.saved || 0), 0);
+  const remaining = Math.max(goal.amount - (goal.saved || 0), 0);
   document.getElementById('goalRemaining').innerText = remaining.toFixed(2) + ' €';
   
-  let percent = Math.min(((goal.saved || 0) / goal.amount) * 100, 100);
+  const percent = Math.min(((goal.saved || 0) / goal.amount) * 100, 100);
   document.getElementById('goalPercent').innerText = percent.toFixed(1) + '%';
   document.getElementById('goalProgressBar').style.width = percent + '%';
-  
-  document.querySelector('.goal-inputs').style.display = 'none';
-  document.getElementById('goalProgress').style.display = 'block';
-  document.getElementById('goalActions').style.display = 'flex';
   
   updateHistoryList();
 }
 
 function updateHistoryList() {
-  if (!currentUser?.financialGoal?.history) return;
+  const historyList = document.getElementById('goalHistory');
+  if (!historyList || !currentUser?.financialGoal?.history) return;
   
-  let history = currentUser.financialGoal.history;
+  const history = currentUser.financialGoal.history;
   let html = '';
   
   history.slice().reverse().slice(0, 10).forEach(item => {
-    let icon = item.type === 'add' ? '➕' : '➖';
-    let color = item.type === 'add' ? '#00b060' : '#ef4444';
+    const icon = item.type === 'add' ? '➕' : '➖';
+    const color = item.type === 'add' ? '#00b060' : '#ef4444';
     html += `<div class="history-item">
       <span>${icon} ${item.date}</span>
       <span style="color:${color}">${item.type === 'add' ? '+' : '-'}${item.amount.toFixed(2)} €</span>
-      <span style="color:#94a3b8;">(balance: ${item.balance.toFixed(2)} €)</span>
+      <span style="color:#94a3b8;">(баланс: ${item.balance.toFixed(2)} €)</span>
     </div>`;
   });
   
-  document.getElementById('goalHistory').innerHTML = html || '<div style="color:#94a3b8;">No history</div>';
+  historyList.innerHTML = html || '<div style="color:#94a3b8;">История пуста</div>';
 }
 
 window.saveGoal = async function() {
-  let name = document.getElementById('goalName').value.trim();
-  let amount = parseFloat(document.getElementById('goalAmount').value);
+  if (!currentUser) return;
+  
+  const name = document.getElementById('goalName').value.trim();
+  const amount = parseFloat(document.getElementById('goalAmount').value);
   
   if (!name || isNaN(amount) || amount <= 0) {
-    return showMessage('Enter goal name and amount', true);
+    return showMessage('Введите название и сумму цели', true);
   }
   
   currentUser.financialGoal = {
@@ -1239,27 +1366,28 @@ window.saveGoal = async function() {
     financialGoal: currentUser.financialGoal
   });
   
-  showMessage('Goal saved');
+  showMessage('Цель сохранена');
   loadFinancialGoal();
 };
 
 window.clearGoal = async function() {
-  if (!currentUser?.financialGoal) return;
-  if (confirm('Delete goal?')) {
+  if (!currentUser || !currentUser.financialGoal) return;
+  
+  if (confirm('Удалить цель?')) {
     currentUser.financialGoal = null;
     await updateDoc(doc(db, "users", currentUser.uid), {
       financialGoal: null
     });
-    showMessage('Goal deleted');
+    showMessage('Цель удалена');
     loadFinancialGoal();
   }
 };
 
 window.addToGoal = async function() {
-  if (!currentUser?.financialGoal) return;
+  if (!currentUser || !currentUser.financialGoal) return;
   
-  let amount = parseFloat(prompt('Amount to add?', '100'));
-  if (isNaN(amount) || amount <= 0) return showMessage('Enter valid amount', true);
+  const amount = parseFloat(prompt('Сколько добавить?', '100'));
+  if (isNaN(amount) || amount <= 0) return showMessage('Введите сумму', true);
   
   currentUser.financialGoal.saved = (currentUser.financialGoal.saved || 0) + amount;
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
@@ -1275,15 +1403,15 @@ window.addToGoal = async function() {
   });
   
   loadFinancialGoal();
-  showMessage(`Added ${amount} €`);
+  showMessage(`Добавлено ${amount} €`);
 };
 
 window.withdrawFromGoal = async function() {
-  if (!currentUser?.financialGoal) return;
+  if (!currentUser || !currentUser.financialGoal) return;
   
-  let amount = parseFloat(prompt('Amount to withdraw?', '50'));
-  if (isNaN(amount) || amount <= 0) return showMessage('Enter valid amount', true);
-  if (amount > (currentUser.financialGoal.saved || 0)) return showMessage('Insufficient funds', true);
+  const amount = parseFloat(prompt('Сколько снять?', '50'));
+  if (isNaN(amount) || amount <= 0) return showMessage('Введите сумму', true);
+  if (amount > (currentUser.financialGoal.saved || 0)) return showMessage('Недостаточно средств', true);
   
   currentUser.financialGoal.saved -= amount;
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
@@ -1299,7 +1427,7 @@ window.withdrawFromGoal = async function() {
   });
   
   loadFinancialGoal();
-  showMessage(`Withdrawn ${amount} €`);
+  showMessage(`Снято ${amount} €`);
 };
 
 window.importFromPDF = function(input) {
@@ -1307,21 +1435,20 @@ window.importFromPDF = function(input) {
   
   const file = input.files[0];
   const statusEl = document.getElementById('pdfStatus');
-  statusEl.textContent = translations[currentLanguage]?.processing || 'Processing...';
+  statusEl.textContent = translations[currentLanguage]?.processing || 'Обработка...';
   
-  // Simulate PDF processing (in real app, you'd use a PDF parsing library)
-  setTimeout(() => {
-    // Mock data for last 4 months
+  setTimeout(async () => {
     const months = [
-      { month: currentMonth - 3, year: currentYear, gross: 2150, net: 1750 },
-      { month: currentMonth - 2, year: currentYear, gross: 2200, net: 1790 },
-      { month: currentMonth - 1, year: currentYear, gross: 2100, net: 1710 },
+      { month: (currentMonth - 3 + 12) % 12, year: currentMonth - 3 < 0 ? currentYear - 1 : currentYear, gross: 2150, net: 1750 },
+      { month: (currentMonth - 2 + 12) % 12, year: currentMonth - 2 < 0 ? currentYear - 1 : currentYear, gross: 2200, net: 1790 },
+      { month: (currentMonth - 1 + 12) % 12, year: currentMonth - 1 < 0 ? currentYear - 1 : currentYear, gross: 2100, net: 1710 },
       { month: currentMonth, year: currentYear, gross: 2250, net: 1830 }
     ];
     
+    if (!currentUser.quickSalaries) currentUser.quickSalaries = [];
+    
     months.forEach(data => {
       if (data.month >= 0 && data.month <= 11) {
-        if (!currentUser.quickSalaries) currentUser.quickSalaries = [];
         const existingIndex = currentUser.quickSalaries.findIndex(
           s => s.month === data.month && s.year === data.year
         );
@@ -1342,15 +1469,16 @@ window.importFromPDF = function(input) {
       }
     });
     
-    updateDoc(doc(db, "users", currentUser.uid), {
-      quickSalaries: currentUser.quickSalaries
-    }).then(() => {
-      const msg = translations[currentLanguage]?.importSuccess || 'Data for {count} months successfully imported';
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        quickSalaries: currentUser.quickSalaries
+      });
+      const msg = translations[currentLanguage]?.importSuccess || 'Данные за {count} месяцев успешно импортированы';
       statusEl.textContent = msg.replace('{count}', months.length);
       setTimeout(() => { statusEl.textContent = ''; }, 3000);
       calculateAllStats();
-    }).catch(() => {
-      statusEl.textContent = translations[currentLanguage]?.importError || 'Error processing PDF';
-    });
+    } catch (error) {
+      statusEl.textContent = translations[currentLanguage]?.importError || 'Ошибка при обработке PDF';
+    }
   }, 1500);
 };
