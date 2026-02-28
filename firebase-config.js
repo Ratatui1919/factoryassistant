@@ -22,7 +22,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBn6fbSjjLTt8dm41ov_uHEYPIDUfFgiio",
   authDomain: "vaillant-assistant.firebaseapp.com",
   projectId: "vaillant-assistant",
-  storageBucket: "vaillant-assistant.appspot.com",  // Исправлено!
+  storageBucket: "vaillant-assistant.appspot.com",
   messagingSenderId: "94125964883",
   appId: "1:94125964883:web:3d363c1ef033431a6e10a6"
 };
