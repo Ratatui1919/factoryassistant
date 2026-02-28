@@ -61,8 +61,8 @@
         <header>
             <div class="header-left">
                 <div class="logo">
-                    <i class="fas fa-industry"></i>
-                    <h1>Vaillant<span>Assistant</span></h1>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Vaillant_Logo_2017.svg/2560px-Vaillant_Logo_2017.svg.png" alt="Vaillant" style="height: 30px;">
+                    <h1>Assistant</h1>
                 </div>
                 <div class="header-badge">FACTORY PRO</div>
                 <div class="language-selector">
@@ -82,11 +82,11 @@
         </header>
 
         <nav>
-            <button class="nav-btn" data-view="dashboard" onclick="window.setView('dashboard')"><i class="fas fa-chart-pie"></i><span data-lang="dashboard">Dashboard</span></button>
-            <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')"><i class="fas fa-calendar-alt"></i><span data-lang="calendar">Calendar</span></button>
-            <button class="nav-btn" data-view="stats" onclick="window.setView('stats')"><i class="fas fa-chart-line"></i><span data-lang="stats">Statistics</span></button>
-            <button class="nav-btn" data-view="profile" onclick="window.setView('profile')"><i class="fas fa-user-cog"></i><span data-lang="profile">Profile</span></button>
-            <button class="nav-btn" data-view="finance" onclick="window.setView('finance')"><i class="fas fa-coins"></i><span data-lang="finance">Finance</span></button>
+            <button class="nav-btn" data-view="dashboard" onclick="window.setView('dashboard')"><i class="fas fa-chart-pie"></i><span data-lang="dashboard">Дашборд</span></button>
+            <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')"><i class="fas fa-calendar-alt"></i><span data-lang="calendar">Календарь</span></button>
+            <button class="nav-btn" data-view="stats" onclick="window.setView('stats')"><i class="fas fa-chart-line"></i><span data-lang="stats">Статистика</span></button>
+            <button class="nav-btn" data-view="profile" onclick="window.setView('profile')"><i class="fas fa-user-cog"></i><span data-lang="profile">Профиль</span></button>
+            <button class="nav-btn" data-view="finance" onclick="window.setView('finance')"><i class="fas fa-coins"></i><span data-lang="finance">Финансы</span></button>
         </nav>
 
         <main>
@@ -102,7 +102,7 @@
                     <div class="kpi-card primary">
                         <div class="kpi-icon"><i class="fas fa-euro-sign"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="netSalary">Net Salary</span>
+                            <span class="kpi-label" data-lang="netSalary">Чистая зарплата</span>
                             <span class="kpi-value" id="net">0 €</span>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                     <div class="kpi-card">
                         <div class="kpi-icon"><i class="fas fa-coins"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="grossSalary">Gross</span>
+                            <span class="kpi-label" data-lang="grossSalary">Грязная</span>
                             <span class="kpi-value" id="gross">0 €</span>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                     <div class="kpi-card">
                         <div class="kpi-icon"><i class="fas fa-clock"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="hours">Hours</span>
+                            <span class="kpi-label" data-lang="hours">Часов</span>
                             <span class="kpi-value" id="hoursWorked">0</span>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                     <div class="kpi-card">
                         <div class="kpi-icon"><i class="fas fa-utensils"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="lunches">Lunches</span>
+                            <span class="kpi-label" data-lang="lunches">Обеды</span>
                             <span class="kpi-value" id="lunchCost">0 €</span>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                     <div class="kpi-card warning">
                         <div class="kpi-icon"><i class="fas fa-clock"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="overtime">Overtime</span>
+                            <span class="kpi-label" data-lang="overtime">Переработки</span>
                             <span class="kpi-value" id="overtimeHours">0</span>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                     <div class="kpi-card success">
                         <div class="kpi-icon"><i class="fas fa-plus-circle"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="extraBlocks">Extra blocks</span>
+                            <span class="kpi-label" data-lang="extraBlocks">Надчасы</span>
                             <span class="kpi-value" id="extraCount">0</span>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                     <div class="kpi-card">
                         <div class="kpi-icon"><i class="fas fa-calendar-day"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="saturdays">Saturdays</span>
+                            <span class="kpi-label" data-lang="saturdays">Субботы</span>
                             <span class="kpi-value" id="satCount">0</span>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                     <div class="kpi-card">
                         <div class="kpi-icon"><i class="fas fa-stethoscope"></i></div>
                         <div class="kpi-content">
-                            <span class="kpi-label" data-lang="doctorVisits">Doctor</span>
+                            <span class="kpi-label" data-lang="doctorVisits">Перепустки</span>
                             <span class="kpi-value" id="doctorCount">0</span>
                         </div>
                     </div>
@@ -168,28 +168,28 @@
                     <div class="stat-box">
                         <i class="fas fa-calendar-week"></i>
                         <div>
-                            <span class="stat-label" data-lang="weekendsThisMonth">Weekends this month</span>
+                            <span class="stat-label" data-lang="weekendsThisMonth">Выходные в этом месяце</span>
                             <span class="stat-value" id="weekendsThisMonth">0</span>
                         </div>
                     </div>
                     <div class="stat-box">
                         <i class="fas fa-umbrella-beach"></i>
                         <div>
-                            <span class="stat-label" data-lang="accruedWeekends">Accrued weekends</span>
+                            <span class="stat-label" data-lang="accruedWeekends">Накоплено выходных</span>
                             <span class="stat-value" id="accruedWeekends">0</span>
                         </div>
                     </div>
                     <div class="stat-box">
                         <i class="fas fa-stethoscope"></i>
                         <div>
-                            <span class="stat-label" data-lang="doctorLeft">Doctor left</span>
+                            <span class="stat-label" data-lang="doctorLeft">Перепустки осталось</span>
                             <span class="stat-value" id="doctorLeft">7/7</span>
                         </div>
                     </div>
                     <div class="stat-box">
                         <i class="fas fa-user-friends"></i>
                         <div>
-                            <span class="stat-label" data-lang="accompanyLeft">Accompany</span>
+                            <span class="stat-label" data-lang="accompanyLeft">Сопровождение</span>
                             <span class="stat-value" id="accompanyLeft">6/6</span>
                         </div>
                     </div>
@@ -197,7 +197,7 @@
 
                 <div class="chart-container">
                     <div class="chart-header">
-                        <h3><i class="fas fa-chart-line"></i> <span data-lang="monthlyIncome">Monthly income</span></h3>
+                        <h3><i class="fas fa-chart-line"></i> <span data-lang="monthlyIncome">Доход по месяцам</span></h3>
                         <div class="chart-legend">
                             <span><i class="fas fa-circle" style="color: #00b060;"></i> Gross</span>
                         </div>
@@ -215,29 +215,29 @@
                 </div>
                 
                 <div class="calendar-weekdays">
-                    <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+                    <span data-lang="mon">Пн</span><span data-lang="tue">Вт</span><span data-lang="wed">Ср</span><span data-lang="thu">Чт</span><span data-lang="fri">Пт</span><span data-lang="sat">Сб</span><span data-lang="sun">Вс</span>
                 </div>
                 
                 <div class="calendar-grid" id="calendarGrid"></div>
                 
                 <div class="calendar-legend">
-                    <div class="legend-item"><span class="legend-color" style="background:#f39c12;"></span><span class="legend-icon">💼</span><span class="legend-text">Shift</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#2c3e50;"></span><span class="legend-icon">🌙</span><span class="legend-text">Night</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#e74c3c;"></span><span class="legend-icon">⏰</span><span class="legend-text">Overtime</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#8e44ad;"></span><span class="legend-icon">📆</span><span class="legend-text">Saturday</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#f39c12;"></span><span class="legend-icon">☀️</span><span class="legend-text">Sunday</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#27ae60;"></span><span class="legend-icon">➕</span><span class="legend-text">Extra</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#7f8c8d;"></span><span class="legend-icon">🤒</span><span class="legend-text">Sick</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#f1c40f;"></span><span class="legend-icon">🏖️</span><span class="legend-text">Vacation</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#9b59b6;"></span><span class="legend-icon">🩺</span><span class="legend-text">Doctor</span></div>
-                    <div class="legend-item"><span class="legend-color" style="background:#2c3e50;"></span><span class="legend-icon">❌</span><span class="legend-text">Day off</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#f39c12;"></span><span class="legend-icon">💼</span><span class="legend-text" data-lang="work">Смена</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#2c3e50;"></span><span class="legend-icon">🌙</span><span class="legend-text" data-lang="nightShift">Ночная смена</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#e74c3c;"></span><span class="legend-icon">⏰</span><span class="legend-text" data-lang="overtime">Переработка</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#8e44ad;"></span><span class="legend-icon">📆</span><span class="legend-text" data-lang="saturday">Суббота</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#f39c12;"></span><span class="legend-icon">☀️</span><span class="legend-text" data-lang="sunday">Воскресенье</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#27ae60;"></span><span class="legend-icon">➕</span><span class="legend-text" data-lang="extraBlocks">Надчас</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#7f8c8d;"></span><span class="legend-icon">🤒</span><span class="legend-text" data-lang="sick">Больничный</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#f1c40f;"></span><span class="legend-icon">🏖️</span><span class="legend-text" data-lang="vacation">Отпуск</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#9b59b6;"></span><span class="legend-icon">🩺</span><span class="legend-text" data-lang="doctor">Перепустка</span></div>
+                    <div class="legend-item"><span class="legend-color" style="background:#2c3e50;"></span><span class="legend-icon">❌</span><span class="legend-text" data-lang="dayOff">Выходной</span></div>
                 </div>
             </section>
 
             <!-- СТАТИСТИКА -->
             <section id="stats" class="view">
                 <div class="stats-header">
-                    <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Total statistics</span></h2>
+                    <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Общая статистика</span></h2>
                     <select id="yearSelectStats" onchange="window.loadYearStats()">
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
@@ -250,35 +250,35 @@
                     <div class="stats-card">
                         <i class="fas fa-coins"></i>
                         <div>
-                            <span class="stats-label" data-lang="totalEarned">Total earned</span>
+                            <span class="stats-label" data-lang="totalEarned">Всего заработано</span>
                             <span class="stats-value" id="totalEarned">0 €</span>
                         </div>
                     </div>
                     <div class="stats-card">
                         <i class="fas fa-clock"></i>
                         <div>
-                            <span class="stats-label" data-lang="totalHours">Total hours</span>
+                            <span class="stats-label" data-lang="totalHours">Всего часов</span>
                             <span class="stats-value" id="totalHours">0</span>
                         </div>
                     </div>
                     <div class="stats-card">
                         <i class="fas fa-utensils"></i>
                         <div>
-                            <span class="stats-label" data-lang="totalLunch">Lunch cost</span>
+                            <span class="stats-label" data-lang="totalLunch">Потрачено на обеды</span>
                             <span class="stats-value" id="totalLunch">0 €</span>
                         </div>
                     </div>
                     <div class="stats-card">
                         <i class="fas fa-trophy"></i>
                         <div>
-                            <span class="stats-label" data-lang="bestMonth">Best month</span>
+                            <span class="stats-label" data-lang="bestMonth">Лучший месяц</span>
                             <span class="stats-value" id="bestMonth">-</span>
                         </div>
                     </div>
                 </div>
                 
                 <div class="chart-container">
-                    <h3><i class="fas fa-chart-bar"></i> <span data-lang="monthlyIncome">Monthly income</span></h3>
+                    <h3><i class="fas fa-chart-bar"></i> <span data-lang="monthlyIncome">Доход по месяцам</span></h3>
                     <canvas id="statsChart"></canvas>
                 </div>
             </section>
@@ -294,43 +294,43 @@
                         </div>
                         <div class="profile-title">
                             <h2 id="profileName"></h2>
-                            <p data-lang="employee">Factory employee</p>
+                            <p data-lang="employee">Сотрудник завода</p>
                         </div>
                     </div>
                     
                     <div class="profile-grid">
                         <div class="profile-card">
-                            <h3><i class="fas fa-id-card"></i> <span data-lang="personalData">Personal data</span></h3>
-                            <div class="profile-field"><label data-lang="fullName">Full name</label><input type="text" id="fullName"></div>
-                            <div class="profile-field"><label data-lang="employeeId">Employee ID</label><input type="text" id="employeeId"></div>
-                            <div class="profile-field"><label data-lang="cardId">Card ID</label><input type="text" id="cardId"></div>
+                            <h3><i class="fas fa-id-card"></i> <span data-lang="personalData">Личные данные</span></h3>
+                            <div class="profile-field"><label data-lang="fullName">Полное имя</label><input type="text" id="fullName"></div>
+                            <div class="profile-field"><label data-lang="employeeId">Табельный номер</label><input type="text" id="employeeId"></div>
+                            <div class="profile-field"><label data-lang="cardId">Номер карты</label><input type="text" id="cardId"></div>
                             <div class="profile-field"><label data-lang="email">Email</label><input type="email" id="email"></div>
                         </div>
                         
                         <div class="profile-card">
-                            <h3><i class="fas fa-cog"></i> <span data-lang="salarySettings">Salary settings</span></h3>
-                            <div class="profile-field"><label data-lang="hourlyRate">Hourly rate (€/hour)</label><input type="number" id="hourlyRate" value="6.10" step="0.01"></div>
-                            <div class="profile-field"><label data-lang="lunchCost">Lunch cost (€/day)</label><input type="number" id="lunchCost" value="1.31" step="0.01"></div>
-                            <div class="profile-field"><label data-lang="nightBonus">Night bonus (%)</label><input type="number" id="nightBonus" value="20" step="1"></div>
-                            <div class="profile-field"><label data-lang="saturdayBonus">Saturday coeff</label><input type="number" id="saturdayBonus" value="1.5" step="0.1"></div>
-                            <div class="profile-field"><label data-lang="sundayBonus">Sunday coeff</label><input type="number" id="sundayBonus" value="2.0" step="0.1"></div>
-                            <div class="profile-field"><label data-lang="extraBonus">Extra block bonus (€)</label><input type="number" id="extraBonus" value="25" step="1"></div>
+                            <h3><i class="fas fa-cog"></i> <span data-lang="salarySettings">Настройки зарплаты</span></h3>
+                            <div class="profile-field"><label data-lang="hourlyRate">Базовая ставка (€/час)</label><input type="number" id="hourlyRate" value="6.10" step="0.01"></div>
+                            <div class="profile-field"><label data-lang="lunchCost">Стоимость обеда (€/день)</label><input type="number" id="lunchCost" value="1.31" step="0.01"></div>
+                            <div class="profile-field"><label data-lang="nightBonus">Ночная доплата (%)</label><input type="number" id="nightBonus" value="20" step="1"></div>
+                            <div class="profile-field"><label data-lang="saturdayBonus">Коэф. субботы</label><input type="number" id="saturdayBonus" value="1.5" step="0.1"></div>
+                            <div class="profile-field"><label data-lang="sundayBonus">Коэф. воскресенья</label><input type="number" id="sundayBonus" value="2.0" step="0.1"></div>
+                            <div class="profile-field"><label data-lang="extraBonus">Бонус за надчас (€)</label><input type="number" id="extraBonus" value="25" step="1"></div>
                         </div>
                         
                         <div class="profile-card">
-                            <h3><i class="fas fa-calendar-alt"></i> <span data-lang="vacations">Vacations & doctor</span></h3>
-                            <div class="profile-field"><label data-lang="accruedWeekendsLabel">Accrued weekends (1.67/month)</label><input type="number" id="accruedWeekendsInput" value="0" disabled></div>
-                            <div class="profile-field"><label data-lang="usedWeekends">Used weekends</label><input type="number" id="usedWeekends" value="0" min="0"></div>
-                            <div class="profile-field"><label data-lang="personalDoctor">Doctor (personal)</label><input type="number" id="personalDoctorDays" value="7" min="0"></div>
-                            <div class="profile-field"><label data-lang="usedPersonalDoctor">Used personal</label><input type="number" id="usedPersonalDoctor" value="0" min="0"></div>
-                            <div class="profile-field"><label data-lang="accompanyDoctor">Doctor (accompany)</label><input type="number" id="accompanyDoctorDays" value="6" min="0"></div>
-                            <div class="profile-field"><label data-lang="usedAccompanyDoctor">Used accompany</label><input type="number" id="usedAccompanyDoctor" value="0" min="0"></div>
+                            <h3><i class="fas fa-calendar-alt"></i> <span data-lang="vacations">Отпуска и перепустки</span></h3>
+                            <div class="profile-field"><label data-lang="accruedWeekendsLabel">Накоплено выходных (1.67/мес)</label><input type="number" id="accruedWeekendsInput" value="0" disabled></div>
+                            <div class="profile-field"><label data-lang="usedWeekends">Использовано выходных</label><input type="number" id="usedWeekends" value="0" min="0"></div>
+                            <div class="profile-field"><label data-lang="personalDoctor">Перепустки (личные)</label><input type="number" id="personalDoctorDays" value="7" min="0"></div>
+                            <div class="profile-field"><label data-lang="usedPersonalDoctor">Использовано личных</label><input type="number" id="usedPersonalDoctor" value="0" min="0"></div>
+                            <div class="profile-field"><label data-lang="accompanyDoctor">Перепустки (сопровождение)</label><input type="number" id="accompanyDoctorDays" value="6" min="0"></div>
+                            <div class="profile-field"><label data-lang="usedAccompanyDoctor">Использовано сопровождения</label><input type="number" id="usedAccompanyDoctor" value="0" min="0"></div>
                         </div>
                     </div>
                     
                     <div class="profile-actions">
-                        <button class="btn-primary" onclick="window.saveProfile()"><i class="fas fa-save"></i> <span data-lang="saveChanges">Save changes</span></button>
-                        <button class="btn-secondary" onclick="window.exportData()"><i class="fas fa-download"></i> <span data-lang="export">Export data</span></button>
+                        <button class="btn-primary" onclick="window.saveProfile()"><i class="fas fa-save"></i> <span data-lang="saveChanges">Сохранить изменения</span></button>
+                        <button class="btn-secondary" onclick="window.exportData()"><i class="fas fa-download"></i> <span data-lang="export">Экспорт данных</span></button>
                     </div>
                 </div>
             </section>
@@ -338,10 +338,10 @@
             <!-- ФИНАНСЫ -->
             <section id="finance" class="view">
                 <div class="finance-container">
-                    <h2><i class="fas fa-chart-pie"></i> <span data-lang="financeAnalytics">Finance analytics</span></h2>
+                    <h2><i class="fas fa-chart-pie"></i> <span data-lang="financeAnalytics">Финансовая аналитика</span></h2>
                     
                     <div class="finance-month-info">
-                        <h3><i class="fas fa-calendar-alt"></i> <span data-lang="currentMonth">Current month</span>: <span id="financeMonth"></span></h3>
+                        <h3><i class="fas fa-calendar-alt"></i> <span data-lang="currentMonth">Текущий месяц</span>: <span id="financeMonth"></span></h3>
                     </div>
                     
                     <div class="pie-chart-container">
@@ -350,57 +350,60 @@
                     </div>
                     
                     <div class="finance-details">
-                        <div class="finance-item"><span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">Net income</span></span><span class="finance-value positive" id="financeNet">0 €</span></div>
-                        <div class="finance-item"><span class="finance-label"><i class="fas fa-percent" style="color:#f59e0b;"></i> <span data-lang="taxes">Taxes</span></span><span class="finance-value" id="financeTax">0 €</span></div>
-                        <div class="finance-item"><span class="finance-label"><i class="fas fa-utensils" style="color:#ef4444;"></i> <span data-lang="lunches">Lunches</span></span><span class="finance-value" id="financeLunch">0 €</span></div>
-                        <div class="finance-item"><span class="finance-label"><i class="fas fa-piggy-bank" style="color:#8b5cf6;"></i> <span data-lang="savings">Savings (10%)</span></span><span class="finance-value" id="financeSavings">0 €</span></div>
-                        <div class="finance-item total"><span class="finance-label" data-lang="gross">Gross</span><span class="finance-value" id="financeGross">0 €</span></div>
+                        <div class="finance-item"><span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">Чистый доход</span></span><span class="finance-value positive" id="financeNet">0 €</span></div>
+                        <div class="finance-item"><span class="finance-label"><i class="fas fa-percent" style="color:#f59e0b;"></i> <span data-lang="taxes">Налоги</span></span><span class="finance-value" id="financeTax">0 €</span></div>
+                        <div class="finance-item"><span class="finance-label"><i class="fas fa-utensils" style="color:#ef4444;"></i> <span data-lang="lunches">Обеды</span></span><span class="finance-value" id="financeLunch">0 €</span></div>
+                        <div class="finance-item"><span class="finance-label"><i class="fas fa-piggy-bank" style="color:#8b5cf6;"></i> <span data-lang="savings">Сбережения (10%)</span></span><span class="finance-value" id="financeSavings">0 €</span></div>
+                        <div class="finance-item total"><span class="finance-label" data-lang="gross">Брутто</span><span class="finance-value" id="financeGross">0 €</span></div>
                     </div>
                     
                     <!-- ФИНАНСОВЫЕ ЦЕЛИ -->
                     <div class="finance-goals">
-                        <h3><i class="fas fa-bullseye"></i> <span data-lang="goal">My financial goal</span></h3>
+                        <h3><i class="fas fa-bullseye"></i> <span data-lang="goal">Моя финансовая цель</span></h3>
                         
                         <div class="goal-inputs">
-                            <div class="input-group"><label data-lang="goalName">Goal name</label><input type="text" id="goalName" placeholder="Emergency fund"></div>
-                            <div class="input-group"><label data-lang="goalAmount">Goal amount (€)</label><input type="number" id="goalAmount" min="0" step="100"></div>
-                            <button class="btn-primary" onclick="window.saveGoal()"><i class="fas fa-save"></i> <span data-lang="saveGoal">Save goal</span></button>
+                            <div class="input-group"><label data-lang="goalName">Название цели</label><input type="text" id="goalName" placeholder="Подушка безопасности"></div>
+                            <div class="input-group"><label data-lang="goalAmount">Сумма цели (€)</label><input type="number" id="goalAmount" min="0" step="100"></div>
+                            <button class="btn-primary" onclick="window.saveGoal()"><i class="fas fa-save"></i> <span data-lang="saveGoal">Сохранить цель</span></button>
                         </div>
                         
                         <div class="goal-progress" id="goalProgress" style="display:none">
                             <h4 id="goalNameDisplay"></h4>
                             <div class="progress-stats">
-                                <div><span data-lang="goalSaved">Saved</span>: <strong id="goalSaved">0 €</strong></div>
-                                <div><span data-lang="goalTarget">Target</span>: <strong id="goalTarget">0 €</strong></div>
-                                <div><span data-lang="goalRemaining">Remaining</span>: <strong id="goalRemaining">0 €</strong></div>
+                                <div><span data-lang="goalSaved">Накоплено</span>: <strong id="goalSaved">0 €</strong></div>
+                                <div><span data-lang="goalTarget">Цель</span>: <strong id="goalTarget">0 €</strong></div>
+                                <div><span data-lang="goalRemaining">Осталось</span>: <strong id="goalRemaining">0 €</strong></div>
                             </div>
                             <div class="progress-bar-container"><div class="progress-bar" id="goalProgressBar" style="width:0%"></div></div>
                             <div class="progress-percent" id="goalPercent">0%</div>
                             
                             <div class="goal-actions" id="goalActions" style="display:none">
-                                <button class="btn-success" onclick="window.addToGoal()"><i class="fas fa-plus-circle"></i> <span data-lang="add">Add</span></button>
-                                <button class="btn-warning" onclick="window.withdrawFromGoal()"><i class="fas fa-minus-circle"></i> <span data-lang="withdraw">Withdraw</span></button>
+                                <button class="btn-success" onclick="window.addToGoal()"><i class="fas fa-plus-circle"></i> <span data-lang="add">Добавить</span></button>
+                                <button class="btn-warning" onclick="window.withdrawFromGoal()"><i class="fas fa-minus-circle"></i> <span data-lang="withdraw">Снять</span></button>
                             </div>
                             
                             <div class="goal-history">
-                                <h5><i class="fas fa-history"></i> <span data-lang="history">Transaction history</span></h5>
+                                <h5><i class="fas fa-history"></i> <span data-lang="history">Последние операции</span></h5>
                                 <div id="goalHistory" class="history-list"></div>
                             </div>
                             
-                            <button class="btn-danger btn-small" onclick="window.clearGoal()"><i class="fas fa-times"></i> <span data-lang="deleteGoal">Delete goal</span></button>
+                            <button class="btn-danger btn-small" onclick="window.clearGoal()"><i class="fas fa-times"></i> <span data-lang="deleteGoal">Удалить цель</span></button>
                         </div>
                     </div>
                     
                     <div class="finance-tips">
-                        <h4><i class="fas fa-lightbulb"></i> <span data-lang="financialTip">Financial tip</span></h4>
-                        <p id="financeTip">Save at least 10% of your salary</p>
+                        <h4><i class="fas fa-lightbulb"></i> <span data-lang="financialTip">Финансовый совет</span></h4>
+                        <p id="financeTip">Откладывай минимум 10% от зарплаты</p>
                     </div>
 
                     <!-- PDF ИМПОРТ -->
                     <div class="pdf-import">
-                        <h3><i class="fas fa-file-pdf"></i> Import from PDF</h3>
-                        <p>Upload PDF with salary data (last 4 months)</p>
-                        <input type="file" id="pdfUpload" accept=".pdf" onchange="window.importFromPDF(this)">
+                        <h3><i class="fas fa-file-pdf"></i> <span data-lang="importPDF">Импорт из PDF</span></h3>
+                        <p><span data-lang="uploadPDF">Загрузите PDF с зарплатой за последние 4 месяца</span></p>
+                        <div class="pdf-upload-area">
+                            <input type="file" id="pdfUpload" accept=".pdf" onchange="window.importFromPDF(this)">
+                            <label for="pdfUpload" class="pdf-label"><i class="fas fa-cloud-upload-alt"></i> <span data-lang="chooseFile">Выберите файл</span></label>
+                        </div>
                         <div class="pdf-status" id="pdfStatus"></div>
                     </div>
                 </div>
@@ -412,22 +415,22 @@
     <div class="modal" id="dayModal">
         <div class="modal-content day-modal">
             <div class="modal-header">
-                <h3><i class="fas fa-calendar-day"></i> <span data-lang="selectDayType">Select day type</span></h3>
+                <h3><i class="fas fa-calendar-day"></i> <span data-lang="selectDayType">Выберите тип дня</span></h3>
                 <button class="modal-close" onclick="window.closeModal()"><i class="fas fa-times"></i></button>
             </div>
             <div class="day-types">
-                <button class="day-type work" onclick="window.addRecord('work')"><i class="fas fa-briefcase"></i><span data-lang="work">Shift</span><small>7.5h</small></button>
-                <button class="day-type night" onclick="window.addRecord('night')"><i class="fas fa-moon"></i><span data-lang="nightShift">Night shift</span><small>+20%</small></button>
-                <button class="day-type overtime" onclick="window.addRecord('overtime')"><i class="fas fa-clock"></i><span data-lang="overtime">Overtime</span><small>×1.5</small></button>
-                <button class="day-type saturday" onclick="window.addRecord('sat')"><i class="fas fa-calendar-day"></i><span data-lang="saturday">Saturday</span><small>×1.5 + €25</small></button>
-                <button class="day-type sunday" onclick="window.addRecord('sun')"><i class="fas fa-sun"></i><span data-lang="sunday">Sunday</span><small>×2.0</small></button>
-                <button class="day-type extra" onclick="window.addRecord('extra')"><i class="fas fa-plus-circle"></i><span>Extra block</span><small>+3.75h ×1.36</small></button>
-                <button class="day-type sick" onclick="window.addRecord('sick')"><i class="fas fa-hospital"></i><span data-lang="sick">Sick</span><small>60%</small></button>
-                <button class="day-type vacation" onclick="window.addRecord('vacation')"><i class="fas fa-umbrella-beach"></i><span data-lang="vacation">Vacation</span><small>100%</small></button>
-                <button class="day-type doctor" onclick="window.addRecord('doctor')"><i class="fas fa-stethoscope"></i><span data-lang="doctor">Doctor</span><small>100%</small></button>
-                <button class="day-type off" onclick="window.addRecord('off')"><i class="fas fa-times"></i><span data-lang="dayOff">Day off</span><small>0 €</small></button>
+                <button class="day-type work" onclick="window.addRecord('work')"><i class="fas fa-briefcase"></i><span data-lang="work">Смена</span><small>7.5ч</small></button>
+                <button class="day-type night" onclick="window.addRecord('night')"><i class="fas fa-moon"></i><span data-lang="nightShift">Ночная смена</span><small>+20%</small></button>
+                <button class="day-type overtime" onclick="window.addRecord('overtime')"><i class="fas fa-clock"></i><span data-lang="overtime">Переработка</span><small>×1.5</small></button>
+                <button class="day-type saturday" onclick="window.addRecord('sat')"><i class="fas fa-calendar-day"></i><span data-lang="saturday">Суббота</span><small>×1.5 + €25</small></button>
+                <button class="day-type sunday" onclick="window.addRecord('sun')"><i class="fas fa-sun"></i><span data-lang="sunday">Воскресенье</span><small>×2.0</small></button>
+                <button class="day-type extra" onclick="window.addRecord('extra')"><i class="fas fa-plus-circle"></i><span data-lang="extraBlocks">Надчас</span><small>+3.75ч ×1.36</small></button>
+                <button class="day-type sick" onclick="window.addRecord('sick')"><i class="fas fa-hospital"></i><span data-lang="sick">Больничный</span><small>60%</small></button>
+                <button class="day-type vacation" onclick="window.addRecord('vacation')"><i class="fas fa-umbrella-beach"></i><span data-lang="vacation">Отпуск</span><small>100%</small></button>
+                <button class="day-type doctor" onclick="window.addRecord('doctor')"><i class="fas fa-stethoscope"></i><span data-lang="doctor">Перепустка</span><small>100%</small></button>
+                <button class="day-type off" onclick="window.addRecord('off')"><i class="fas fa-times"></i><span data-lang="dayOff">Выходной</span><small>0 €</small></button>
             </div>
-            <button class="btn-secondary cancel-btn" onclick="window.closeModal()"><span data-lang="cancel">Cancel</span></button>
+            <button class="btn-secondary cancel-btn" onclick="window.closeModal()"><span data-lang="cancel">Отмена</span></button>
         </div>
     </div>
 
