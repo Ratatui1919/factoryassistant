@@ -38,23 +38,17 @@ function showMessage(msg, isError = false) {
 
 // ===== ФОРМЫ =====
 window.showLoginForm = function() {
-  const tabs = document.querySelectorAll('.auth-tab');
-  const forms = document.querySelectorAll('.auth-form');
-  tabs.forEach(t => t.classList.remove('active'));
-  forms.forEach(f => f.classList.remove('active'));
-  if (tabs[0]) tabs[0].classList.add('active');
-  const loginForm = document.getElementById('loginForm');
-  if (loginForm) loginForm.classList.add('active');
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.auth-tab')[0]?.classList.add('active');
+  document.getElementById('loginForm')?.classList.add('active');
 };
 
 window.showRegisterForm = function() {
-  const tabs = document.querySelectorAll('.auth-tab');
-  const forms = document.querySelectorAll('.auth-form');
-  tabs.forEach(t => t.classList.remove('active'));
-  forms.forEach(f => f.classList.remove('active'));
-  if (tabs[1]) tabs[1].classList.add('active');
-  const registerForm = document.getElementById('registerForm');
-  if (registerForm) registerForm.classList.add('active');
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.auth-tab')[1]?.classList.add('active');
+  document.getElementById('registerForm')?.classList.add('active');
 };
 
 // ===== РЕГИСТРАЦИЯ =====
@@ -91,9 +85,9 @@ window.register = async function() {
     await setDoc(doc(db, "users", user.uid), userData);
     showMessage('Регистрация успешна! Теперь войдите.');
     
-    if (document.getElementById('regName')) document.getElementById('regName').value = '';
-    if (document.getElementById('regPass')) document.getElementById('regPass').value = '';
-    if (document.getElementById('regConfirm')) document.getElementById('regConfirm').value = '';
+    document.getElementById('regName').value = '';
+    document.getElementById('regPass').value = '';
+    document.getElementById('regConfirm').value = '';
     
     window.showLoginForm();
     
@@ -103,7 +97,7 @@ window.register = async function() {
   }
 };
 
-// ===== ВХОД =====
+// ===== ВХОД (ИСПРАВЛЕННЫЙ) =====
 window.login = async function() {
   const name = document.getElementById('loginName')?.value.trim();
   const pass = document.getElementById('loginPass')?.value.trim();
@@ -129,8 +123,7 @@ window.login = async function() {
     currentUser = { uid: user.uid, ...userData };
     
     hideModal('authModal');
-    const app = document.getElementById('app');
-    if (app) app.classList.remove('hidden');
+    document.getElementById('app').classList.remove('hidden');
     
     const fullNameInput = document.getElementById('fullName');
     const employeeIdInput = document.getElementById('employeeId');
@@ -150,8 +143,7 @@ window.logout = async function() {
   if (confirm('Выйти?')) {
     await signOut(auth);
     currentUser = null;
-    const app = document.getElementById('app');
-    if (app) app.classList.add('hidden');
+    document.getElementById('app').classList.add('hidden');
     showModal('authModal');
     window.showLoginForm();
   }
@@ -164,9 +156,6 @@ window.saveProfile = async function() {
   const fullName = document.getElementById('fullName')?.value || '';
   const employeeId = document.getElementById('employeeId')?.value || '';
   
-  currentUser.fullName = fullName;
-  currentUser.employeeId = employeeId;
-  
   await updateDoc(doc(db, "users", currentUser.uid), {
     fullName: fullName,
     employeeId: employeeId
@@ -178,8 +167,7 @@ window.saveProfile = async function() {
 // ===== НАВИГАЦИЯ =====
 window.setView = function(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  const selectedView = document.getElementById(view);
-  if (selectedView) selectedView.classList.add('active');
+  document.getElementById(view)?.classList.add('active');
 };
 
 // ===== СЛЕДИМ ЗА СОСТОЯНИЕМ =====
@@ -191,8 +179,7 @@ onAuthStateChanged(auth, async (user) => {
       currentUser = { uid: user.uid, ...currentUserData };
       
       hideModal('authModal');
-      const app = document.getElementById('app');
-      if (app) app.classList.remove('hidden');
+      document.getElementById('app').classList.remove('hidden');
       
       const fullNameInput = document.getElementById('fullName');
       const employeeIdInput = document.getElementById('employeeId');
@@ -201,8 +188,7 @@ onAuthStateChanged(auth, async (user) => {
     }
   } else {
     currentUser = null;
-    const app = document.getElementById('app');
-    if (app) app.classList.add('hidden');
+    document.getElementById('app').classList.add('hidden');
     showModal('authModal');
     window.showLoginForm();
   }
@@ -216,43 +202,11 @@ window.onload = function() {
   window.showLoginForm();
 };
 
-// ===== ФУНКЦИИ КАЛЕНДАРЯ =====
+// ===== ПРОСТЫЕ ФУНКЦИИ КАЛЕНДАРЯ =====
 window.changeMonth = function(delta) {
   currentMonth += delta;
   if (currentMonth < 0) { currentMonth = 11; currentYear--; }
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-  window.buildCalendar();
-};
-
-window.buildCalendar = function() {
-  const grid = document.getElementById('calendarGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
-  
-  for (let i = 0; i < firstDayIndex; i++) {
-    const empty = document.createElement('div');
-    empty.className = 'day empty';
-    grid.appendChild(empty);
-  }
-  
-  for (let d = 1; d <= daysInMonth; d++) {
-    const cell = document.createElement('div');
-    cell.className = 'day';
-    cell.textContent = d;
-    
-    const today = new Date();
-    const date = new Date(currentYear, currentMonth, d);
-    
-    if (date < today) {
-      cell.onclick = () => window.openDayModal(d);
-    }
-    
-    grid.appendChild(cell);
-  }
 };
 
 window.openDayModal = function(day) {
@@ -261,7 +215,7 @@ window.openDayModal = function(day) {
 
 window.addRecord = function(type) {
   console.log('addRecord', type);
-  window.closeModal();
+  hideModal('dayModal');
 };
 
 window.closeModal = function() {
@@ -269,14 +223,14 @@ window.closeModal = function() {
 };
 
 // ===== ЗАГЛУШКИ =====
-window.quickAddSalary = function() { console.log('quickAddSalary'); };
-window.clearQuickSalary = function() { console.log('clearQuickSalary'); };
-window.previewAvatar = function() { console.log('previewAvatar'); };
-window.exportData = function() { console.log('exportData'); };
-window.setLanguage = function(lang) { console.log('Language:', lang); };
-window.addToGoal = function() { console.log('addToGoal'); };
-window.withdrawFromGoal = function() { console.log('withdrawFromGoal'); };
-window.saveGoal = function() { console.log('saveGoal'); };
-window.clearGoal = function() { console.log('clearGoal'); };
-window.loadYearStats = function() { console.log('loadYearStats'); };
-window.clearAllData = function() { console.log('clearAllData'); };
+window.quickAddSalary = function() {};
+window.clearQuickSalary = function() {};
+window.previewAvatar = function() {};
+window.exportData = function() {};
+window.setLanguage = function(lang) {};
+window.addToGoal = function() {};
+window.withdrawFromGoal = function() {};
+window.saveGoal = function() {};
+window.clearGoal = function() {};
+window.loadYearStats = function() {};
+window.clearAllData = function() {};
