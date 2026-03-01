@@ -1,259 +1,330 @@
-/* mobile-theme-2.css - Glassmorphism */
+/* mobile-theme-3.css - Compact Pro */
 
 @media (max-width: 768px) {
     /* ===== БАЗОВЫЕ НАСТРОЙКИ ===== */
     body {
-        font-size: 14px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-    }
-    
-    .theme-dark body {
-        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        font-size: 13px;
     }
     
     main {
-        padding: 12px;
-        padding-bottom: 80px;
+        padding: 8px;
     }
     
-    /* ===== СТЕКЛЯННЫЙ ЭФФЕКТ ДЛЯ ВСЕХ КАРТОЧЕК ===== */
-    .kpi-card,
-    .stat-box,
-    .exchange-rate-card,
-    .important-widget,
-    .profile-card,
-    .finance-goals,
-    .chart-container,
-    .month-selector,
-    .calendar-legend {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(15px) !important;
-        -webkit-backdrop-filter: blur(15px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
-        color: white;
-    }
-    
-    .theme-dark .kpi-card,
-    .theme-dark .stat-box,
-    .theme-dark .exchange-rate-card,
-    .theme-dark .important-widget,
-    .theme-dark .profile-card,
-    .theme-dark .finance-goals,
-    .theme-dark .chart-container,
-    .theme-dark .month-selector,
-    .theme-dark .calendar-legend {
-        background: rgba(0, 0, 0, 0.4) !important;
-    }
-    
-    /* ===== ТЕКСТ ===== */
-    .kpi-label,
-    .stat-label,
-    .widget-title,
-    .legend-text,
-    .kpi-value,
-    .stat-value {
-        color: white !important;
-    }
-    
-    /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+    /* ===== ВЕРХНЯЯ НАВИГАЦИЯ (ОСТАВЛЯЕМ СВЕРХУ) ===== */
     nav {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        height: 70px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 0 5px;
-        z-index: 1000;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--dark-card);
+        padding: 8px;
+        gap: 4px;
+        overflow-x: auto;
+        white-space: nowrap;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    nav::-webkit-scrollbar {
+        display: none;
     }
     
     .nav-btn {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.8);
-        background: transparent;
-        border: none;
-        padding: 8px 0;
-        border-radius: 40px;
-        transition: all 0.3s;
-    }
-    
-    .nav-btn i {
-        font-size: 1.4rem;
-    }
-    
-    .nav-btn.active {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        transform: translateY(-3px);
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        display: inline-flex;
+        flex: 0 0 auto;
     }
     
     /* ===== ХЕДЕР ===== */
     header {
-        padding: 16px;
-        background: transparent;
-        margin-bottom: 40px;
+        padding: 8px;
+    }
+    
+    .header-left {
+        gap: 8px;
     }
     
     .logo h1 {
-        color: white;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        font-size: 1.2rem;
     }
     
     .header-badge {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
+        font-size: 0.7rem;
+        padding: 3px 8px;
     }
     
     .header-widget {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 40px;
-        padding: 8px 16px;
-        color: white;
+        min-width: auto;
+        padding: 6px 12px;
     }
     
-    .widget-time .time,
     .widget-date-weather {
-        color: white;
+        gap: 6px;
     }
     
-    .user-info {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+    .weather-location {
+        display: none;
     }
     
     .user-info span {
-        color: white;
+        max-width: 70px;
     }
     
-    .logout-btn {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+    /* ===== СЕЛЕКТОР МЕСЯЦА ===== */
+    .month-selector {
+        padding: 8px;
+        margin-bottom: 15px;
     }
     
-    .lang-btn {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+    .month-selector h2 {
+        font-size: 1rem;
+        min-width: 130px;
     }
     
-    .lang-btn.active {
-        background: rgba(255, 255, 255, 0.3);
+    .month-selector button {
+        width: 34px;
+        height: 34px;
     }
     
     /* ===== KPI КАРТОЧКИ ===== */
     .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin-bottom: 20px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 15px;
     }
     
     .kpi-card {
-        padding: 16px;
-        border-radius: 30px;
+        padding: 10px 6px;
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
     }
     
     .kpi-icon {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+    }
+    
+    .kpi-value {
+        font-size: 0.9rem;
+    }
+    
+    .kpi-label {
+        font-size: 0.6rem;
     }
     
     /* ===== КУРС ВАЛЮТ ===== */
     .exchange-rate-card {
-        padding: 20px;
-        border-radius: 40px;
-        margin-bottom: 20px;
+        padding: 15px;
+        margin: 15px 0;
     }
     
     .currency-display {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 60px;
-        padding: 15px;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .currency-block {
+        padding: 5px 10px;
     }
     
     .currency-value {
-        color: white;
+        font-size: 1.4rem;
+    }
+    
+    .converter-box {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .converter-box .fa-arrow-right {
+        transform: rotate(90deg);
     }
     
     .converter-input,
     .converter-result {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        min-width: auto;
+        width: 100%;
     }
     
-    .converter-input input,
-    .converter-result span {
-        color: white;
+    /* ===== СТАТИСТИКА ===== */
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 15px;
     }
     
-    .converter-input i,
-    .converter-result i {
-        color: white !important;
+    .stat-box {
+        padding: 12px 8px;
     }
     
-    .update-btn {
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
+    .stat-box i {
+        font-size: 1.4rem;
+    }
+    
+    .stat-value {
+        font-size: 0.95rem;
     }
     
     /* ===== КАЛЕНДАРЬ ===== */
     .calendar-weekdays span {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(5px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+        padding: 8px 2px;
+        font-size: 0.75rem;
+    }
+    
+    .calendar-grid {
+        gap: 4px;
     }
     
     .day {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(5px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+        padding: 6px 2px;
+        min-height: 40px;
     }
     
-    .day-number,
+    .day-number {
+        font-size: 0.8rem;
+    }
+    
     .day-icon {
-        color: white;
+        font-size: 0.9rem;
     }
     
-    /* ===== КНОПКИ ===== */
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
-        background: rgba(255, 255, 255, 0.2) !important;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
-        box-shadow: none !important;
+    .day-icons-container {
+        gap: 1px;
     }
     
-    .btn-primary:hover,
-    .btn-secondary:hover,
-    .btn-danger:hover {
-        background: rgba(255, 255, 255, 0.3) !important;
+    .day-icon-important {
+        font-size: 0.7rem;
+    }
+    
+    /* ===== ЛЕГЕНДА ===== */
+    .calendar-legend {
+        padding: 12px;
+    }
+    
+    .legend-grid {
+        gap: 12px;
+    }
+    
+    .legend-items {
+        gap: 5px;
+    }
+    
+    .legend-item {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .legend-text {
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* ===== ВАЖНЫЕ ДАТЫ ===== */
+    .important-widget {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .widget-header i {
+        font-size: 1.1rem;
+    }
+    
+    .widget-header h3 {
+        font-size: 1rem;
+    }
+    
+    .widget-item {
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .item-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1.1rem;
+    }
+    
+    .item-title {
+        font-size: 0.85rem;
+    }
+    
+    .item-date {
+        font-size: 0.7rem;
+    }
+    
+    .item-badge {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+    }
+    
+    /* ===== ПРОФИЛЬ ===== */
+    .profile-header {
+        padding: 20px;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .profile-title h2 {
+        font-size: 1.4rem;
+    }
+    
+    .profile-grid {
+        gap: 12px;
+    }
+    
+    .profile-card {
+        padding: 15px;
+    }
+    
+    .profile-field input {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+    
+    /* ===== ФИНАНСЫ ===== */
+    .pie-chart-container {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .finance-item {
+        font-size: 0.85rem;
+    }
+    
+    .goal-progress {
+        padding: 15px;
+    }
+    
+    .progress-stats {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .day-types {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .day-type {
+        padding: 12px 4px;
+    }
+    
+    .day-type i {
+        font-size: 1.3rem;
+    }
+    
+    .day-type span {
+        font-size: 0.8rem;
     }
 }
