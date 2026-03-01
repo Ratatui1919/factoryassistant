@@ -1,4 +1,4 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ИСПРАВЛЕННЫЙ)
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (С ЗАЩИТОЙ ОТ ПЕРЕЗАГРУЗОК)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
@@ -194,8 +194,34 @@ window.addEventListener('load', function() {
     }
 });
 
+// ===== ГЛОБАЛЬНЫЙ ОБРАБОТЧИК ДЛЯ ПРЕДОТВРАЩЕНИЯ ПЕРЕЗАГРУЗОК =====
+document.addEventListener('click', function(event) {
+    // Если кликнули по кнопке внутри month-selector
+    if (event.target.closest('.month-selector button')) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+});
+
+// ===== БЕЗОПАСНАЯ ФУНКЦИЯ СМЕНЫ МЕСЯЦА =====
+window.safeChangeMonth = function(delta) {
+    console.log('Безопасная смена месяца:', delta);
+    
+    // Предотвращаем все возможные проблемы
+    if (window.event) {
+        window.event.preventDefault();
+        window.event.stopPropagation();
+    }
+    
+    // Вызываем оригинальную функцию
+    if (window.changeMonth) {
+        window.changeMonth(delta);
+    }
+    
+    return false;
+};
+
 // ===== ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК =====
-// БЕЗ АВТООБНОВЛЕНИЯ!
 window.setView = function(view) {
     console.log('Переключение на вкладку:', view);
     
@@ -229,7 +255,6 @@ window.setView = function(view) {
         setTimeout(() => window.buildYearChart(), 100);
     }
     if (view === 'profile') {
-        // Ничего не делаем, данные уже загружены
         console.log('Профиль открыт');
     }
 };
