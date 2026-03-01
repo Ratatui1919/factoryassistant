@@ -6,8 +6,13 @@ import { translations } from './translations.js';
 // Текущий язык
 export let currentLanguage = localStorage.getItem('vaillant_language') || 'ru';
 
-// Установка языка
-window.setLanguage = function(lang) {
+// Функция перевода
+export function t(key) {
+    return translations[currentLanguage]?.[key] || translations.ru[key] || key;
+}
+
+// Установка языка (ЭКСПОРТИРУЕМ ФУНКЦИЮ)
+export function setLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('vaillant_language', lang);
     document.documentElement.lang = lang;
@@ -22,11 +27,6 @@ window.setLanguage = function(lang) {
     
     // Переводим все элементы
     translatePage();
-};
-
-// Функция перевода
-export function t(key) {
-    return translations[currentLanguage]?.[key] || translations.ru[key] || key;
 }
 
 // Перевод всей страницы
