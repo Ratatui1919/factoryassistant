@@ -304,49 +304,56 @@
                     </div>
                 </div>
 
-                <!-- Курс валют - красивый блок -->
-                <div class="exchange-rate-card">
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
-                            <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
-                        </div>
-                        <button class="update-btn" onclick="window.updateExchangeRate()">
-                            <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
-                        </button>
-                    </div>
-                    
-                    <div class="exchange-rate-display" id="exchangeRate">
-                        <div class="currency-block">
-                            <div class="currency-icon eur">
-                                <i class="fas fa-euro-sign"></i>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">EUR</div>
-                                <div style="font-weight: 600; font-size: 1.2rem;">1</div>
-                            </div>
-                        </div>
-                        
-                        <div class="rate-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        
-                        <div class="currency-block">
-                            <div class="currency-icon uah">
-                                <i class="fas fa-hryvnia"></i>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">UAH</div>
-                                <div class="currency-value">42.50</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="last-update" id="lastRateUpdate">
-                        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: <span id="lastUpdateTime">--:--</span>
-                    </div>
+               <!-- Курс валют - красивый блок с конвертером -->
+<div class="exchange-rate-card glass-effect" style="margin: 20px 0; padding: 20px; border-radius: 24px; background: linear-gradient(135deg, var(--dark-card), var(--dark-light));">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
+            <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
+        </div>
+        <button class="btn-primary" onclick="window.updateExchangeRate()" style="padding: 8px 20px; font-size: 0.9rem;" id="updateRateBtn">
+            <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
+        </button>
+    </div>
+    
+    <!-- Текущий курс -->
+    <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 25px; padding: 15px; background: rgba(0,176,96,0.05); border-radius: 50px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.5rem;"></i>
+            <span style="font-weight: 700; font-size: 1.8rem; color: var(--primary);">1</span>
+        </div>
+        <i class="fas fa-equals" style="color: var(--text-muted); font-size: 1.2rem;"></i>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.5rem;"></i>
+            <span class="currency-value" style="font-weight: 700; font-size: 1.8rem; color: var(--primary);" id="currentRate">42.50</span>
+        </div>
+    </div>
+    
+    <!-- Конвертер -->
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="enterEuro">Введите сумму в евро</label>
+                <div style="display: flex; align-items: center; background: var(--dark); border-radius: 12px; border: 1px solid var(--border); padding: 5px;">
+                    <i class="fas fa-euro-sign" style="color: var(--text-muted); margin-left: 10px;"></i>
+                    <input type="number" id="euroInput" value="100" min="0" step="1" style="flex: 1; background: transparent; border: none; padding: 12px; color: var(--text); font-size: 1rem; outline: none;">
                 </div>
-
+            </div>
+            <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 1.5rem;"></i>
+            <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="resultUAH">Результат в гривнах</label>
+                <div style="display: flex; align-items: center; background: var(--dark); border-radius: 12px; border: 1px solid var(--border); padding: 5px;">
+                    <i class="fas fa-hryvnia" style="color: #ffd700; margin-left: 10px;"></i>
+                    <span id="uahResult" style="flex: 1; padding: 12px; color: var(--primary); font-size: 1.2rem; font-weight: 600;">4250</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="last-update" style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: <span id="lastUpdateTime">--:--</span>
+    </div>
+</div>
                 <div class="stats-row">
                     <div class="stat-box glass-effect">
                         <i class="fas fa-calendar-week"></i>
@@ -797,3 +804,4 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
+
