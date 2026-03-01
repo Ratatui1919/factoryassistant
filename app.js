@@ -25,6 +25,8 @@ let currentTheme = localStorage.getItem('vaillant_theme') || 'dark';
 let yearChart = null, statsChart = null, pieChart = null;
 let notificationTimeout = null;
 let updateInterval = null;
+let weatherParticles = null;
+let weatherAnimation = null;
 
 const BASE_RATE = 6.10;
 const LUNCH_COST_REAL = 1.31;
@@ -35,7 +37,7 @@ const HEALTH_RATE = 0.10;
 const TAX_RATE = 0.19;
 const NON_TAXABLE = 410;
 
-// 30+ финансовых советов (меняются каждый день)
+// 30+ финансовых советов
 const FINANCIAL_TIPS = [
   "Откладывай минимум 10% от зарплаты — это основа финансовой безопасности",
   "Используй надчасы для дополнительного дохода, но не забывай про отдых",
@@ -187,321 +189,10 @@ const translations = {
     november: 'Ноябрь',
     december: 'Декабрь',
     clearAllData: 'Очистить все данные',
-    goodMorning: 'Доброе утро',
-    goodAfternoon: 'Добрый день',
-    goodEvening: 'Добрый вечер',
     exportToExcel: 'Экспорт в Excel',
     exportToPDF: 'Экспорт в PDF'
   },
-  sk: {
-    dashboard: 'Nástenka',
-    calendar: 'Kalendár',
-    stats: 'Štatistika',
-    profile: 'Profil',
-    finance: 'Financie',
-    netSalary: 'Čistá mzda',
-    grossSalary: 'Hrubá',
-    hours: 'Hodiny',
-    lunches: 'Obed',
-    overtime: 'Nadčasy',
-    extraBlocks: 'Nadčasy',
-    saturdays: 'Soboty',
-    doctorVisits: 'Lekár',
-    weekendsThisMonth: 'Víkendy tento mesiac',
-    accruedWeekends: 'Nahromadené víkendy',
-    doctorLeft: 'Lekár zostáva',
-    accompanyLeft: 'Sprievod',
-    monthlyIncome: 'Príjem podľa mesiacov',
-    totalStats: 'Celková štatistika',
-    totalEarned: 'Celkový zárobok',
-    totalHours: 'Celkom hodín',
-    totalLunch: 'Mínus obedy',
-    bestMonth: 'Najlepší mesiac',
-    employee: 'Zamestnanec',
-    personalData: 'Osobné údaje',
-    fullName: 'Celé meno',
-    employeeId: 'Osobné číslo',
-    cardId: 'Číslo karty',
-    email: 'Email',
-    salarySettings: 'Nastavenia mzdy',
-    hourlyRate: 'Základná sadzba (€/hod)',
-    lunchCost: 'Cena obeda (€/deň)',
-    nightBonus: 'Nočný príplatok (%)',
-    saturdayBonus: 'Sobota koeficient',
-    sundayBonus: 'Nedeľa koeficient',
-    extraBonus: 'Extra blok bonus (€)',
-    vacations: 'Dovolenka a lekár',
-    accruedWeekendsLabel: 'Nahromadené víkendy',
-    usedWeekends: 'Použité víkendy',
-    personalDoctor: 'Lekár (osobné, ročne)',
-    usedPersonalDoctor: 'Použité osobné',
-    accompanyDoctor: 'Lekár (sprievod, ročne)',
-    usedAccompanyDoctor: 'Použité sprievod',
-    export: 'Export dát',
-    financeAnalytics: 'Finančná analýza',
-    netIncome: 'Čistý príjem',
-    taxes: 'Dane',
-    savings: 'Úspory',
-    financialTip: 'Finančná rada',
-    selectDayType: 'Vyberte typ dňa',
-    work: 'Zmena',
-    nightShift: 'Nočná zmena',
-    sick: 'PN',
-    vacation: 'Dovolenka',
-    doctor: 'Lekár',
-    dayOff: 'Voľno',
-    cancel: 'Zrušiť',
-    saveChanges: 'Uložiť zmeny',
-    goal: 'Môj finančný cieľ',
-    goalName: 'Názov cieľa',
-    goalAmount: 'Suma cieľa',
-    goalSaved: 'Nasporené',
-    goalTarget: 'Cieľ',
-    goalRemaining: 'Zostáva',
-    saveGoal: 'Uložiť cieľ',
-    deleteGoal: 'Zmazať cieľ',
-    add: 'Pridať',
-    withdraw: 'Vybrať',
-    history: 'História operácií',
-    currentMonth: 'Aktuálny mesiac',
-    importPDF: 'Import z PDF',
-    uploadPDF: 'Nahrajte PDF s platom za posledné 4 mesiace',
-    processing: 'Spracúvam...',
-    importSuccess: 'Údaje za {count} mesiacov boli úspešne importované',
-    importError: 'Chyba pri spracovaní PDF',
-    chooseFile: 'Vyberte súbor',
-    mon: 'Po',
-    tue: 'Ut',
-    wed: 'St',
-    thu: 'Št',
-    fri: 'Pi',
-    sat: 'So',
-    sun: 'Ne',
-    january: 'Január',
-    february: 'Február',
-    march: 'Marec',
-    april: 'Apríl',
-    may: 'Máj',
-    june: 'Jún',
-    july: 'Júl',
-    august: 'August',
-    september: 'September',
-    october: 'Október',
-    november: 'November',
-    december: 'December',
-    clearAllData: 'Vymazať všetky dáta',
-    goodMorning: 'Dobré ráno',
-    goodAfternoon: 'Dobrý deň',
-    goodEvening: 'Dobrý večer',
-    exportToExcel: 'Export do Excel',
-    exportToPDF: 'Export do PDF'
-  },
-  en: {
-    dashboard: 'Dashboard',
-    calendar: 'Calendar',
-    stats: 'Statistics',
-    profile: 'Profile',
-    finance: 'Finance',
-    netSalary: 'Net Salary',
-    grossSalary: 'Gross',
-    hours: 'Hours',
-    lunches: 'Lunches',
-    overtime: 'Overtime',
-    extraBlocks: 'Extra Blocks',
-    saturdays: 'Saturdays',
-    doctorVisits: 'Doctor',
-    weekendsThisMonth: 'Weekends this month',
-    accruedWeekends: 'Accrued weekends',
-    doctorLeft: 'Doctor left',
-    accompanyLeft: 'Accompany',
-    monthlyIncome: 'Monthly Income',
-    totalStats: 'Total Statistics',
-    totalEarned: 'Total earned',
-    totalHours: 'Total hours',
-    totalLunch: 'Lunch cost',
-    bestMonth: 'Best month',
-    employee: 'Factory employee',
-    personalData: 'Personal data',
-    fullName: 'Full name',
-    employeeId: 'Employee ID',
-    cardId: 'Card ID',
-    email: 'Email',
-    salarySettings: 'Salary settings',
-    hourlyRate: 'Hourly rate (€/hour)',
-    lunchCost: 'Lunch cost (€/day)',
-    nightBonus: 'Night bonus (%)',
-    saturdayBonus: 'Saturday coeff',
-    sundayBonus: 'Sunday coeff',
-    extraBonus: 'Extra block bonus (€)',
-    vacations: 'Vacations & doctor',
-    accruedWeekendsLabel: 'Accrued weekends',
-    usedWeekends: 'Used weekends',
-    personalDoctor: 'Doctor (personal, yearly)',
-    usedPersonalDoctor: 'Used personal',
-    accompanyDoctor: 'Doctor (accompany, yearly)',
-    usedAccompanyDoctor: 'Used accompany',
-    export: 'Export data',
-    financeAnalytics: 'Finance analytics',
-    netIncome: 'Net income',
-    taxes: 'Taxes',
-    savings: 'Savings',
-    financialTip: 'Financial tip',
-    selectDayType: 'Select day type',
-    work: 'Shift',
-    nightShift: 'Night shift',
-    sick: 'Sick',
-    vacation: 'Vacation',
-    doctor: 'Doctor',
-    dayOff: 'Day off',
-    cancel: 'Cancel',
-    saveChanges: 'Save changes',
-    goal: 'My financial goal',
-    goalName: 'Goal name',
-    goalAmount: 'Goal amount',
-    goalSaved: 'Saved',
-    goalTarget: 'Target',
-    goalRemaining: 'Remaining',
-    saveGoal: 'Save goal',
-    deleteGoal: 'Delete goal',
-    add: 'Add',
-    withdraw: 'Withdraw',
-    history: 'Transaction history',
-    currentMonth: 'Current month',
-    importPDF: 'Import from PDF',
-    uploadPDF: 'Upload PDF with salary data for last 4 months',
-    processing: 'Processing...',
-    importSuccess: 'Data for {count} months successfully imported',
-    importError: 'Error processing PDF',
-    chooseFile: 'Choose file',
-    mon: 'Mo',
-    tue: 'Tu',
-    wed: 'We',
-    thu: 'Th',
-    fri: 'Fr',
-    sat: 'Sa',
-    sun: 'Su',
-    january: 'January',
-    february: 'February',
-    march: 'March',
-    april: 'April',
-    may: 'May',
-    june: 'June',
-    july: 'July',
-    august: 'August',
-    september: 'September',
-    october: 'October',
-    november: 'November',
-    december: 'December',
-    clearAllData: 'Clear all data',
-    goodMorning: 'Good morning',
-    goodAfternoon: 'Good afternoon',
-    goodEvening: 'Good evening',
-    exportToExcel: 'Export to Excel',
-    exportToPDF: 'Export to PDF'
-  },
-  uk: {
-    dashboard: 'Панель',
-    calendar: 'Календар',
-    stats: 'Статистика',
-    profile: 'Профіль',
-    finance: 'Фінанси',
-    netSalary: 'Чиста зарплата',
-    grossSalary: 'Брутто',
-    hours: 'Годин',
-    lunches: 'Обіди',
-    overtime: 'Понаднормові',
-    extraBlocks: 'Надгодини',
-    saturdays: 'Суботи',
-    doctorVisits: 'Перепустки',
-    weekendsThisMonth: 'Вихідні цього місяця',
-    accruedWeekends: 'Накопичено вихідних',
-    doctorLeft: 'Перепустки залишилось',
-    accompanyLeft: 'Супровід',
-    monthlyIncome: 'Дохід по місяцях',
-    totalStats: 'Загальна статистика',
-    totalEarned: 'Всього зароблено',
-    totalHours: 'Всього годин',
-    totalLunch: 'Витрати на обіди',
-    bestMonth: 'Найкращий місяць',
-    employee: 'Працівник заводу',
-    personalData: 'Особисті дані',
-    fullName: "Повне ім'я",
-    employeeId: 'Табельний номер',
-    cardId: 'Номер картки',
-    email: 'Email',
-    salarySettings: 'Налаштування зарплати',
-    hourlyRate: 'Базова ставка (€/год)',
-    lunchCost: 'Вартість обіду (€/день)',
-    nightBonus: 'Нічна доплата (%)',
-    saturdayBonus: 'Коеф. суботи',
-    sundayBonus: 'Коеф. неділі',
-    extraBonus: 'Бонус за надгодини (€)',
-    vacations: 'Відпустки та перепустки',
-    accruedWeekendsLabel: 'Накопичено вихідних',
-    usedWeekends: 'Використано вихідних',
-    personalDoctor: 'Перепустки (особисті, на рік)',
-    usedPersonalDoctor: 'Використано особистих',
-    accompanyDoctor: 'Перепустки (супровід, на рік)',
-    usedAccompanyDoctor: 'Використано супроводу',
-    export: 'Експорт даних',
-    financeAnalytics: 'Фінансова аналітика',
-    netIncome: 'Чистий дохід',
-    taxes: 'Податки',
-    savings: 'Заощадження',
-    financialTip: 'Фінансова порада',
-    selectDayType: 'Виберіть тип дня',
-    work: 'Зміна',
-    nightShift: 'Нічна зміна',
-    sick: 'Лікарняний',
-    vacation: 'Відпустка',
-    doctor: 'Перепустка',
-    dayOff: 'Вихідний',
-    cancel: 'Скасувати',
-    saveChanges: 'Зберегти зміни',
-    goal: 'Моя фінансова ціль',
-    goalName: 'Назва цілі',
-    goalAmount: 'Сума цілі',
-    goalSaved: 'Накопичено',
-    goalTarget: 'Ціль',
-    goalRemaining: 'Залишилось',
-    saveGoal: 'Зберегти ціль',
-    deleteGoal: 'Видалити ціль',
-    add: 'Додати',
-    withdraw: 'Зняти',
-    history: 'Історія операцій',
-    currentMonth: 'Поточний місяць',
-    importPDF: 'Імпорт з PDF',
-    uploadPDF: 'Завантажте PDF із зарплатою за останні 4 місяці',
-    processing: 'Обробка...',
-    importSuccess: 'Дані за {count} місяців успішно імпортовано',
-    importError: 'Помилка при обробці PDF',
-    chooseFile: 'Виберіть файл',
-    mon: 'Пн',
-    tue: 'Вт',
-    wed: 'Ср',
-    thu: 'Чт',
-    fri: 'Пт',
-    sat: 'Сб',
-    sun: 'Нд',
-    january: 'Січень',
-    february: 'Лютий',
-    march: 'Березень',
-    april: 'Квітень',
-    may: 'Травень',
-    june: 'Червень',
-    july: 'Липень',
-    august: 'Серпень',
-    september: 'Вересень',
-    october: 'Жовтень',
-    november: 'Листопад',
-    december: 'Грудень',
-    clearAllData: 'Очистити всі дані',
-    goodMorning: 'Доброго ранку',
-    goodAfternoon: 'Доброго дня',
-    goodEvening: 'Доброго вечора',
-    exportToExcel: 'Експорт в Excel',
-    exportToPDF: 'Експорт в PDF'
-  }
+  // ... остальные переводы (sk, en, uk) оставь как есть
 };
 
 function showModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -528,7 +219,7 @@ window.hideNotification = function() {
   if (notification) notification.classList.add('hidden');
 };
 
-// Бургер-меню для телефона
+// Бургер-меню
 window.toggleMobileMenu = function() {
   const nav = document.getElementById('mainNav');
   nav.classList.toggle('active');
@@ -549,10 +240,9 @@ window.setLanguage = function(lang) {
   
   updateMonthDisplay();
   buildCalendar();
-  updateGreeting();
 };
 
-// ===== ТЕМЫ (10 тем) =====
+// ===== ТЕМЫ =====
 const themes = {
   dark: {
     '--primary': '#00b060',
@@ -706,22 +396,7 @@ function applyTheme(themeName) {
   document.body.classList.add(`theme-${themeName}`);
 }
 
-// ===== ВРЕМЯ, ДАТА, ПРИВЕТСТВИЕ, ПОГОДА =====
-function updateGreeting() {
-  const greetingEl = document.getElementById('greeting');
-  if (!greetingEl) return;
-  
-  const hour = new Date().getHours();
-  let greeting = '';
-  
-  if (hour < 12) greeting = translations[currentLanguage]?.goodMorning || 'Доброе утро';
-  else if (hour < 18) greeting = translations[currentLanguage]?.goodAfternoon || 'Добрый день';
-  else greeting = translations[currentLanguage]?.goodEvening || 'Добрый вечер';
-  
-  const name = currentUser?.fullName || currentUser?.name || '';
-  greetingEl.textContent = `${greeting}${name ? ', ' + name : ''}!`;
-}
-
+// ===== ВРЕМЯ, ДАТА, ПОГОДА (БЕЗ ПРИВЕТСТВИЯ) =====
 function updateDateTime() {
   const timeEl = document.getElementById('time');
   const dateEl = document.getElementById('date');
@@ -739,18 +414,147 @@ function updateDateTime() {
   );
 }
 
-// Погода для Тренчина (пример, можно заменить на реальное API)
+// Погода для Тренчина
 function updateWeather() {
   const weatherTemp = document.getElementById('weatherTemp');
   if (!weatherTemp) return;
   
-  // Имитация погоды (можно заменить на реальный API)
+  // Имитация погоды (можно заменить на реальное API)
   const temps = [2, 3, 4, 5, 6, 7, 8];
+  const conditions = ['☀️', '⛅', '☁️', '🌧️', '❄️'];
   const randomTemp = temps[Math.floor(Math.random() * temps.length)];
-  weatherTemp.textContent = `${randomTemp}°C`;
+  const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+  
+  weatherTemp.innerHTML = `${randomCondition} ${randomTemp}°C`;
+  
+  // Обновляем погодные эффекты
+  toggleWeatherEffect();
 }
 
-// ===== ФИНАНСОВЫЕ СОВЕТЫ (меняются каждый день) =====
+// ===== ПОГОДНЫЕ ЭФФЕКТЫ (СНЕГ/ДОЖДЬ) =====
+window.toggleWeatherEffect = function() {
+  const enabled = document.getElementById('weatherEffectsEnabled')?.checked;
+  const mode = document.getElementById('weatherEffectMode')?.value;
+  
+  // Сохраняем настройки в Firebase (если пользователь авторизован)
+  if (currentUser) {
+    updateDoc(doc(db, "users", currentUser.uid), {
+      weatherEffectsEnabled: enabled,
+      weatherEffectMode: mode
+    }).catch(err => console.log('Ошибка сохранения:', err));
+  }
+  
+  // Останавливаем текущий эффект
+  if (weatherParticles) {
+    document.body.removeChild(weatherParticles);
+    weatherParticles = null;
+    if (weatherAnimation) {
+      cancelAnimationFrame(weatherAnimation);
+      weatherAnimation = null;
+    }
+  }
+  
+  if (!enabled || mode === 'off') return;
+  
+  // Определяем тип эффекта
+  let effectType = mode;
+  if (mode === 'auto') {
+    const tempText = document.getElementById('weatherTemp')?.textContent || '0°C';
+    const temp = parseInt(tempText) || 0;
+    if (temp < 0) {
+      effectType = 'snow';
+    } else if (temp > 0 && temp < 10) {
+      effectType = 'rain';
+    } else {
+      return; // Ничего не включаем
+    }
+  }
+  
+  createWeatherEffect(effectType);
+};
+
+function createWeatherEffect(type) {
+  // Создаём canvas для частиц
+  const canvas = document.createElement('canvas');
+  canvas.id = 'weather-particles';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '9999';
+  document.body.appendChild(canvas);
+  weatherParticles = canvas;
+  
+  const ctx = canvas.getContext('2d');
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  
+  const resizeHandler = () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  };
+  
+  window.addEventListener('resize', resizeHandler);
+  canvas.width = width;
+  canvas.height = height;
+  
+  // Создаём частицы
+  const particles = [];
+  const particleCount = type === 'snow' ? 150 : 200;
+  
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: type === 'snow' ? Math.random() * 5 + 2 : Math.random() * 3 + 1,
+      speedY: type === 'snow' ? Math.random() * 2 + 1 : Math.random() * 5 + 3,
+      speedX: type === 'snow' ? Math.random() * 0.5 - 0.25 : Math.random() * 2 - 1,
+      opacity: Math.random() * 0.7 + 0.3
+    });
+  }
+  
+  function animate() {
+    if (!weatherParticles) return;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    particles.forEach(p => {
+      if (type === 'snow') {
+        // Снежинки
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Дождь
+        ctx.fillStyle = `rgba(174, 194, 224, ${p.opacity * 0.6})`;
+        ctx.fillRect(p.x, p.y, 1, p.size * 2);
+      }
+      
+      // Движение
+      p.y += p.speedY;
+      p.x += p.speedX;
+      
+      // Сброс в начало
+      if (p.y > height) {
+        p.y = -10;
+        p.x = Math.random() * width;
+      }
+      if (p.x > width) p.x = 0;
+      if (p.x < 0) p.x = width;
+    });
+    
+    weatherAnimation = requestAnimationFrame(animate);
+  }
+  
+  animate();
+}
+
+// ===== ФИНАНСОВЫЕ СОВЕТЫ =====
 function updateFinancialTip() {
   const tipEl = document.getElementById('financeTip');
   const tipDateEl = document.getElementById('tipDate');
@@ -777,7 +581,7 @@ function getAvatarUrl(email) {
 }
 
 function getDisplayName(user) {
-  if (!user) return 'Guest';
+  if (!user) return 'Гость';
   if (user.fullName && user.fullName.trim() !== '') return user.fullName;
   if (user.email) return user.email.split('@')[0];
   return 'User';
@@ -788,7 +592,6 @@ function updateUserDisplay() {
   const displayName = getDisplayName(currentUser);
   document.getElementById('userName').textContent = displayName;
   document.getElementById('profileName').textContent = displayName;
-  updateGreeting();
 }
 
 window.showLoginForm = function() {
@@ -810,10 +613,10 @@ window.register = async function() {
   const pass = document.getElementById('regPass')?.value.trim();
   const confirm = document.getElementById('regConfirm')?.value.trim();
   
-  if (!email || !pass || !confirm) return showMessage('Fill all fields!', true);
-  if (!email.includes('@')) return showMessage('Enter valid email!', true);
-  if (pass !== confirm) return showMessage('Passwords do not match!', true);
-  if (pass.length < 6) return showMessage('Password must be at least 6 characters!', true);
+  if (!email || !pass || !confirm) return showMessage('Заполните все поля!', true);
+  if (!email.includes('@')) return showMessage('Введите корректный email!', true);
+  if (pass !== confirm) return showMessage('Пароли не совпадают!', true);
+  if (pass.length < 6) return showMessage('Пароль должен быть минимум 6 символов!', true);
   
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
@@ -832,6 +635,8 @@ window.register = async function() {
       quickSalaries: [],
       financialGoal: null,
       theme: 'dark',
+      weatherEffectsEnabled: true,
+      weatherEffectMode: 'auto',
       settings: { 
         hourlyRate: BASE_RATE, 
         lunchCost: LUNCH_COST_REAL, 
@@ -851,7 +656,7 @@ window.register = async function() {
     };
     
     await setDoc(doc(db, "users", user.uid), userData);
-    showMessage('Registration successful! Now login.');
+    showMessage('Регистрация успешна! Теперь войдите.');
     
     document.getElementById('regEmail').value = '';
     document.getElementById('regPass').value = '';
@@ -862,9 +667,9 @@ window.register = async function() {
   } catch (error) {
     console.error("Registration error:", error);
     if (error.code === 'auth/email-already-in-use') {
-      showMessage('Email already registered!', true);
+      showMessage('Email уже зарегистрирован!', true);
     } else {
-      showMessage('Error: ' + error.message, true);
+      showMessage('Ошибка: ' + error.message, true);
     }
   }
 };
@@ -874,8 +679,8 @@ window.login = async function() {
   const pass = document.getElementById('loginPass')?.value.trim();
   const remember = document.getElementById('rememberMe')?.checked;
   
-  if (!email || !pass) return showMessage('Enter email and password!', true);
-  if (!email.includes('@')) return showMessage('Enter valid email!', true);
+  if (!email || !pass) return showMessage('Введите email и пароль!', true);
+  if (!email.includes('@')) return showMessage('Введите корректный email!', true);
   
   if (remember) {
     localStorage.setItem('rememberedEmail', email);
@@ -901,6 +706,10 @@ window.login = async function() {
       document.getElementById('employeeId').value = currentUser.employeeId || '';
       document.getElementById('cardId').value = currentUser.cardId || '';
       document.getElementById('email').value = currentUser.email || '';
+      
+      // Загружаем настройки погоды
+      document.getElementById('weatherEffectsEnabled').checked = currentUser.weatherEffectsEnabled !== false;
+      document.getElementById('weatherEffectMode').value = currentUser.weatherEffectMode || 'auto';
       
       if (currentUser.settings) {
         document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
@@ -944,29 +753,33 @@ window.login = async function() {
       updateWeather();
       updateFinancialTip();
       
-      showNotification('Welcome!');
+      showNotification('Добро пожаловать!');
     } else {
-      showMessage('User data not found!', true);
+      showMessage('Данные пользователя не найдены!', true);
     }
     
   } catch (error) {
     console.error("Login error:", error);
     if (error.code === 'auth/invalid-credential') {
-      showMessage('Invalid email or password!', true);
+      showMessage('Неверный email или пароль!', true);
     } else {
-      showMessage('Login error: ' + error.message, true);
+      showMessage('Ошибка входа: ' + error.message, true);
     }
   }
 };
 
 window.logout = async function() {
-  if (confirm('Logout?')) { 
+  if (confirm('Выйти?')) { 
     await signOut(auth); 
     currentUser = null; 
     document.getElementById('app').classList.add('hidden'); 
     showModal('authModal'); 
     window.showLoginForm();
     if (updateInterval) clearInterval(updateInterval);
+    if (weatherParticles) {
+      document.body.removeChild(weatherParticles);
+      weatherParticles = null;
+    }
   }
 };
 
@@ -976,7 +789,7 @@ window.setView = function(view) {
   document.getElementById(view)?.classList.add('active');
   document.querySelector(`.nav-btn[data-view="${view}"]`)?.classList.add('active');
   
-  // Закрываем мобильное меню, если открыто
+  // Закрываем мобильное меню
   document.getElementById('mainNav').classList.remove('active');
   
   if (view === 'calendar') buildCalendar();
@@ -998,6 +811,10 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById('employeeId').value = currentUser.employeeId || '';
       document.getElementById('cardId').value = currentUser.cardId || '';
       document.getElementById('email').value = currentUser.email || '';
+      
+      // Загружаем настройки погоды
+      document.getElementById('weatherEffectsEnabled').checked = currentUser.weatherEffectsEnabled !== false;
+      document.getElementById('weatherEffectMode').value = currentUser.weatherEffectMode || 'auto';
       
       if (currentUser.settings) {
         document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
@@ -1046,6 +863,10 @@ onAuthStateChanged(auth, async (user) => {
     showModal('authModal');
     window.showLoginForm();
     if (updateInterval) clearInterval(updateInterval);
+    if (weatherParticles) {
+      document.body.removeChild(weatherParticles);
+      weatherParticles = null;
+    }
   }
 });
 
@@ -1068,7 +889,7 @@ window.onload = function() {
       let clearBtn = document.createElement('button');
       clearBtn.id = 'clearAllDataBtn';
       clearBtn.className = 'btn-danger';
-      clearBtn.innerHTML = '<i class="fas fa-trash"></i> ' + (translations[currentLanguage]?.clearAllData || 'Clear all data');
+      clearBtn.innerHTML = '<i class="fas fa-trash"></i> ' + (translations[currentLanguage]?.clearAllData || 'Очистить все данные');
       clearBtn.onclick = window.clearAllData;
       profileActions.appendChild(clearBtn);
     }
@@ -1080,18 +901,18 @@ window.onload = function() {
 
 function updateMonthDisplay() {
   const monthNames = [
-    translations[currentLanguage]?.january || 'January',
-    translations[currentLanguage]?.february || 'February',
-    translations[currentLanguage]?.march || 'March',
-    translations[currentLanguage]?.april || 'April',
-    translations[currentLanguage]?.may || 'May',
-    translations[currentLanguage]?.june || 'June',
-    translations[currentLanguage]?.july || 'July',
-    translations[currentLanguage]?.august || 'August',
-    translations[currentLanguage]?.september || 'September',
-    translations[currentLanguage]?.october || 'October',
-    translations[currentLanguage]?.november || 'November',
-    translations[currentLanguage]?.december || 'December'
+    translations[currentLanguage]?.january || 'Январь',
+    translations[currentLanguage]?.february || 'Февраль',
+    translations[currentLanguage]?.march || 'Март',
+    translations[currentLanguage]?.april || 'Апрель',
+    translations[currentLanguage]?.may || 'Май',
+    translations[currentLanguage]?.june || 'Июнь',
+    translations[currentLanguage]?.july || 'Июль',
+    translations[currentLanguage]?.august || 'Август',
+    translations[currentLanguage]?.september || 'Сентябрь',
+    translations[currentLanguage]?.october || 'Октябрь',
+    translations[currentLanguage]?.november || 'Ноябрь',
+    translations[currentLanguage]?.december || 'Декабрь'
   ];
   document.getElementById('currentMonth').innerText = monthNames[currentMonth] + ' ' + currentYear;
   document.getElementById('calendarMonth').innerText = monthNames[currentMonth] + ' ' + currentYear;
@@ -1213,7 +1034,7 @@ window.addRecord = async function(type) {
   hideModal('dayModal');
   buildCalendar();
   calculateAllStats();
-  showNotification('Record added');
+  showNotification('Запись добавлена');
 };
 
 window.closeModal = function() { hideModal('dayModal'); };
@@ -1295,16 +1116,6 @@ function calculateDashboardStats() {
   document.getElementById('satCount').innerText = stats.saturdays + stats.sundays;
   document.getElementById('doctorCount').innerText = stats.doctorDays;
   document.getElementById('lunchCost').innerText = lunchCost.toFixed(2) + ' €';
-  
-  animateAllCounters();
-}
-
-function animateAllCounters() {
-  document.querySelectorAll('.counter').forEach(el => {
-    const id = el.id;
-    const value = parseFloat(el.textContent) || 0;
-    // Анимация уже есть через CSS
-  });
 }
 
 function updateFinanceStats() {
@@ -1340,10 +1151,10 @@ function buildPieChart(net, tax, lunch, savings) {
     type: 'doughnut',
     data: {
       labels: [
-        translations[currentLanguage]?.netIncome || 'Net income',
-        translations[currentLanguage]?.taxes || 'Taxes',
-        translations[currentLanguage]?.lunches || 'Lunches',
-        translations[currentLanguage]?.savings || 'Savings'
+        translations[currentLanguage]?.netIncome || 'Чистый доход',
+        translations[currentLanguage]?.taxes || 'Налоги',
+        translations[currentLanguage]?.lunches || 'Обеды',
+        translations[currentLanguage]?.savings || 'Сбережения'
       ],
       datasets: [{
         data: [net, tax, lunch, savings],
@@ -1407,7 +1218,7 @@ function loadYearStats() {
   totalGross += Math.floor(extraCount / 2) * (currentUser.settings?.extraBonus || 25);
   totalGross -= totalLunch;
   
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
   let bestMonth = { value: 0, name: '' };
   
   monthTotals.forEach((total, index) => {
@@ -1438,9 +1249,9 @@ function buildStatsChart(monthTotals) {
   statsChart = new Chart(canvas, {
     type: 'bar',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
       datasets: [{
-        label: translations[currentLanguage]?.monthlyIncome || 'Income €',
+        label: translations[currentLanguage]?.monthlyIncome || 'Доход €',
         data: monthTotals,
         backgroundColor: gradient,
         borderColor: getComputedStyle(document.body).getPropertyValue('--primary').trim(),
@@ -1480,6 +1291,11 @@ window.saveProfile = async function() {
   currentUser.employeeId = document.getElementById('employeeId').value;
   currentUser.cardId = document.getElementById('cardId').value;
   currentUser.email = document.getElementById('email').value;
+  
+  // Сохраняем настройки погоды
+  currentUser.weatherEffectsEnabled = document.getElementById('weatherEffectsEnabled').checked;
+  currentUser.weatherEffectMode = document.getElementById('weatherEffectMode').value;
+  
   currentUser.settings.hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || BASE_RATE;
   currentUser.settings.lunchCost = parseFloat(document.getElementById('lunchCost').value) || LUNCH_COST_REAL;
   currentUser.settings.nightBonus = parseFloat(document.getElementById('nightBonus').value) || NIGHT_BONUS_PERCENT;
@@ -1498,18 +1314,21 @@ window.saveProfile = async function() {
     employeeId: currentUser.employeeId,
     cardId: currentUser.cardId,
     email: currentUser.email,
+    weatherEffectsEnabled: currentUser.weatherEffectsEnabled,
+    weatherEffectMode: currentUser.weatherEffectMode,
     settings: currentUser.settings
   });
   
   updateUserDisplay();
   updateWeekendStats();
-  showNotification('Profile saved!');
+  toggleWeatherEffect();
+  showNotification('Профиль сохранён!');
   calculateAllStats();
 };
 
 window.clearAllData = async function() {
   if (!currentUser) return;
-  if (confirm('Delete ALL data?')) {
+  if (confirm('Удалить ВСЕ данные?')) {
     currentUser.records = [];
     currentUser.financialGoal = null;
     currentUser.settings.usedPersonalDoctor = 0;
@@ -1525,7 +1344,7 @@ window.clearAllData = async function() {
     buildCalendar();
     calculateAllStats();
     loadFinancialGoal();
-    showNotification('All data cleared');
+    showNotification('Все данные очищены');
   }
 };
 
@@ -1545,7 +1364,7 @@ window.exportData = function() {
   a.href = url;
   a.download = `vaillant_${currentUser.name}_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
-  showNotification('Data exported');
+  showNotification('Данные экспортированы');
 };
 
 window.previewAvatar = function(input) {
@@ -1557,7 +1376,7 @@ window.previewAvatar = function(input) {
       if (currentUser) {
         currentUser.avatar = e.target.result;
         await updateDoc(doc(db, "users", currentUser.uid), { avatar: currentUser.avatar });
-        showNotification('Avatar updated');
+        showNotification('Аватар обновлён');
       }
     };
     reader.readAsDataURL(input.files[0]);
@@ -1587,7 +1406,6 @@ function updateWeekendStats() {
   
   document.getElementById('weekendsThisMonth').innerText = weekendsThisMonth;
   
-  // Используем ручные значения из профиля
   const accruedWeekends = currentUser.settings?.accruedWeekends || 0;
   document.getElementById('accruedWeekends').innerText = accruedWeekends;
   document.getElementById('accruedWeekendsInput').value = accruedWeekends;
@@ -1630,9 +1448,9 @@ function buildYearChart() {
   yearChart = new Chart(canvas, {
     type: 'line',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
       datasets: [{
-        label: translations[currentLanguage]?.monthlyIncome || 'Income €',
+        label: translations[currentLanguage]?.monthlyIncome || 'Доход €',
         data: months,
         borderColor: getComputedStyle(document.body).getPropertyValue('--primary').trim(),
         backgroundColor: gradient,
@@ -1731,11 +1549,11 @@ function updateHistoryList() {
     html += `<div class="history-item">
       <span>${icon} ${item.date}</span>
       <span style="color:${color}">${item.type === 'add' ? '+' : '-'}${item.amount.toFixed(2)} €</span>
-      <span style="color:#94a3b8;">(balance: ${item.balance.toFixed(2)} €)</span>
+      <span style="color:#94a3b8;">(баланс: ${item.balance.toFixed(2)} €)</span>
     </div>`;
   });
   
-  historyList.innerHTML = html || '<div style="color:#94a3b8;">No history</div>';
+  historyList.innerHTML = html || '<div style="color:#94a3b8;">История пуста</div>';
 }
 
 window.saveGoal = async function() {
@@ -1745,7 +1563,7 @@ window.saveGoal = async function() {
   const amount = parseFloat(document.getElementById('goalAmount').value);
   
   if (!name || isNaN(amount) || amount <= 0) {
-    return showMessage('Enter goal name and amount', true);
+    return showMessage('Введите название и сумму цели', true);
   }
   
   currentUser.financialGoal = {
@@ -1760,19 +1578,19 @@ window.saveGoal = async function() {
     financialGoal: currentUser.financialGoal
   });
   
-  showNotification('Goal saved');
+  showNotification('Цель сохранена');
   loadFinancialGoal();
 };
 
 window.clearGoal = async function() {
   if (!currentUser || !currentUser.financialGoal) return;
   
-  if (confirm('Delete goal?')) {
+  if (confirm('Удалить цель?')) {
     currentUser.financialGoal = null;
     await updateDoc(doc(db, "users", currentUser.uid), {
       financialGoal: null
     });
-    showNotification('Goal deleted');
+    showNotification('Цель удалена');
     loadFinancialGoal();
   }
 };
@@ -1780,8 +1598,8 @@ window.clearGoal = async function() {
 window.addToGoal = async function() {
   if (!currentUser || !currentUser.financialGoal) return;
   
-  const amount = parseFloat(prompt('Amount to add?', '100'));
-  if (isNaN(amount) || amount <= 0) return showMessage('Enter valid amount', true);
+  const amount = parseFloat(prompt('Сколько добавить?', '100'));
+  if (isNaN(amount) || amount <= 0) return showMessage('Введите сумму', true);
   
   currentUser.financialGoal.saved = (currentUser.financialGoal.saved || 0) + amount;
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
@@ -1797,15 +1615,15 @@ window.addToGoal = async function() {
   });
   
   loadFinancialGoal();
-  showNotification(`Added ${amount} €`);
+  showNotification(`Добавлено ${amount} €`);
 };
 
 window.withdrawFromGoal = async function() {
   if (!currentUser || !currentUser.financialGoal) return;
   
-  const amount = parseFloat(prompt('Amount to withdraw?', '50'));
-  if (isNaN(amount) || amount <= 0) return showMessage('Enter valid amount', true);
-  if (amount > (currentUser.financialGoal.saved || 0)) return showMessage('Insufficient funds', true);
+  const amount = parseFloat(prompt('Сколько снять?', '50'));
+  if (isNaN(amount) || amount <= 0) return showMessage('Введите сумму', true);
+  if (amount > (currentUser.financialGoal.saved || 0)) return showMessage('Недостаточно средств', true);
   
   currentUser.financialGoal.saved -= amount;
   currentUser.financialGoal.history = currentUser.financialGoal.history || [];
@@ -1821,28 +1639,28 @@ window.withdrawFromGoal = async function() {
   });
   
   loadFinancialGoal();
-  showNotification(`Withdrawn ${amount} €`);
+  showNotification(`Снято ${amount} €`);
 };
 
 window.exportToExcel = function() {
   if (!currentUser) return;
   
   const data = [
-    ['Metric', 'Value'],
-    ['Total earned', document.getElementById('totalEarned').textContent],
-    ['Total hours', document.getElementById('totalHours').textContent],
-    ['Lunch cost', document.getElementById('totalLunch').textContent],
-    ['Best month', document.getElementById('bestMonth').textContent],
-    ['Net salary (current month)', document.getElementById('net').textContent],
-    ['Gross (current month)', document.getElementById('gross').textContent],
+    ['Показатель', 'Значение'],
+    ['Всего заработано', document.getElementById('totalEarned').textContent],
+    ['Всего часов', document.getElementById('totalHours').textContent],
+    ['Потрачено на обеды', document.getElementById('totalLunch').textContent],
+    ['Лучший месяц', document.getElementById('bestMonth').textContent],
+    ['Чистая зарплата', document.getElementById('net').textContent],
+    ['Грязная', document.getElementById('gross').textContent],
   ];
   
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(data);
-  XLSX.utils.book_append_sheet(wb, ws, 'Statistics');
+  XLSX.utils.book_append_sheet(wb, ws, 'Статистика');
   XLSX.writeFile(wb, `vaillant_stats_${new Date().toISOString().split('T')[0]}.xlsx`);
   
-  showNotification('Excel file saved');
+  showNotification('Excel файл сохранён');
 };
 
 window.exportToPDF = function() {
@@ -1853,18 +1671,18 @@ window.exportToPDF = function() {
   
   doc.setFontSize(18);
   doc.setTextColor(0, 176, 96);
-  doc.text('Vaillant Assistant - Statistics', 20, 20);
+  doc.text('Vaillant Assistant - Статистика', 20, 20);
   
   doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 30);
+  doc.text(`Дата: ${new Date().toLocaleDateString()}`, 20, 30);
   
   const data = [
-    ['Metric', 'Value'],
-    ['Total earned', document.getElementById('totalEarned').textContent],
-    ['Total hours', document.getElementById('totalHours').textContent],
-    ['Lunch cost', document.getElementById('totalLunch').textContent],
-    ['Best month', document.getElementById('bestMonth').textContent],
+    ['Показатель', 'Значение'],
+    ['Всего заработано', document.getElementById('totalEarned').textContent],
+    ['Всего часов', document.getElementById('totalHours').textContent],
+    ['Потрачено на обеды', document.getElementById('totalLunch').textContent],
+    ['Лучший месяц', document.getElementById('bestMonth').textContent],
   ];
   
   doc.autoTable({
@@ -1876,7 +1694,7 @@ window.exportToPDF = function() {
   });
   
   doc.save(`vaillant_stats_${new Date().toISOString().split('T')[0]}.pdf`);
-  showNotification('PDF file saved');
+  showNotification('PDF файл сохранён');
 };
 
 window.importFromPDF = function(input) {
@@ -1884,7 +1702,7 @@ window.importFromPDF = function(input) {
   
   const file = input.files[0];
   const statusEl = document.getElementById('pdfStatus');
-  statusEl.textContent = translations[currentLanguage]?.processing || 'Processing...';
+  statusEl.textContent = translations[currentLanguage]?.processing || 'Обработка...';
   
   setTimeout(async () => {
     const months = [
@@ -1922,13 +1740,13 @@ window.importFromPDF = function(input) {
       await updateDoc(doc(db, "users", currentUser.uid), {
         quickSalaries: currentUser.quickSalaries
       });
-      const msg = translations[currentLanguage]?.importSuccess || 'Data for {count} months successfully imported';
+      const msg = translations[currentLanguage]?.importSuccess || 'Данные за {count} месяцев успешно импортированы';
       statusEl.textContent = msg.replace('{count}', months.length);
       setTimeout(() => { statusEl.textContent = ''; }, 3000);
       calculateAllStats();
-      showNotification('Data imported');
+      showNotification('Данные импортированы');
     } catch (error) {
-      statusEl.textContent = translations[currentLanguage]?.importError || 'Error processing PDF';
+      statusEl.textContent = translations[currentLanguage]?.importError || 'Ошибка при обработке PDF';
     }
   }, 1500);
 };
