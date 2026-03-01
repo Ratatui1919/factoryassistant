@@ -1,4 +1,4 @@
-// modules/auth.js - АВТОРИЗАЦИЯ (ПОЛНАЯ ВЕРСИЯ)
+// modules/auth.js - АВТОРИЗАЦИЯ (ИСПРАВЛЕННАЯ)
 
 import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc, updateDoc } from './firebase-config.js';
 import { showModal, hideModal, showNotification } from './utils.js';
@@ -8,6 +8,7 @@ let currentUserData = null;
 
 // Получить текущего пользователя
 export function getCurrentUser() {
+    console.log('getCurrentUser вызван, возвращает:', currentUser);
     return currentUser;
 }
 
@@ -22,6 +23,15 @@ export async function updateUserData(newData) {
     currentUserData = { ...currentUserData, ...newData };
     currentUser = { uid: currentUser.uid, ...currentUserData };
     await updateDoc(doc(db, "users", currentUser.uid), newData);
+}
+
+// Установить текущего пользователя (для main.js)
+export function setCurrentUser(user, userData) {
+    console.log('setCurrentUser вызван:', user, userData);
+    currentUser = user;
+    currentUserData = userData;
+    window.currentUser = user; // Добавляем в глобальную область
+    window.currentUserData = userData;
 }
 
 // Показать форму входа
@@ -128,8 +138,8 @@ export async function login() {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (!userDoc.exists()) return alert('Данные пользователя не найдены!');
         
-        currentUserData = userDoc.data();
-        currentUser = { uid: user.uid, ...currentUserData };
+        const userData = userDoc.data();
+        setCurrentUser({ uid: user.uid, ...userData }, userData);
         
         hideModal('authModal');
         document.getElementById('app').classList.remove('hidden');
@@ -148,6 +158,8 @@ export async function logout() {
         await signOut(auth); 
         currentUser = null; 
         currentUserData = null;
+        window.currentUser = null;
+        window.currentUserData = null;
         document.getElementById('app').classList.add('hidden'); 
         showModal('authModal'); 
         showLoginForm();
@@ -183,6 +195,8 @@ export async function saveProfile() {
     
     currentUser = { ...currentUser, ...updates };
     currentUserData = { ...currentUserData, ...updates };
+    window.currentUser = currentUser;
+    window.currentUserData = currentUserData;
     
     await updateDoc(doc(db, "users", currentUser.uid), updates);
     
