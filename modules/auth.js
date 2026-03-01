@@ -3,7 +3,7 @@
 import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc, updateDoc } from './firebase-config.js';
 import { t, showModal, hideModal, showNotification, getAvatarUrl, getDisplayName } from './utils.js';
 import { BASE_RATE, LUNCH_COST_REAL, NIGHT_BONUS_PERCENT } from './salary.js';
-import { initApp } from './main.js';
+import { registerLoadUserData, initApp } from './main.js';
 
 let currentUser = null;
 let currentUserData = null;
@@ -95,6 +95,9 @@ export function loadUserDataToUI() {
     
     console.log('Данные загружены в UI');
 }
+
+// Регистрируем функцию загрузки данных в main
+registerLoadUserData(loadUserDataToUI);
 
 // Показать форму входа
 export function showLoginForm() {
@@ -341,7 +344,6 @@ export async function clearAllData() {
 }
 
 // ===== ЭКСПОРТ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
-// Эти функции будут доступны в HTML как window.showLoginForm и т.д.
 window.showLoginForm = showLoginForm;
 window.showRegisterForm = showRegisterForm;
 window.register = register;
