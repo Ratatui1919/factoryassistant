@@ -1,4 +1,4 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ФИНАЛЬНАЯ ВЕРСИЯ)
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ИСПРАВЛЕННЫЙ)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
@@ -194,23 +194,28 @@ window.addEventListener('load', function() {
     }
 });
 
-// Переключение вкладок
+// ===== ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК =====
+// БЕЗ АВТООБНОВЛЕНИЯ!
 window.setView = function(view) {
     console.log('Переключение на вкладку:', view);
     
+    // Скрываем все вкладки
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     
+    // Показываем выбранную вкладку
     const viewElement = document.getElementById(view);
     if (viewElement) viewElement.classList.add('active');
     
+    // Обновляем активное состояние кнопок навигации
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     const navBtn = document.querySelector(`.nav-btn[data-view="${view}"]`);
     if (navBtn) navBtn.classList.add('active');
     
+    // Закрываем мобильное меню если открыто
     const mainNav = document.getElementById('mainNav');
     if (mainNav) mainNav.classList.remove('active');
     
-    // Обновляем данные для текущей вкладки
+    // Обновляем данные для текущей вкладки (БЕЗ ПЕРЕЗАГРУЗКИ СТРАНИЦЫ)
     if (view === 'calendar' && window.buildCalendar) {
         setTimeout(() => window.buildCalendar(), 50);
     }
@@ -223,9 +228,13 @@ window.setView = function(view) {
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
     }
+    if (view === 'profile') {
+        // Ничего не делаем, данные уже загружены
+        console.log('Профиль открыт');
+    }
 };
 
-// Бургер-меню
+// Бургер-меню (больше не используется, но оставляем для совместимости)
 window.toggleMobileMenu = function() {
     const nav = document.getElementById('mainNav');
     if (nav) nav.classList.toggle('active');
