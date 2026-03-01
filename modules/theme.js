@@ -1,4 +1,4 @@
-// js/theme.js - УПРАВЛЕНИЕ ТЕМАМИ
+// modules/theme.js - УПРАВЛЕНИЕ ТЕМАМИ
 
 import { getCurrentUser, updateUserData } from './auth.js';
 
@@ -170,5 +170,5 @@ window.setTheme = function(theme) {
         if (document.getElementById('finance')?.classList.contains('active') && window.updateFinanceStats) {
             window.updateFinanceStats();
         }
-    }, 100);
+    }, 200);
 };
