@@ -28,10 +28,27 @@ export async function updateUserData(newData) {
 
 // Загрузка данных пользователя в UI
 export function loadUserDataToUI() {
+    console.log('loadUserDataToUI вызван, currentUser:', currentUser);
+    
     if (!currentUser) {
-        console.log('loadUserDataToUI: currentUser отсутствует');
+        console.log('loadUserDataToUI: currentUser отсутствует, ждем...');
+        // Пробуем еще раз через секунду
+        setTimeout(() => {
+            if (currentUser) {
+                console.log('loadUserDataToUI: повторная попытка с currentUser:', currentUser);
+                loadUserDataToUIImpl();
+            } else {
+                console.log('loadUserDataToUI: currentUser все еще отсутствует');
+            }
+        }, 500);
         return;
     }
+    
+    loadUserDataToUIImpl();
+}
+
+function loadUserDataToUIImpl() {
+    if (!currentUser) return;
     
     console.log('Загрузка данных пользователя в UI:', currentUser);
     
