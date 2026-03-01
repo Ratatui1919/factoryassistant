@@ -1,4 +1,4 @@
-// js/important-dates.js - ВАЖНЫЕ ДАТЫ
+// modules/important-dates.js - ВАЖНЫЕ ДАТЫ
 
 import { getCurrentUser } from './auth.js';
 import { t } from './utils.js';
