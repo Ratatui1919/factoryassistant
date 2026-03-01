@@ -2160,3 +2160,40 @@ canvas {
     pointer-events: none;
     z-index: 9999;
 }
+/* МОБИЛЬНЫЕ СТИЛИ - ПЕРЕЗАПИСЫВАЮТ ВСЁ */
+@media (max-width: 768px) {
+    .kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    
+    .kpi-card {
+        padding: 15px !important;
+    }
+    
+    .stats-row {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    
+    .month-selector h2 {
+        font-size: 1.1rem !important;
+        min-width: 120px !important;
+    }
+    
+    .day {
+        padding: 8px 2px !important;
+        min-height: 45px !important;
+    }
+    
+    .day-number {
+        font-size: 0.9rem !important;
+    }
+    
+    .day-icon {
+        font-size: 1rem !important;
+    }
+}
+
