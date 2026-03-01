@@ -2144,6 +2144,8 @@ function updateGoalDisplay() {
   
   document.getElementById('goalSaved').innerText = (goal.saved || 0).toFixed(2) + ' €';
   document.getElementById('goalRemaining').innerText = Math.max(goal.amount - (goal.saved || 0), 0).toFixed(2) + ' €';
+  document.getElementById('goalTarget').innerText = goal.amount.toFixed(2) + ' €';
+  
   const percent = Math.min(((goal.saved || 0) / goal.amount) * 100, 100);
   document.getElementById('goalPercent').innerText = percent.toFixed(1) + '%';
   document.getElementById('goalProgressBar').style.width = percent + '%';
@@ -2300,3 +2302,4 @@ window.importFromPDF = function(input) {
     showNotification(translations[currentLanguage]?.importPDF || 'Данные импортированы');
   }, 1500);
 };
+
