@@ -1,4 +1,4 @@
-/* mobile.css - ПОЛНАЯ ИСПРАВЛЕННАЯ ВЕРСИЯ */
+/* mobile.css - ПОЛНАЯ ФИНАЛЬНАЯ ВЕРСИЯ */
 
 @media (max-width: 768px) {
     
@@ -6,7 +6,7 @@
     body {
         font-size: 14px;
         background: var(--dark);
-        padding-bottom: 70px !important; /* Отступ для нижней навигации */
+        padding-bottom: 70px !important;
         margin: 0;
     }
     
@@ -27,7 +27,7 @@
         left: 0 !important;
         right: 0 !important;
         top: auto !important;
-        height: 70px !important;
+        height: 65px !important;
         background: var(--dark-card) !important;
         backdrop-filter: blur(10px) !important;
         -webkit-backdrop-filter: blur(10px) !important;
@@ -62,13 +62,13 @@
     }
     
     .nav-btn i {
-        font-size: 1.4rem !important;
+        font-size: 1.3rem !important;
         margin-bottom: 2px !important;
         color: var(--text-muted) !important;
     }
     
     .nav-btn span {
-        font-size: 0.65rem !important;
+        font-size: 0.6rem !important;
         font-weight: 500 !important;
         color: var(--text-muted) !important;
     }
@@ -102,17 +102,17 @@
     .logo {
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 4px !important;
         flex-shrink: 0 !important;
     }
     
     .logo img {
-        height: 24px !important;
+        height: 22px !important;
         width: auto !important;
     }
     
     .logo h1 {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         color: var(--text) !important;
         margin: 0 !important;
         white-space: nowrap !important;
@@ -130,14 +130,14 @@
     }
     
     .lang-btn {
-        padding: 4px 6px !important;
-        font-size: 0.7rem !important;
+        padding: 3px 5px !important;
+        font-size: 0.65rem !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
         color: var(--text-muted) !important;
-        border-radius: 6px !important;
+        border-radius: 4px !important;
         cursor: pointer !important;
-        min-width: 28px !important;
+        min-width: 24px !important;
         text-align: center !important;
         text-transform: uppercase !important;
         font-weight: 600 !important;
@@ -152,72 +152,74 @@
     .header-right {
         display: flex !important;
         align-items: center !important;
-        justify-content: space-between !important;
-        gap: 8px !important;
+        gap: 6px !important;
         margin-top: 8px !important;
         width: 100% !important;
     }
     
     .header-widget {
         display: flex !important;
-        flex-direction: column !important;
-        flex: 1 !important;
-        padding: 6px 10px !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex: 2 !important;
+        padding: 5px 10px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
         border-radius: 30px !important;
+        height: 36px !important;
     }
     
     .widget-time {
         font-size: 0.8rem !important;
         color: var(--text) !important;
         font-weight: 500 !important;
-        text-align: center !important;
+        white-space: nowrap !important;
     }
     
     .widget-date-weather {
         display: flex !important;
         align-items: center !important;
-        justify-content: center !important;
-        gap: 6px !important;
+        gap: 4px !important;
         font-size: 0.7rem !important;
         color: var(--text-muted) !important;
+        white-space: nowrap !important;
+    }
+    
+    .weather {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
     }
     
     .weather-location {
         display: none !important;
     }
     
-    .weather {
-        display: flex !important;
-        align-items: center !important;
-        gap: 4px !important;
-    }
-    
     .user-info {
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
-        padding: 3px 8px 3px 3px !important;
+        gap: 4px !important;
+        padding: 2px 6px 2px 2px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
         border-radius: 30px !important;
         flex-shrink: 0 !important;
+        height: 36px !important;
     }
     
     .user-info img {
-        width: 32px !important;
-        height: 32px !important;
+        width: 30px !important;
+        height: 30px !important;
         border-radius: 50% !important;
         border: 2px solid var(--primary) !important;
         object-fit: cover !important;
     }
     
     .user-info span {
-        font-size: 0.75rem !important;
+        font-size: 0.7rem !important;
         color: var(--text) !important;
         font-weight: 500 !important;
-        max-width: 70px !important;
+        max-width: 60px !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
@@ -236,6 +238,7 @@
         cursor: pointer !important;
         flex-shrink: 0 !important;
         margin-left: 0 !important;
+        font-size: 0.9rem !important;
     }
     
     .mobile-menu-toggle {
@@ -247,15 +250,15 @@
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 8px 12px !important;
-        margin: 0 0 16px 0 !important;
+        padding: 6px 10px !important;
+        margin: 0 0 12px 0 !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 40px !important;
+        border-radius: 30px !important;
     }
     
     .month-selector h2 {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         color: var(--primary) !important;
         font-weight: 600 !important;
         margin: 0 !important;
@@ -264,8 +267,8 @@
     }
     
     .month-selector button {
-        width: 34px !important;
-        height: 34px !important;
+        width: 30px !important;
+        height: 30px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
         color: var(--text) !important;
@@ -274,7 +277,7 @@
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
-        transition: all 0.2s ease !important;
+        font-size: 0.8rem !important;
         padding: 0 !important;
     }
     
@@ -288,18 +291,18 @@
     .kpi-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-        margin: 0 0 16px 0 !important;
+        gap: 6px !important;
+        margin: 0 0 12px 0 !important;
     }
     
     .kpi-card {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;
-        padding: 10px !important;
+        gap: 6px !important;
+        padding: 8px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 16px !important;
+        border-radius: 14px !important;
         transition: transform 0.2s ease !important;
     }
     
@@ -308,15 +311,15 @@
     }
     
     .kpi-icon {
-        width: 36px !important;
-        height: 36px !important;
-        min-width: 36px !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
         background: rgba(0, 176, 96, 0.1) !important;
-        border-radius: 12px !important;
+        border-radius: 10px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         color: var(--primary) !important;
     }
     
@@ -326,14 +329,16 @@
     }
     
     .kpi-label {
-        font-size: 0.6rem !important;
+        display: block !important;
+        font-size: 0.55rem !important;
         color: var(--text-muted) !important;
         margin-bottom: 2px !important;
         white-space: nowrap !important;
     }
     
     .kpi-value {
-        font-size: 0.9rem !important;
+        display: block !important;
+        font-size: 0.85rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
         white-space: nowrap !important;
@@ -364,50 +369,50 @@
     
     /* ===== КУРС ВАЛЮТ ===== */
     .exchange-rate-card {
-        padding: 16px !important;
-        margin: 0 0 16px 0 !important;
+        padding: 12px !important;
+        margin: 0 0 12px 0 !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 18px !important;
     }
     
     .exchange-rate-card > div:first-child {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 8px !important;
     }
     
     .currency-display {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 10px !important;
-        padding: 10px !important;
+        gap: 8px !important;
+        padding: 8px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
         border-radius: 30px !important;
-        margin: 12px 0 !important;
+        margin: 8px 0 !important;
     }
     
     .currency-block {
         display: flex !important;
         align-items: center !important;
         gap: 4px !important;
-        padding: 4px 10px !important;
+        padding: 3px 8px !important;
         background: var(--dark) !important;
         border: 1px solid var(--border) !important;
         border-radius: 30px !important;
     }
     
     .currency-icon {
-        width: 24px !important;
-        height: 24px !important;
+        width: 22px !important;
+        height: 22px !important;
         border-radius: 50% !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
     }
     
     .currency-icon.eur {
@@ -421,7 +426,7 @@
     }
     
     .currency-value {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
         font-weight: 700 !important;
         color: var(--primary) !important;
     }
@@ -429,35 +434,37 @@
     .converter-box {
         display: flex !important;
         flex-direction: column !important;
-        gap: 8px !important;
-        margin-top: 12px !important;
+        gap: 6px !important;
+        margin-top: 8px !important;
     }
     
     .converter-box .fa-arrow-right {
         transform: rotate(90deg) !important;
-        margin: 4px auto !important;
+        margin: 2px auto !important;
         color: var(--primary) !important;
+        font-size: 1rem !important;
     }
     
     .converter-input,
     .converter-result {
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
-        padding: 4px 4px 4px 10px !important;
+        gap: 4px !important;
+        padding: 3px 3px 3px 8px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 16px !important;
+        border-radius: 14px !important;
+        height: 36px !important;
         width: 100% !important;
     }
     
     .converter-input input {
         flex: 1 !important;
-        padding: 8px !important;
+        padding: 6px !important;
         background: transparent !important;
         border: none !important;
         color: var(--text) !important;
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
         outline: none !important;
     }
     
@@ -466,15 +473,15 @@
     }
     
     .result-number {
-        padding: 8px !important;
-        font-size: 1rem !important;
+        padding: 6px !important;
+        font-size: 0.95rem !important;
         font-weight: 600 !important;
         color: var(--primary) !important;
     }
     
     .update-btn {
-        padding: 6px 14px !important;
-        font-size: 0.8rem !important;
+        padding: 5px 12px !important;
+        font-size: 0.75rem !important;
         background: var(--primary) !important;
         color: white !important;
         border-radius: 30px !important;
@@ -484,10 +491,10 @@
     
     .last-update {
         text-align: center !important;
-        font-size: 0.7rem !important;
+        font-size: 0.65rem !important;
         color: var(--text-muted) !important;
-        margin-top: 12px !important;
-        padding-top: 12px !important;
+        margin-top: 8px !important;
+        padding-top: 8px !important;
         border-top: 1px solid var(--border) !important;
     }
     
@@ -495,37 +502,37 @@
     .stats-row {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-        margin: 0 0 16px 0 !important;
+        gap: 6px !important;
+        margin: 0 0 12px 0 !important;
     }
     
     .stat-box {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;
-        padding: 10px !important;
+        gap: 6px !important;
+        padding: 8px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 14px !important;
+        border-radius: 12px !important;
     }
     
     .stat-box i {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
         color: var(--primary) !important;
-        min-width: 24px !important;
+        min-width: 22px !important;
         text-align: center !important;
     }
     
     .stat-label {
         display: block !important;
-        font-size: 0.6rem !important;
+        font-size: 0.55rem !important;
         color: var(--text-muted) !important;
         margin-bottom: 2px !important;
     }
     
     .stat-value {
         display: block !important;
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
     }
@@ -535,25 +542,25 @@
         display: grid !important;
         grid-template-columns: repeat(7, 1fr) !important;
         gap: 4px !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 6px !important;
     }
     
     .calendar-weekdays span {
         text-align: center !important;
-        padding: 8px 2px !important;
-        font-size: 0.7rem !important;
+        padding: 6px 2px !important;
+        font-size: 0.65rem !important;
         font-weight: 600 !important;
         color: var(--primary) !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 10px !important;
+        border-radius: 8px !important;
     }
     
     .calendar-grid {
         display: grid !important;
         grid-template-columns: repeat(7, 1fr) !important;
         gap: 4px !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 12px !important;
     }
     
     .day {
@@ -561,11 +568,11 @@
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 6px 2px !important;
+        padding: 4px 2px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 10px !important;
-        min-height: 40px !important;
+        border-radius: 8px !important;
+        min-height: 38px !important;
         aspect-ratio: auto !important;
         color: var(--text) !important;
         cursor: pointer !important;
@@ -577,24 +584,24 @@
     }
     
     .day-number {
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
         font-weight: 600 !important;
     }
     
     .day-icon {
-        font-size: 0.8rem !important;
-        margin-top: 2px !important;
+        font-size: 0.7rem !important;
+        margin-top: 1px !important;
     }
     
     .day-icons-container {
         display: flex !important;
-        gap: 2px !important;
+        gap: 1px !important;
         justify-content: center !important;
-        margin-top: 2px !important;
+        margin-top: 1px !important;
     }
     
     .day-icon-important {
-        font-size: 0.6rem !important;
+        font-size: 0.55rem !important;
     }
     
     /* Цвета для типов дней */
@@ -611,57 +618,57 @@
     
     /* ===== ЛЕГЕНДА ===== */
     .calendar-legend {
-        padding: 16px !important;
-        margin-top: 16px !important;
+        padding: 12px !important;
+        margin-top: 12px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 16px !important;
     }
     
     .legend-grid {
         display: flex !important;
         flex-direction: column !important;
-        gap: 16px !important;
+        gap: 12px !important;
     }
     
     .legend-title {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
         font-weight: 600 !important;
         color: var(--primary) !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 6px !important;
     }
     
     .legend-items {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 6px !important;
+        gap: 4px !important;
     }
     
     .legend-item {
         display: flex !important;
         align-items: center !important;
-        gap: 4px !important;
-        padding: 4px 8px !important;
+        gap: 3px !important;
+        padding: 3px 6px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
-        font-size: 0.7rem !important;
+        border-radius: 16px !important;
+        font-size: 0.6rem !important;
         color: var(--text) !important;
         cursor: help !important;
     }
     
     .legend-color {
-        width: 8px !important;
-        height: 8px !important;
+        width: 6px !important;
+        height: 6px !important;
         border-radius: 2px !important;
     }
     
     .legend-icon {
-        font-size: 0.8rem !important;
+        font-size: 0.7rem !important;
     }
     
     .legend-text {
-        max-width: 60px !important;
+        max-width: 50px !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
@@ -669,29 +676,29 @@
     
     /* ===== ВАЖНЫЕ ДАТЫ ===== */
     .important-widget {
-        margin: 16px 0 !important;
-        padding: 16px !important;
+        margin: 12px 0 !important;
+        padding: 12px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 18px !important;
     }
     
     .widget-header {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;
-        margin-bottom: 12px !important;
-        padding-bottom: 8px !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 6px !important;
         border-bottom: 1px solid var(--border) !important;
     }
     
     .widget-header i {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         color: var(--primary) !important;
     }
     
     .widget-header h3 {
-        font-size: 1rem !important;
+        font-size: 0.9rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
         margin: 0 !important;
@@ -700,33 +707,33 @@
     .widget-items {
         display: flex !important;
         flex-direction: column !important;
-        gap: 6px !important;
+        gap: 4px !important;
     }
     
     .widget-item {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;
-        padding: 10px !important;
+        gap: 6px !important;
+        padding: 8px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 14px !important;
+        border-radius: 12px !important;
         transition: transform 0.2s ease !important;
     }
     
     .widget-item:active {
-        transform: translateX(5px) !important;
+        transform: translateX(3px) !important;
     }
     
     .item-icon {
-        width: 32px !important;
-        height: 32px !important;
-        min-width: 32px !important;
-        border-radius: 10px !important;
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        border-radius: 8px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 1rem !important;
+        font-size: 0.9rem !important;
     }
     
     .item-content {
@@ -735,7 +742,7 @@
     }
     
     .item-title {
-        font-size: 0.85rem !important;
+        font-size: 0.75rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
         white-space: nowrap !important;
@@ -744,14 +751,14 @@
     }
     
     .item-date {
-        font-size: 0.7rem !important;
+        font-size: 0.6rem !important;
         color: var(--text-muted) !important;
     }
     
     .item-badge {
-        padding: 4px 8px !important;
-        border-radius: 30px !important;
-        font-size: 0.7rem !important;
+        padding: 3px 6px !important;
+        border-radius: 20px !important;
+        font-size: 0.6rem !important;
         font-weight: 500 !important;
         white-space: nowrap !important;
     }
@@ -782,17 +789,17 @@
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        gap: 16px !important;
-        padding: 20px !important;
-        margin-bottom: 16px !important;
+        gap: 12px !important;
+        padding: 16px !important;
+        margin-bottom: 12px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 24px !important;
+        border-radius: 20px !important;
     }
     
     .profile-avatar {
-        width: 80px !important;
-        height: 80px !important;
+        width: 70px !important;
+        height: 70px !important;
         position: relative !important;
     }
     
@@ -808,15 +815,15 @@
         position: absolute !important;
         bottom: 0 !important;
         right: 0 !important;
-        width: 24px !important;
-        height: 24px !important;
+        width: 22px !important;
+        height: 22px !important;
         background: var(--primary) !important;
         border-radius: 50% !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         color: white !important;
-        font-size: 0.8rem !important;
+        font-size: 0.7rem !important;
         cursor: pointer !important;
         border: 2px solid var(--dark-card) !important;
     }
@@ -826,61 +833,61 @@
     }
     
     .profile-title h2 {
-        font-size: 1.3rem !important;
+        font-size: 1.2rem !important;
         color: var(--text) !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
     }
     
     .profile-title p {
-        font-size: 0.9rem !important;
+        font-size: 0.8rem !important;
         color: var(--text-muted) !important;
     }
     
     .profile-grid {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 12px !important;
-        margin-bottom: 16px !important;
+        gap: 10px !important;
+        margin-bottom: 12px !important;
     }
     
     .profile-card {
-        padding: 16px !important;
+        padding: 14px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 18px !important;
     }
     
     .profile-card h3 {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;
-        font-size: 1rem !important;
+        gap: 6px !important;
+        font-size: 0.95rem !important;
         color: var(--primary) !important;
-        margin-bottom: 12px !important;
-        padding-bottom: 8px !important;
+        margin-bottom: 10px !important;
+        padding-bottom: 6px !important;
         border-bottom: 1px solid var(--border) !important;
     }
     
     .profile-field {
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
     }
     
     .profile-field label {
         display: block !important;
-        font-size: 0.7rem !important;
+        font-size: 0.65rem !important;
         color: var(--text-muted) !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 3px !important;
     }
     
     .profile-field input,
     .profile-field select {
         width: 100% !important;
-        padding: 8px 10px !important;
+        padding: 7px 8px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 10px !important;
+        border-radius: 8px !important;
         color: var(--text) !important;
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
         outline: none !important;
     }
     
@@ -892,30 +899,30 @@
     .profile-actions {
         display: flex !important;
         flex-direction: column !important;
-        gap: 8px !important;
+        gap: 6px !important;
     }
     
     /* ===== ФИНАНСЫ ===== */
     .finance-month-info {
-        padding: 12px !important;
-        margin-bottom: 16px !important;
+        padding: 10px !important;
+        margin-bottom: 12px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 16px !important;
+        border-radius: 14px !important;
         text-align: center !important;
     }
     
     .finance-month-info h3 {
-        font-size: 1rem !important;
+        font-size: 0.9rem !important;
         color: var(--primary) !important;
         margin: 0 !important;
     }
     
     .pie-chart-container {
         position: relative !important;
-        width: 180px !important;
-        height: 180px !important;
-        margin: 16px auto !important;
+        width: 160px !important;
+        height: 160px !important;
+        margin: 12px auto !important;
     }
     
     .pie-total {
@@ -923,25 +930,25 @@
         top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
         font-weight: 700 !important;
         color: var(--text) !important;
     }
     
     .finance-details {
-        padding: 16px !important;
-        margin: 16px 0 !important;
+        padding: 14px !important;
+        margin: 12px 0 !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 18px !important;
     }
     
     .finance-item {
         display: flex !important;
         justify-content: space-between !important;
-        padding: 8px 0 !important;
+        padding: 6px 0 !important;
         border-bottom: 1px solid var(--border) !important;
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
     }
     
     .finance-item:last-child {
@@ -951,9 +958,9 @@
     .finance-item.total {
         font-weight: 700 !important;
         color: var(--primary) !important;
-        font-size: 0.95rem !important;
-        margin-top: 8px !important;
-        padding-top: 12px !important;
+        font-size: 0.9rem !important;
+        margin-top: 6px !important;
+        padding-top: 8px !important;
         border-top: 2px solid var(--border) !important;
     }
     
@@ -962,34 +969,34 @@
     }
     
     .finance-goals {
-        padding: 16px !important;
-        margin: 16px 0 !important;
+        padding: 14px !important;
+        margin: 12px 0 !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 18px !important;
     }
     
     .goal-progress {
-        padding: 16px !important;
+        padding: 14px !important;
         background: var(--dark-light) !important;
-        border-radius: 16px !important;
-        margin-top: 16px !important;
+        border-radius: 14px !important;
+        margin-top: 12px !important;
     }
     
     .progress-stats {
         display: flex !important;
         flex-direction: column !important;
-        gap: 4px !important;
-        margin-bottom: 12px !important;
-        font-size: 0.8rem !important;
+        gap: 3px !important;
+        margin-bottom: 8px !important;
+        font-size: 0.75rem !important;
     }
     
     .progress-bar-container {
-        height: 10px !important;
+        height: 8px !important;
         background: var(--dark) !important;
-        border-radius: 5px !important;
+        border-radius: 4px !important;
         overflow: hidden !important;
-        margin: 10px 0 !important;
+        margin: 8px 0 !important;
     }
     
     .progress-bar {
@@ -1001,93 +1008,93 @@
     .goal-actions {
         display: flex !important;
         flex-direction: column !important;
-        gap: 8px !important;
-        margin: 16px 0 !important;
+        gap: 6px !important;
+        margin: 12px 0 !important;
     }
     
     /* ===== СТАТИСТИКА ===== */
     .stats-header {
         display: flex !important;
         flex-direction: column !important;
-        gap: 12px !important;
-        margin-bottom: 16px !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
     }
     
     .stats-header h2 {
-        font-size: 1.3rem !important;
+        font-size: 1.2rem !important;
         color: var(--primary) !important;
         margin: 0 !important;
     }
     
     .stats-header select {
         width: 100% !important;
-        padding: 8px 12px !important;
+        padding: 7px 10px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
         border-radius: 30px !important;
         color: var(--text) !important;
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
         outline: none !important;
     }
     
     .stats-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-        margin-bottom: 16px !important;
+        gap: 6px !important;
+        margin-bottom: 12px !important;
     }
     
     .stats-card {
         display: flex !important;
         align-items: center !important;
-        gap: 10px !important;
-        padding: 12px !important;
+        gap: 8px !important;
+        padding: 10px !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 16px !important;
+        border-radius: 14px !important;
     }
     
     .stats-card i {
-        font-size: 1.3rem !important;
+        font-size: 1.2rem !important;
         color: var(--primary) !important;
-        min-width: 28px !important;
+        min-width: 26px !important;
         text-align: center !important;
     }
     
     .stats-label {
         display: block !important;
-        font-size: 0.65rem !important;
+        font-size: 0.6rem !important;
         color: var(--text-muted) !important;
         margin-bottom: 2px !important;
     }
     
     .stats-value {
         display: block !important;
-        font-size: 0.95rem !important;
+        font-size: 0.9rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
     }
     
     /* ===== ГРАФИКИ ===== */
     .chart-container {
-        padding: 16px !important;
-        margin: 16px 0 !important;
+        padding: 14px !important;
+        margin: 12px 0 !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 20px !important;
+        border-radius: 18px !important;
     }
     
     .chart-header h3 {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         color: var(--text) !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 5px !important;
     }
     
     canvas {
-        max-height: 180px !important;
+        max-height: 160px !important;
         width: 100% !important;
     }
     
@@ -1098,8 +1105,8 @@
     .btn-success,
     .btn-warning {
         width: 100% !important;
-        padding: 10px 16px !important;
-        font-size: 0.85rem !important;
+        padding: 8px 14px !important;
+        font-size: 0.8rem !important;
         border-radius: 30px !important;
         border: none !important;
         cursor: pointer !important;
@@ -1107,7 +1114,7 @@
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 6px !important;
+        gap: 5px !important;
     }
     
     .btn-primary:active,
@@ -1119,31 +1126,31 @@
     }
     
     .btn-small {
-        padding: 6px 12px !important;
-        font-size: 0.8rem !important;
+        padding: 5px 10px !important;
+        font-size: 0.75rem !important;
     }
     
     .export-buttons {
         display: flex !important;
         flex-direction: column !important;
-        gap: 8px !important;
-        margin-top: 16px !important;
+        gap: 6px !important;
+        margin-top: 12px !important;
     }
     
     /* ===== ТЕМЫ ===== */
     .theme-selector {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 6px !important;
-        margin-top: 8px !important;
+        gap: 5px !important;
+        margin-top: 6px !important;
     }
     
     .theme-btn {
-        padding: 8px !important;
-        font-size: 0.75rem !important;
+        padding: 6px !important;
+        font-size: 0.7rem !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 10px !important;
+        border-radius: 8px !important;
         color: var(--text) !important;
         text-align: center !important;
         cursor: pointer !important;
@@ -1162,29 +1169,29 @@
     
     /* ===== МОДАЛЬНЫЕ ОКНА ===== */
     .modal-content {
-        padding: 20px !important;
+        padding: 16px !important;
         max-width: 90% !important;
         background: var(--dark-card) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 24px !important;
+        border-radius: 20px !important;
     }
     
     .day-types {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-        margin: 16px 0 !important;
+        gap: 6px !important;
+        margin: 12px 0 !important;
     }
     
     .day-type {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        gap: 4px !important;
-        padding: 10px 4px !important;
+        gap: 3px !important;
+        padding: 8px 4px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 14px !important;
+        border-radius: 12px !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
     }
@@ -1194,41 +1201,42 @@
     }
     
     .day-type i {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
         color: var(--primary) !important;
     }
     
     .day-type span {
-        font-size: 0.8rem !important;
+        font-size: 0.7rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
     }
     
     .day-type small {
-        font-size: 0.6rem !important;
+        font-size: 0.55rem !important;
         color: var(--text-muted) !important;
     }
     
     .cancel-btn {
         width: 100% !important;
-        margin-top: 8px !important;
+        margin-top: 6px !important;
     }
     
     /* ===== УВЕДОМЛЕНИЯ ===== */
     .notification {
-        left: 16px !important;
-        right: 16px !important;
-        top: 16px !important;
+        left: 12px !important;
+        right: 12px !important;
+        top: 12px !important;
         max-width: none !important;
     }
     
     .notification-content {
         background: var(--dark-card) !important;
         border-left: 4px solid var(--primary) !important;
-        border-radius: 12px !important;
-        padding: 12px 16px !important;
+        border-radius: 10px !important;
+        padding: 10px 14px !important;
         color: var(--text) !important;
         box-shadow: var(--shadow) !important;
+        font-size: 0.8rem !important;
     }
     
     /* ===== ПОГОДНЫЕ ЭФФЕКТЫ ===== */
