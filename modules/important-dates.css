@@ -68,7 +68,7 @@
     background: var(--dark-light);
     border-radius: 12px;
     border-left: 4px solid;
-    transition: all 0.2s;
+    transition: transform 0.2s;
     animation: slideIn 0.3s ease;
 }
 
@@ -118,7 +118,6 @@
     border-radius: 20px;
 }
 
-/* Анимации */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -139,7 +138,6 @@
     }
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .date-item {
         flex-wrap: wrap;
