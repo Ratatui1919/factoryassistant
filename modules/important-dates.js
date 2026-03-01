@@ -5,40 +5,42 @@
     const CONFIG = {
         SALARY_DAY_OFFSET: 3, // 3-й рабочий день месяца
         STORAGE_KEY: 'important_dates_settings',
-        NOTIFICATION_DAYS_BEFORE: [3, 1, 0] // За сколько дней напоминать
+        NOTIFICATION_DAYS_BEFORE: [3, 1, 0]
     };
 
-    // Государственные праздники Словакии (фиксированные)
-    const SLOVAK_HOLIDAYS = [
-        { day: 1, month: 0, name: 'Новый год', name_ru: 'Новый год', name_sk: 'Nový rok', name_en: 'New Year' },
-        { day: 6, month: 0, name: 'Богоявление', name_ru: 'Богоявление', name_sk: 'Zjavenie Pána', name_en: 'Epiphany' },
-        { day: 1, month: 4, name: 'День труда', name_ru: 'День труда', name_sk: 'Sviatok práce', name_en: 'Labor Day' },
-        { day: 8, month: 4, name: 'День победы', name_ru: 'День победы', name_sk: 'Deň víťazstva nad fašizmom', name_en: 'Victory Day' },
-        { day: 5, month: 6, name: 'День Кирилла и Мефодия', name_ru: 'День Кирилла и Мефодия', name_sk: 'Sviatok svätého Cyrila a Metoda', name_en: 'Saints Cyril and Methodius Day' },
-        { day: 29, month: 7, name: 'День Словацкого восстания', name_ru: 'День Словацкого восстания', name_sk: 'Výročie SNP', name_en: 'Slovak National Uprising Day' },
-        { day: 1, month: 8, name: 'День Конституции', name_ru: 'День Конституции', name_sk: 'Deň Ústavy Slovenskej republiky', name_en: 'Constitution Day' },
-        { day: 15, month: 8, name: 'День Девы Марии', name_ru: 'День Девы Марии', name_sk: 'Sedembolestná Panna Mária', name_en: 'Our Lady of Sorrows Day' },
-        { day: 1, month: 10, name: 'День всех святых', name_ru: 'День всех святых', name_sk: 'Sviatok všetkých svätých', name_en: 'All Saints Day' },
-        { day: 17, month: 10, name: 'День борьбы за свободу', name_ru: 'День борьбы за свободу', name_sk: 'Deň boja za slobodu a demokraciu', name_en: 'Struggle for Freedom Day' },
-        { day: 24, month: 11, name: 'Сочельник', name_ru: 'Сочельник', name_sk: 'Štedrý deň', name_en: 'Christmas Eve' },
-        { day: 25, month: 11, name: 'Рождество', name_ru: 'Рождество', name_sk: 'Prvý sviatok vianočný', name_en: 'Christmas Day' },
-        { day: 26, month: 11, name: 'День подарков', name_ru: 'День подарков', name_sk: 'Druhý sviatok vianočný', name_en: 'St. Stephens Day' }
+    // ГОСУДАРСТВЕННЫЕ ПРАЗДНИКИ СЛОВАКИИ 2026 (точный список)
+    const SLOVAK_HOLIDAYS_2026 = [
+        // Январь
+        { day: 1, month: 0, type: 'holiday', name_ru: 'День образования Словацкой Республики', name_sk: 'Deň vzniku Slovenskej republiky', name_en: 'Day of the Establishment of the Slovak Republic', icon: '🇸🇰' },
+        { day: 6, month: 0, type: 'holiday', name_ru: 'Богоявление (Три короля)', name_sk: 'Zjavenie Pána (Traja králi)', name_en: 'Epiphany', icon: '👑' },
+        
+        // Апрель
+        { day: 3, month: 3, type: 'holiday', name_ru: 'Страстная пятница', name_sk: 'Veľký piatok', name_en: 'Good Friday', icon: '✝️' },
+        { day: 6, month: 3, type: 'holiday', name_ru: 'Пасхальный понедельник', name_sk: 'Veľkonočný pondelok', name_en: 'Easter Monday', icon: '🐣' },
+        
+        // Май
+        { day: 1, month: 4, type: 'holiday', name_ru: 'День труда', name_sk: 'Sviatok práce', name_en: 'Labour Day', icon: '⚒️' },
+        
+        // Июль
+        { day: 5, month: 6, type: 'holiday', name_ru: 'День святых Кирилла и Мефодия', name_sk: 'Sviatok svätých Cyrila a Metoda', name_en: 'Saints Cyril and Methodius Day', icon: '📜' },
+        
+        // Август
+        { day: 29, month: 7, type: 'holiday', name_ru: 'День Словацкого национального восстания', name_sk: 'Výročie SNP', name_en: 'Slovak National Uprising Day', icon: '⚔️' },
+        
+        // Ноябрь
+        { day: 1, month: 10, type: 'holiday', name_ru: 'День всех святых', name_sk: 'Sviatok všetkých svätých', name_en: 'All Saints\' Day', icon: '🕯️' },
+        
+        // Декабрь
+        { day: 24, month: 11, type: 'holiday', name_ru: 'Сочельник', name_sk: 'Štedrý deň', name_en: 'Christmas Eve', icon: '🎄' },
+        { day: 25, month: 11, type: 'holiday', name_ru: 'Рождество', name_sk: 'Prvý sviatok vianočný', name_en: 'Christmas Day', icon: '🎅' },
+        { day: 26, month: 11, type: 'holiday', name_ru: 'Второй день Рождества', name_sk: 'Druhý sviatok vianočný', name_en: 'St. Stephen\'s Day', icon: '🎁' }
     ];
-
-    // Пасха (переменная дата)
-    const EASTER_DATES = {
-        2024: { month: 2, day: 31 }, // Март 31
-        2025: { month: 3, day: 20 }, // Апрель 20
-        2026: { month: 3, day: 5 },  // Апрель 5
-        2027: { month: 2, day: 28 }, // Март 28
-        2028: { month: 3, day: 16 }  // Апрель 16
-    };
 
     let settings = {
         notifySalary: true,
         notifyHolidays: true,
         notifyDaysBefore: 3,
-        salaryTime: '10:00', // Время начисления зарплаты
+        salaryTime: '10:00',
         language: 'ru'
     };
 
@@ -55,130 +57,198 @@
         localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(settings));
     }
 
-    // Получаем текущий язык из основного приложения
+    // Получаем текущий язык
     function getCurrentLanguage() {
         return document.documentElement.lang || 'ru';
     }
 
-    // Рассчитываем 3-й рабочий день месяца
-    function getThirdWorkingDay(year, month) {
+    /**
+     * Рассчитываем 3-й рабочий день месяца (день зарплаты)
+     * Рабочие дни: понедельник-пятница, не праздники
+     */
+    function getSalaryDay(year, month) {
         let workingDays = 0;
         let day = 1;
+        const maxDays = new Date(year, month + 1, 0).getDate();
         
-        while (workingDays < 3) {
+        while (workingDays < 3 && day <= maxDays) {
             const date = new Date(year, month, day);
-            const dayOfWeek = date.getDay();
+            const dayOfWeek = date.getDay(); // 0 = вс, 6 = сб
             
-            // 0 = воскресенье, 6 = суббота (выходные)
-            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-                // Проверяем, не праздник ли это
-                if (!isHoliday(date)) {
-                    workingDays++;
+            // Проверяем, рабочий ли день (пн-пт и не праздник)
+            if (dayOfWeek !== 0 && dayOfWeek !== 6 && !isHoliday(year, month, day)) {
+                workingDays++;
+                if (workingDays === 3) {
+                    return day;
                 }
             }
             day++;
         }
         
-        return new Date(year, month, day - 1);
+        // Если не нашли (например, весь месяц праздники), возвращаем последний возможный день
+        return Math.min(day, maxDays);
     }
 
-    // Проверка, является ли дата праздником
-    function isHoliday(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
+    /**
+     * Проверка, является ли дата государственным праздником
+     */
+    function isHoliday(year, month, day) {
+        // Проверяем только для 2026 года (можно расширить на другие годы)
+        if (year !== 2026) return false;
         
-        // Проверяем фиксированные праздники
-        const isFixedHoliday = SLOVAK_HOLIDAYS.some(h => h.day === day && h.month === month);
-        if (isFixedHoliday) return true;
-        
-        // Проверяем Пасху
-        if (EASTER_DATES[year] && 
-            EASTER_DATES[year].month === month && 
-            EASTER_DATES[year].day === day) {
-            return true;
-        }
-        
-        return false;
+        return SLOVAK_HOLIDAYS_2026.some(h => h.day === day && h.month === month);
     }
 
-    // Получаем название праздника
-    function getHolidayName(date, lang = 'ru') {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        
-        // Проверяем фиксированные праздники
-        const holiday = SLOVAK_HOLIDAYS.find(h => h.day === day && h.month === month);
-        if (holiday) {
-            return holiday[`name_${lang}`] || holiday.name;
-        }
-        
-        // Проверяем Пасху
-        if (EASTER_DATES[year] && 
-            EASTER_DATES[year].month === month && 
-            EASTER_DATES[year].day === day) {
-            return lang === 'ru' ? 'Пасха' : (lang === 'sk' ? 'Veľká noc' : 'Easter');
-        }
-        
-        return null;
+    /**
+     * Получаем информацию о празднике для конкретной даты
+     */
+    function getHolidayInfo(year, month, day) {
+        if (year !== 2026) return null;
+        return SLOVAK_HOLIDAYS_2026.find(h => h.day === day && h.month === month) || null;
     }
 
-    // Получаем все важные даты на месяц
-    function getImportantDates(year, month) {
+    /**
+     * Получаем день зарплаты для конкретного месяца
+     */
+    function getSalaryInfo(year, month) {
+        const salaryDay = getSalaryDay(year, month);
+        return {
+            day: salaryDay,
+            month: month,
+            year: year,
+            type: 'salary',
+            name_ru: '💰 Зарплата',
+            name_sk: '💰 Výplata',
+            name_en: '💰 Salary',
+            icon: '💰'
+        };
+    }
+
+    /**
+     * Получаем все важные даты для конкретного месяца
+     */
+    function getImportantDatesForMonth(year, month) {
         const dates = [];
         
-        // Дата зарплаты
-        const salaryDate = getThirdWorkingDay(year, month);
-        dates.push({
-            date: salaryDate,
-            type: 'salary',
-            title: {
-                ru: '💰 Зарплата',
-                sk: '💰 Výplata',
-                en: '💰 Salary'
-            },
-            description: {
-                ru: 'Ожидайте поступление зарплаты',
-                sk: 'Očakávajte výplatu',
-                en: 'Salary expected'
+        // Добавляем день зарплаты
+        const salaryInfo = getSalaryInfo(year, month);
+        dates.push(salaryInfo);
+        
+        // Добавляем все праздники в этом месяце
+        SLOVAK_HOLIDAYS_2026.forEach(holiday => {
+            if (holiday.month === month) {
+                dates.push(holiday);
             }
         });
         
-        // Все праздники в месяце
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        for (let d = 1; d <= daysInMonth; d++) {
-            const date = new Date(year, month, d);
-            const holidayName = getHolidayName(date);
-            if (holidayName) {
-                dates.push({
-                    date: date,
-                    type: 'holiday',
-                    title: {
-                        ru: `🎉 ${holidayName}`,
-                        sk: `🎉 ${holidayName}`,
-                        en: `🎉 ${holidayName}`
-                    },
-                    description: {
-                        ru: 'Государственный праздник',
-                        sk: 'Štátny sviatok',
-                        en: 'Public holiday'
-                    }
-                });
-            }
-        }
-        
-        return dates.sort((a, b) => a.date - b.date);
+        return dates;
     }
 
-    // Создаем виджет важных дат
-    function createDatesWidget() {
+    /**
+     * Обновляем ячейки календаря - добавляем иконки важных дат
+     */
+    function enhanceCalendarWithImportantDates() {
+        // Получаем текущий год и месяц из глобальных переменных
+        const year = window.currentYear || new Date().getFullYear();
+        const month = window.currentMonth || new Date().getMonth();
+        
+        // Получаем все важные даты для этого месяца
+        const importantDates = getImportantDatesForMonth(year, month);
+        
+        // Ждем, пока календарь отрисуется
+        setTimeout(() => {
+            const calendarGrid = document.getElementById('calendarGrid');
+            if (!calendarGrid) return;
+            
+            const dayCells = calendarGrid.querySelectorAll('.day:not(.empty)');
+            
+            dayCells.forEach(cell => {
+                const dayNumber = parseInt(cell.querySelector('.day-number')?.textContent || '0');
+                if (!dayNumber) return;
+                
+                // Проверяем, есть ли важная дата в этот день
+                const importantDate = importantDates.find(d => d.day === dayNumber);
+                
+                if (importantDate) {
+                    // Добавляем класс для стилизации
+                    cell.classList.add(`has-${importantDate.type}`);
+                    
+                    // Получаем название на нужном языке
+                    let title = importantDate[`name_${settings.language}`] || importantDate.name_ru;
+                    
+                    // Обновляем иконку
+                    const iconSpan = cell.querySelector('.day-icon');
+                    if (iconSpan) {
+                        iconSpan.textContent = importantDate.icon || '📌';
+                    }
+                    
+                    // Добавляем tooltip
+                    cell.setAttribute('title', title);
+                    
+                    // Добавляем маленький индикатор
+                    let indicator = cell.querySelector('.day-indicator');
+                    if (!indicator) {
+                        indicator = document.createElement('span');
+                        indicator.className = 'day-indicator';
+                        cell.appendChild(indicator);
+                    }
+                    indicator.textContent = '●';
+                    indicator.style.color = importantDate.type === 'salary' ? '#00b060' : '#f59e0b';
+                }
+            });
+        }, 100);
+    }
+
+    /**
+     * Восстанавливаем функциональность календаря
+     */
+    function fixCalendarClickHandler() {
+        // Перехватываем оригинальную функцию buildCalendar
+        const originalBuildCalendar = window.buildCalendar;
+        if (originalBuildCalendar) {
+            window.buildCalendar = function() {
+                // Вызываем оригинальную функцию
+                originalBuildCalendar();
+                // Добавляем наши важные даты
+                enhanceCalendarWithImportantDates();
+            };
+        }
+    }
+
+    /**
+     * Создаем виджет предстоящих важных дат
+     */
+    function createUpcomingDatesWidget() {
         const widget = document.createElement('div');
         widget.className = 'important-dates-widget glass-effect';
         widget.id = 'importantDatesWidget';
         
         const now = new Date();
-        const dates = getImportantDates(now.getFullYear(), now.getMonth());
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const currentDay = now.getDate();
+        
+        // Собираем все предстоящие важные даты (текущий и следующий месяц)
+        const upcomingDates = [];
+        
+        // Текущий месяц
+        const thisMonthDates = getImportantDatesForMonth(currentYear, currentMonth);
+        thisMonthDates.forEach(d => {
+            if (d.day >= currentDay) {
+                upcomingDates.push({ ...d, date: new Date(currentYear, currentMonth, d.day) });
+            }
+        });
+        
+        // Следующий месяц
+        const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+        const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+        const nextMonthDates = getImportantDatesForMonth(nextYear, nextMonth);
+        nextMonthDates.forEach(d => {
+            upcomingDates.push({ ...d, date: new Date(nextYear, nextMonth, d.day) });
+        });
+        
+        // Сортируем по дате
+        upcomingDates.sort((a, b) => a.date - b.date);
         
         widget.innerHTML = `
             <div class="widget-header">
@@ -189,123 +259,42 @@
                 </button>
             </div>
             <div class="dates-list">
-                ${dates.map(d => `
-                    <div class="date-item ${d.type}" data-date="${d.date.toISOString()}">
-                        <div class="date-icon">${d.type === 'salary' ? '💰' : '🎉'}</div>
-                        <div class="date-info">
-                            <div class="date-title">${d.title[settings.language]}</div>
-                            <div class="date-day">${d.date.toLocaleDateString(settings.language === 'sk' ? 'sk-SK' : 'ru-RU', { day: 'numeric', month: 'long' })}</div>
-                            <div class="date-description">${d.description[settings.language]}</div>
+                ${upcomingDates.slice(0, 5).map(d => {
+                    const title = d[`name_${settings.language}`] || d.name_ru;
+                    const diffDays = Math.ceil((d.date - now) / (1000 * 60 * 60 * 24));
+                    let countdownText = '';
+                    
+                    if (diffDays === 0) {
+                        countdownText = settings.language === 'ru' ? 'сегодня' : 
+                                       (settings.language === 'sk' ? 'dnes' : 'today');
+                    } else if (diffDays === 1) {
+                        countdownText = settings.language === 'ru' ? 'завтра' : 
+                                       (settings.language === 'sk' ? 'zajtra' : 'tomorrow');
+                    } else {
+                        countdownText = settings.language === 'ru' ? `через ${diffDays} дн.` : 
+                                       (settings.language === 'sk' ? `o ${diffDays} dní` : `in ${diffDays} days`);
+                    }
+                    
+                    return `
+                        <div class="date-item ${d.type}" data-date="${d.date.toISOString()}">
+                            <div class="date-icon">${d.icon || (d.type === 'salary' ? '💰' : '🎉')}</div>
+                            <div class="date-info">
+                                <div class="date-title">${title}</div>
+                                <div class="date-day">${d.date.toLocaleDateString(settings.language === 'sk' ? 'sk-SK' : 'ru-RU', { day: 'numeric', month: 'long' })}</div>
+                            </div>
+                            <div class="date-countdown">${countdownText}</div>
                         </div>
-                        <div class="date-countdown" data-date="${d.date.toISOString()}"></div>
-                    </div>
-                `).join('')}
+                    `;
+                }).join('')}
             </div>
         `;
         
         return widget;
     }
 
-    // Обновляем обратный отсчет
-    function updateCountdowns() {
-        document.querySelectorAll('[data-date]').forEach(el => {
-            const dateStr = el.getAttribute('data-date');
-            if (!dateStr) return;
-            
-            const targetDate = new Date(dateStr);
-            const now = new Date();
-            const diffTime = targetDate - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            let countdownText = '';
-            if (diffDays > 0) {
-                countdownText = `через ${diffDays} ${getDaysWord(diffDays, settings.language)}`;
-            } else if (diffDays === 0) {
-                countdownText = settings.language === 'ru' ? 'сегодня' : 
-                               (settings.language === 'sk' ? 'dnes' : 'today');
-            } else {
-                countdownText = settings.language === 'ru' ? 'прошло' : 
-                               (settings.language === 'sk' ? 'prešlo' : 'passed');
-            }
-            
-            el.textContent = countdownText;
-        });
-    }
-
-    // Склонение слова "день"
-    function getDaysWord(days, lang) {
-        if (lang === 'ru') {
-            if (days % 10 === 1 && days % 100 !== 11) return 'день';
-            if ([2,3,4].includes(days % 10) && ![12,13,14].includes(days % 100)) return 'дня';
-            return 'дней';
-        } else if (lang === 'sk') {
-            if (days === 1) return 'deň';
-            if (days >= 2 && days <= 4) return 'dni';
-            return 'dní';
-        } else {
-            return days === 1 ? 'day' : 'days';
-        }
-    }
-
-    // Проверяем нужно ли отправить уведомление
-    function checkNotifications() {
-        if (!settings.notifySalary && !settings.notifyHolidays) return;
-        
-        const now = new Date();
-        const dates = getImportantDates(now.getFullYear(), now.getMonth());
-        
-        dates.forEach(d => {
-            const diffTime = d.date - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays <= settings.notifyDaysBefore && diffDays >= 0) {
-                const notificationKey = `notified_${d.date.toISOString()}_${diffDays}`;
-                if (!localStorage.getItem(notificationKey)) {
-                    showDateNotification(d);
-                    localStorage.setItem(notificationKey, 'true');
-                    
-                    // Очищаем через день
-                    setTimeout(() => {
-                        localStorage.removeItem(notificationKey);
-                    }, 24 * 60 * 60 * 1000);
-                }
-            }
-        });
-    }
-
-    // Показываем уведомление о дате
-    function showDateNotification(dateInfo) {
-        const diffDays = Math.ceil((dateInfo.date - new Date()) / (1000 * 60 * 60 * 24));
-        
-        let message = '';
-        if (diffDays === 0) {
-            message = `${dateInfo.title[settings.language]} ${settings.language === 'ru' ? 'сегодня!' : 
-                      (settings.language === 'sk' ? 'dnes!' : 'today!')}`;
-        } else {
-            message = `${dateInfo.title[settings.language]} ${settings.language === 'ru' ? 'через' : 
-                      (settings.language === 'sk' ? 'o' : 'in')} ${diffDays} ${getDaysWord(diffDays, settings.language)}`;
-        }
-        
-        // Используем основную систему уведомлений если есть
-        if (window.showNotification) {
-            window.showNotification(message);
-        } else {
-            // Своя система уведомлений
-            const notification = document.createElement('div');
-            notification.className = 'dates-notification';
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()">✕</button>
-                </div>
-            `;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.remove(), 5000);
-        }
-    }
-
-    // Создаем панель настроек
+    /**
+     * Создаем панель настроек
+     */
     function createSettingsModal() {
         const modal = document.createElement('div');
         modal.className = 'modal';
@@ -316,45 +305,42 @@
                 <div class="settings-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="notifySalary" ${settings.notifySalary ? 'checked' : ''}>
-                        <span>Напоминать о зарплате</span>
+                        <span data-lang="notifySalary">Напоминать о зарплате</span>
                     </label>
                     <label class="checkbox-label">
                         <input type="checkbox" id="notifyHolidays" ${settings.notifyHolidays ? 'checked' : ''}>
-                        <span>Напоминать о праздниках</span>
+                        <span data-lang="notifyHolidays">Напоминать о праздниках</span>
                     </label>
                 </div>
                 <div class="settings-group">
-                    <label>Напоминать за:</label>
+                    <label data-lang="notifyDaysBefore">Напоминать за:</label>
                     <select id="notifyDaysBefore">
-                        <option value="1" ${settings.notifyDaysBefore === 1 ? 'selected' : ''}>1 день</option>
-                        <option value="2" ${settings.notifyDaysBefore === 2 ? 'selected' : ''}>2 дня</option>
-                        <option value="3" ${settings.notifyDaysBefore === 3 ? 'selected' : ''}>3 дня</option>
-                        <option value="5" ${settings.notifyDaysBefore === 5 ? 'selected' : ''}>5 дней</option>
-                        <option value="7" ${settings.notifyDaysBefore === 7 ? 'selected' : ''}>7 дней</option>
+                        <option value="1" ${settings.notifyDaysBefore === 1 ? 'selected' : ''}>1 ${settings.language === 'ru' ? 'день' : (settings.language === 'sk' ? 'deň' : 'day')}</option>
+                        <option value="2" ${settings.notifyDaysBefore === 2 ? 'selected' : ''}>2 ${settings.language === 'ru' ? 'дня' : (settings.language === 'sk' ? 'dni' : 'days')}</option>
+                        <option value="3" ${settings.notifyDaysBefore === 3 ? 'selected' : ''}>3 ${settings.language === 'ru' ? 'дня' : (settings.language === 'sk' ? 'dni' : 'days')}</option>
+                        <option value="5" ${settings.notifyDaysBefore === 5 ? 'selected' : ''}>5 ${settings.language === 'ru' ? 'дней' : (settings.language === 'sk' ? 'dní' : 'days')}</option>
+                        <option value="7" ${settings.notifyDaysBefore === 7 ? 'selected' : ''}>7 ${settings.language === 'ru' ? 'дней' : (settings.language === 'sk' ? 'dní' : 'days')}</option>
                     </select>
                 </div>
                 <div class="settings-group">
-                    <label>Время начисления зарплаты:</label>
+                    <label data-lang="salaryTime">Время начисления зарплаты:</label>
                     <input type="time" id="salaryTime" value="${settings.salaryTime}">
                 </div>
                 <div class="modal-actions">
-                    <button class="btn-primary" onclick="window.saveDatesSettings()">Сохранить</button>
-                    <button class="btn-secondary" onclick="window.closeDatesSettings()">Отмена</button>
+                    <button class="btn-primary" onclick="window.saveDatesSettings()"><span data-lang="save">Сохранить</span></button>
+                    <button class="btn-secondary" onclick="window.closeDatesSettings()"><span data-lang="cancel">Отмена</span></button>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
     }
 
-    // Показываем настройки
+    // Глобальные функции для настроек
     window.showDatesSettings = function() {
         const modal = document.getElementById('datesSettingsModal');
-        if (modal) {
-            modal.style.display = 'flex';
-        }
+        if (modal) modal.style.display = 'flex';
     };
 
-    // Сохраняем настройки
     window.saveDatesSettings = function() {
         settings.notifySalary = document.getElementById('notifySalary').checked;
         settings.notifyHolidays = document.getElementById('notifyHolidays').checked;
@@ -366,35 +352,97 @@
         updateWidget();
     };
 
-    // Закрываем настройки
     window.closeDatesSettings = function() {
         document.getElementById('datesSettingsModal').style.display = 'none';
     };
 
-    // Обновляем виджет
+    /**
+     * Обновляем виджет
+     */
     function updateWidget() {
         const oldWidget = document.getElementById('importantDatesWidget');
         if (oldWidget) {
-            const newWidget = createDatesWidget();
+            const newWidget = createUpcomingDatesWidget();
             oldWidget.parentNode.replaceChild(newWidget, oldWidget);
         }
-        updateCountdowns();
     }
 
-    // Инициализация модуля
-    function init() {
-        console.log('📅 Модуль важных дат загружен');
+    /**
+     * Проверяем и отправляем уведомления
+     */
+    function checkNotifications() {
+        if (!settings.notifySalary && !settings.notifyHolidays) return;
         
-        loadSettings();
-        settings.language = getCurrentLanguage();
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
         
-        // Добавляем стили
+        const importantDates = getImportantDatesForMonth(currentYear, currentMonth);
+        
+        importantDates.forEach(d => {
+            const date = new Date(currentYear, currentMonth, d.day);
+            const diffTime = date - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays <= settings.notifyDaysBefore && diffDays >= 0) {
+                const notificationKey = `notified_${date.toISOString()}_${diffDays}`;
+                if (!localStorage.getItem(notificationKey)) {
+                    const title = d[`name_${settings.language}`] || d.name_ru;
+                    let message = '';
+                    
+                    if (diffDays === 0) {
+                        message = settings.language === 'ru' ? `📅 Сегодня: ${title}!` :
+                                 (settings.language === 'sk' ? `📅 Dnes: ${title}!` : `📅 Today: ${title}!`);
+                    } else {
+                        message = settings.language === 'ru' ? `📅 ${title} через ${diffDays} дн.` :
+                                 (settings.language === 'sk' ? `📅 ${title} o ${diffDays} dní` : `📅 ${title} in ${diffDays} days`);
+                    }
+                    
+                    if (window.showNotification) {
+                        window.showNotification(message);
+                    }
+                    
+                    localStorage.setItem(notificationKey, 'true');
+                    setTimeout(() => localStorage.removeItem(notificationKey), 24 * 60 * 60 * 1000);
+                }
+            }
+        });
+    }
+
+    /**
+     * Добавляем стили
+     */
+    function addStyles() {
         const style = document.createElement('style');
         style.textContent = `
+            /* Стили для ячеек календаря с важными датами */
+            .day.has-salary {
+                position: relative;
+                background: linear-gradient(145deg, rgba(0,176,96,0.2), rgba(0,176,96,0.05)) !important;
+                border: 2px solid #00b060 !important;
+            }
+            
+            .day.has-holiday {
+                position: relative;
+                background: linear-gradient(145deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05)) !important;
+                border: 2px solid #f59e0b !important;
+            }
+            
+            .day-indicator {
+                position: absolute;
+                top: 2px;
+                right: 4px;
+                font-size: 0.7rem;
+            }
+            
+            /* Стили для виджета */
             .important-dates-widget {
                 margin: 20px 0;
                 padding: 20px;
                 border-radius: 20px;
+                background: var(--glass-bg);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border);
             }
             
             .widget-header {
@@ -409,6 +457,7 @@
                 align-items: center;
                 gap: 8px;
                 color: var(--primary);
+                font-size: 1.2rem;
             }
             
             .widget-settings-btn {
@@ -417,12 +466,19 @@
                 color: var(--text-muted);
                 cursor: pointer;
                 font-size: 1.2rem;
-                transition: transform 0.3s;
+                transition: all 0.3s;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             
             .widget-settings-btn:hover {
                 transform: rotate(90deg);
                 color: var(--primary);
+                background: var(--dark-light);
             }
             
             .dates-list {
@@ -456,6 +512,8 @@
             
             .date-icon {
                 font-size: 1.8rem;
+                min-width: 40px;
+                text-align: center;
             }
             
             .date-info {
@@ -465,15 +523,11 @@
             .date-title {
                 font-weight: 600;
                 margin-bottom: 4px;
+                color: var(--text);
             }
             
             .date-day {
                 font-size: 0.9rem;
-                color: var(--primary);
-            }
-            
-            .date-description {
-                font-size: 0.8rem;
                 color: var(--text-muted);
             }
             
@@ -482,23 +536,26 @@
                 font-weight: 500;
                 color: var(--primary);
                 white-space: nowrap;
+                padding: 4px 8px;
+                background: var(--dark);
+                border-radius: 20px;
             }
             
-            .dates-notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--dark-card);
-                border-left: 4px solid var(--primary);
-                border-radius: 12px;
-                padding: 15px 20px;
-                box-shadow: var(--shadow);
-                animation: slideIn 0.3s ease;
-                z-index: 1000;
+            /* Стили для настроек */
+            #datesSettingsModal .modal-content {
+                max-width: 450px;
+            }
+            
+            #datesSettingsModal h3 {
+                color: var(--primary);
+                margin-bottom: 20px;
             }
             
             .settings-group {
                 margin: 20px 0;
+                padding: 15px;
+                background: var(--dark-light);
+                border-radius: 12px;
             }
             
             .checkbox-label {
@@ -507,12 +564,25 @@
                 gap: 10px;
                 margin: 10px 0;
                 cursor: pointer;
+                color: var(--text);
             }
             
             .checkbox-label input[type="checkbox"] {
                 width: 18px;
                 height: 18px;
                 accent-color: var(--primary);
+                cursor: pointer;
+            }
+            
+            #datesSettingsModal select,
+            #datesSettingsModal input[type="time"] {
+                width: 100%;
+                padding: 10px;
+                background: var(--dark);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                color: var(--text);
+                margin-top: 5px;
             }
             
             .modal-actions {
@@ -520,17 +590,6 @@
                 gap: 10px;
                 justify-content: flex-end;
                 margin-top: 20px;
-            }
-            
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
             }
             
             @media (max-width: 768px) {
@@ -541,27 +600,52 @@
                     width: 100%;
                     text-align: right;
                 }
+                .modal-actions {
+                    flex-direction: column;
+                }
+                .modal-actions button {
+                    width: 100%;
+                }
             }
         `;
         document.head.appendChild(style);
+    }
+
+    /**
+     * Инициализация модуля
+     */
+    function init() {
+        console.log('📅 Модуль важных дат загружен');
+        
+        loadSettings();
+        settings.language = getCurrentLanguage();
+        
+        addStyles();
+        
+        // Фиксим календарь
+        fixCalendarClickHandler();
         
         // Добавляем виджет на дашборд
-        const insertTarget = document.querySelector('.stats-row') || 
-                            document.querySelector('.kpi-grid');
+        const insertTarget = document.querySelector('.stats-row') || document.querySelector('.kpi-grid');
         if (insertTarget) {
-            insertTarget.parentNode.insertBefore(createDatesWidget(), insertTarget.nextSibling);
+            insertTarget.parentNode.insertBefore(createUpcomingDatesWidget(), insertTarget.nextSibling);
         }
         
         // Создаем модалку настроек
         createSettingsModal();
         
-        // Запускаем обновление счетчиков
-        updateCountdowns();
-        setInterval(updateCountdowns, 60000); // Каждую минуту
-        
-        // Проверяем уведомления каждый час
+        // Запускаем проверку уведомлений
         checkNotifications();
-        setInterval(checkNotifications, 60 * 60 * 1000);
+        setInterval(checkNotifications, 60 * 60 * 1000); // Каждый час
+        
+        // Следим за сменой месяца в календаре
+        const originalChangeMonth = window.changeMonth;
+        if (originalChangeMonth) {
+            window.changeMonth = function(delta) {
+                originalChangeMonth(delta);
+                setTimeout(enhanceCalendarWithImportantDates, 200);
+            };
+        }
         
         // Следим за сменой языка
         const observer = new MutationObserver(() => {
@@ -575,7 +659,7 @@
     const checkInterval = setInterval(() => {
         if (document.getElementById('app') && !document.getElementById('app').classList.contains('hidden')) {
             clearInterval(checkInterval);
-            setTimeout(init, 1000); // Даем основному приложению прогрузиться
+            setTimeout(init, 1000);
         }
     }, 100);
 })();
