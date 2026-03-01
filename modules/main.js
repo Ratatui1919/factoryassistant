@@ -86,7 +86,7 @@ onAuthStateChanged(auth, async (user) => {
 window.addEventListener('load', function() {
     // Восстанавливаем язык
     const savedLang = localStorage.getItem('vaillant_language') || 'ru';
-    if (window.setLanguage) window.setLanguage(savedLang);
+    setLanguage(savedLang);
     
     // Восстанавливаем тему
     const savedTheme = localStorage.getItem('vaillant_theme') || 'dark';
