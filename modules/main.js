@@ -3,6 +3,7 @@
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal, showNotification } from './utils.js';
 import { loadUserDataToUI } from './auth.js';
+import { loadFinancialGoal } from './finance.js';
 
 // Глобальные переменные
 window.currentUser = null;
@@ -22,11 +23,15 @@ export function initApp(user, userData) {
         loadUserDataToUI();
     }
     
+    // Загружаем финансовую цель
+    if (loadFinancialGoal) {
+        setTimeout(() => loadFinancialGoal(), 100);
+    }
+    
     // Обновляем отображение
     if (window.updateMonthDisplay) window.updateMonthDisplay();
     if (window.buildCalendar) window.buildCalendar();
     if (window.calculateAllStats) window.calculateAllStats();
-    if (window.loadFinancialGoal) window.loadFinancialGoal();
     
     // Запускаем время
     if (window.updateDateTime) window.updateDateTime();
@@ -73,6 +78,11 @@ onAuthStateChanged(auth, async (user) => {
                 // Загружаем данные в UI
                 if (loadUserDataToUI) {
                     loadUserDataToUI();
+                }
+                
+                // Загружаем финансовую цель
+                if (loadFinancialGoal) {
+                    setTimeout(() => loadFinancialGoal(), 200);
                 }
                 
                 // Устанавливаем тему
@@ -148,6 +158,9 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
+        setTimeout(() => {
+            if (loadFinancialGoal) loadFinancialGoal();
+        }, 100);
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
