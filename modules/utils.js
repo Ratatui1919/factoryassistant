@@ -1,4 +1,4 @@
-// modules/utils.js - ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// modules/utils.js - ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (ИСПРАВЛЕННЫЙ)
 
 import { translations } from './translations.js';
 
@@ -26,18 +26,52 @@ export function setLanguage(lang) {
     
     // Переводим все элементы
     translatePage();
+    
+    // Обновляем погодные эффекты при смене языка
+    setTimeout(() => {
+        if (window.toggleWeatherEffect) {
+            window.toggleWeatherEffect();
+        }
+    }, 100);
 }
 
 // Перевод всей страницы
 export function translatePage() {
+    // Переводим все элементы с data-lang (кроме кнопок языков)
     document.querySelectorAll('[data-lang]').forEach(el => {
+        // Пропускаем кнопки языков
+        if (el.classList.contains('lang-btn')) {
+            return;
+        }
+        
         const key = el.dataset.lang;
-        el.textContent = t(key);
+        
+        // Для select переводим options
+        if (el.tagName === 'SELECT') {
+            Array.from(el.options).forEach(option => {
+                const optionKey = option.getAttribute('data-lang');
+                if (optionKey) {
+                    option.textContent = t(optionKey);
+                }
+            });
+        } else {
+            el.textContent = t(key);
+        }
     });
     
+    // Переводим placeholder'ы
     document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
         const key = el.dataset.langPlaceholder;
         el.placeholder = t(key);
+    });
+    
+    // Кнопки языков всегда показываем как RU, SK, EN, UA
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        const lang = btn.dataset.lang;
+        if (lang === 'ru') btn.textContent = 'RU';
+        if (lang === 'sk') btn.textContent = 'SK';
+        if (lang === 'en') btn.textContent = 'EN';
+        if (lang === 'uk') btn.textContent = 'UA';
     });
 }
 
