@@ -1,12 +1,13 @@
-// js/utils.js - ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// modules/utils.js - ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 
+import { db } from './firebase-config.js';
 import { translations } from './translations.js';
 
 // Текущий язык
 export let currentLanguage = localStorage.getItem('vaillant_language') || 'ru';
 
 // Установка языка
-export function setLanguage(lang) {
+window.setLanguage = function(lang) {
     currentLanguage = lang;
     localStorage.setItem('vaillant_language', lang);
     document.documentElement.lang = lang;
@@ -21,7 +22,7 @@ export function setLanguage(lang) {
     
     // Переводим все элементы
     translatePage();
-}
+};
 
 // Функция перевода
 export function t(key) {
@@ -43,12 +44,14 @@ export function translatePage() {
 
 // Показать модальное окно
 export function showModal(id) {
-    document.getElementById(id).style.display = 'flex';
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = 'flex';
 }
 
 // Скрыть модальное окно
 export function hideModal(id) {
-    document.getElementById(id).style.display = 'none';
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = 'none';
 }
 
 // Показать уведомление
@@ -72,9 +75,9 @@ export function getAvatarUrl(email) {
 
 // Получить имя пользователя
 export function getDisplayName(user) {
-    if (!user) return t('guest') || 'Гость';
+    if (!user) return 'Гость';
     if (user.fullName?.trim()) return user.fullName;
-    return user.email?.split('@')[0] || t('user') || 'User';
+    return user.email?.split('@')[0] || 'User';
 }
 
 // Форматирование даты
@@ -92,3 +95,5 @@ export function formatDate(date, format = 'full') {
         options[format]
     );
 }
+
+export { db };
