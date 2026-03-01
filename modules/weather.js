@@ -1,4 +1,4 @@
-// modules/weather.js - ПОГОДНЫЕ ЭФФЕКТЫ (ИСПРАВЛЕННЫЕ)
+// modules/weather.js - ПОГОДНЫЕ ЭФФЕКТЫ (ФИНАЛЬНАЯ ВЕРСИЯ)
 
 import { getCurrentUser, updateUserData } from './auth.js';
 
@@ -33,8 +33,58 @@ window.updateWeather = async function() {
         weatherTemp.innerHTML = `☀️ ${randomTemp}°C`;
     }
     
-    toggleWeatherEffect();
+    // После обновления погоды проверяем и включаем эффект
+    restoreWeatherEffect();
 };
+
+// Восстановление эффекта после загрузки страницы
+function restoreWeatherEffect() {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    const enabled = user.weatherEffectsEnabled;
+    const mode = user.weatherEffectMode;
+    
+    if (!enabled || mode === 'off') return;
+    
+    // Устанавливаем чекбоксы
+    const enabledCheckbox = document.getElementById('weatherEffectsEnabled');
+    const modeSelect = document.getElementById('weatherEffectMode');
+    
+    if (enabledCheckbox) enabledCheckbox.checked = enabled;
+    if (modeSelect) modeSelect.value = mode;
+    
+    // Включаем эффект
+    setTimeout(() => {
+        startWeatherEffect(mode);
+    }, 500);
+}
+
+// Запуск эффекта
+function startWeatherEffect(mode) {
+    // Удаляем старый эффект
+    if (weatherParticles) {
+        document.body.removeChild(weatherParticles);
+        weatherParticles = null;
+        if (weatherAnimation) {
+            cancelAnimationFrame(weatherAnimation);
+            weatherAnimation = null;
+        }
+    }
+    
+    if (mode === 'off') return;
+    
+    let effectType = mode;
+    if (mode === 'auto') {
+        const tempText = document.getElementById('weatherTemp')?.textContent || '0°C';
+        const temp = parseInt(tempText) || 0;
+        if (temp < 0) effectType = 'snow';
+        else if (temp > 0 && temp < 10) effectType = 'rain';
+        else return;
+    }
+    
+    createWeatherEffect(effectType);
+}
 
 // Переключение погодных эффектов
 window.toggleWeatherEffect = function() {
@@ -49,31 +99,7 @@ window.toggleWeatherEffect = function() {
         }).catch(() => {});
     }
     
-    // Удаляем старый canvas
-    if (weatherParticles) {
-        document.body.removeChild(weatherParticles);
-        weatherParticles = null;
-        if (weatherAnimation) {
-            cancelAnimationFrame(weatherAnimation);
-            weatherAnimation = null;
-        }
-    }
-    
-    if (!enabled || mode === 'off') return;
-    
-    let effectType = mode;
-    if (mode === 'auto') {
-        const tempText = document.getElementById('weatherTemp')?.textContent || '0°C';
-        const temp = parseInt(tempText) || 0;
-        if (temp < 0) effectType = 'snow';
-        else if (temp > 0 && temp < 10) effectType = 'rain';
-        else return;
-    }
-    
-    // Создаем новый эффект
-    setTimeout(() => {
-        createWeatherEffect(effectType);
-    }, 100);
+    startWeatherEffect(mode);
 };
 
 // Создание погодного эффекта на весь экран
@@ -115,22 +141,30 @@ function createWeatherEffect(type) {
     
     // Создаем частицы
     const particles = [];
-    const particleCount = type === 'snow' ? 200 : 250;
+    const particleCount = type === 'snow' ? 150 : 200;
     
     for (let i = 0; i < particleCount; i++) {
         particles.push({
             x: Math.random() * canvasWidth,
             y: Math.random() * canvasHeight,
-            size: type === 'snow' ? Math.random() * 6 + 2 : Math.random() * 4 + 1,
-            speedY: type === 'snow' ? Math.random() * 2 + 0.5 : Math.random() * 6 + 2,
-            speedX: type === 'snow' ? Math.random() * 0.8 - 0.4 : Math.random() * 3 - 1.5,
-            opacity: Math.random() * 0.6 + 0.2
+            size: type === 'snow' ? Math.random() * 6 + 2 : Math.random() * 3 + 1,
+            speedY: type === 'snow' ? Math.random() * 2 + 1 : Math.random() * 5 + 3,
+            speedX: type === 'snow' ? Math.random() * 0.5 - 0.25 : Math.random() * 2 - 1,
+            opacity: Math.random() * 0.7 + 0.3
         });
     }
     
     // Анимация
     function animate() {
         if (!weatherParticles || !ctx) return;
+        
+        // Проверяем размеры canvas
+        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvasWidth = window.innerWidth;
+            canvasHeight = window.innerHeight;
+        }
         
         // Очищаем canvas
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -142,17 +176,11 @@ function createWeatherEffect(type) {
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
                 ctx.fill();
-                
-                // Добавляем немного блеска
-                ctx.beginPath();
-                ctx.arc(p.x - 1, p.y - 1, p.size * 0.3, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity + 0.2})`;
-                ctx.fill();
             } else {
                 // Рисуем дождь (капли)
                 ctx.beginPath();
                 ctx.moveTo(p.x, p.y);
-                ctx.lineTo(p.x + 1, p.y + p.size * 3);
+                ctx.lineTo(p.x, p.y + p.size * 3);
                 ctx.strokeStyle = `rgba(174, 194, 224, ${p.opacity})`;
                 ctx.lineWidth = p.size * 0.7;
                 ctx.stroke();
@@ -181,7 +209,19 @@ function createWeatherEffect(type) {
     animate();
 }
 
-// Функция для принудительного обновления
-window.refreshWeatherEffect = function() {
-    toggleWeatherEffect();
-};
+// Инициализация при загрузке страницы
+export function initWeather() {
+    // Ждем загрузки пользователя
+    setTimeout(() => {
+        restoreWeatherEffect();
+    }, 1000);
+}
+
+// Запускаем при загрузке модуля
+setTimeout(() => {
+    if (document.readyState === 'complete') {
+        initWeather();
+    } else {
+        window.addEventListener('load', initWeather);
+    }
+}, 500);
