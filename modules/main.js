@@ -2,14 +2,20 @@
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal, showNotification } from './utils.js';
-import { loadUserDataToUI } from './auth.js';
-import { loadFinancialGoal } from './finance.js';
 
 // Глобальные переменные
 window.currentUser = null;
 window.currentUserData = null;
 window.currentMonth = new Date().getMonth();
 window.currentYear = new Date().getFullYear();
+
+// Функция загрузки данных пользователя в UI (будет определена позже)
+let loadUserDataToUIFn = null;
+
+// Регистрируем функцию загрузки данных
+export function registerLoadUserData(fn) {
+    loadUserDataToUIFn = fn;
+}
 
 // Инициализация приложения
 export function initApp(user, userData) {
@@ -19,19 +25,15 @@ export function initApp(user, userData) {
     window.currentUserData = userData;
     
     // Загружаем данные пользователя в UI
-    if (loadUserDataToUI) {
-        loadUserDataToUI();
-    }
-    
-    // Загружаем финансовую цель
-    if (loadFinancialGoal) {
-        setTimeout(() => loadFinancialGoal(), 100);
+    if (loadUserDataToUIFn) {
+        loadUserDataToUIFn();
     }
     
     // Обновляем отображение
     if (window.updateMonthDisplay) window.updateMonthDisplay();
     if (window.buildCalendar) window.buildCalendar();
     if (window.calculateAllStats) window.calculateAllStats();
+    if (window.loadFinancialGoal) window.loadFinancialGoal();
     
     // Запускаем время
     if (window.updateDateTime) window.updateDateTime();
@@ -74,16 +76,6 @@ onAuthStateChanged(auth, async (user) => {
                 
                 hidePreloader();
                 document.getElementById('app').classList.remove('hidden');
-                
-                // Загружаем данные в UI
-                if (loadUserDataToUI) {
-                    loadUserDataToUI();
-                }
-                
-                // Загружаем финансовую цель
-                if (loadFinancialGoal) {
-                    setTimeout(() => loadFinancialGoal(), 200);
-                }
                 
                 // Устанавливаем тему
                 if (window.setTheme) window.setTheme(userData.theme || 'dark');
@@ -158,9 +150,6 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
-        setTimeout(() => {
-            if (loadFinancialGoal) loadFinancialGoal();
-        }, 100);
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
