@@ -2,6 +2,7 @@
 
 import { getCurrentUser, updateUserData } from './auth.js';
 import { showNotification, t } from './utils.js';
+import { registerLoadFinancialGoal } from './main.js';
 
 // Обновление финансовой статистики
 export function updateFinanceStats() {
@@ -89,55 +90,60 @@ function buildPieChart(net, tax, lunch, savings) {
 // Загрузка финансовой цели
 export function loadFinancialGoal() {
     console.log('loadFinancialGoal вызван');
-    const user = getCurrentUser();
-    if (!user) {
-        console.log('loadFinancialGoal: пользователь не найден');
-        return;
-    }
     
-    console.log('Загрузка финансовой цели пользователя:', user.financialGoal);
-    
-    const goal = user.financialGoal;
-    const goalInputs = document.querySelector('.goal-inputs');
-    const goalProgress = document.getElementById('goalProgress');
-    const goalActions = document.getElementById('goalActions');
-    
-    if (!goalInputs || !goalProgress) {
-        console.log('Элементы финансовой цели не найдены');
-        return;
-    }
-    
-    if (goal?.name && goal.amount > 0) {
-        console.log('Цель существует:', goal);
+    // Даем время на установку currentUser
+    setTimeout(() => {
+        const user = getCurrentUser();
+        if (!user) {
+            console.log('loadFinancialGoal: пользователь не найден, повтор через 500ms');
+            setTimeout(loadFinancialGoal, 500);
+            return;
+        }
         
-        const goalNameDisplay = document.getElementById('goalNameDisplay');
-        const goalTarget = document.getElementById('goalTarget');
-        const goalName = document.getElementById('goalName');
-        const goalAmount = document.getElementById('goalAmount');
+        console.log('Загрузка финансовой цели пользователя:', user.financialGoal);
         
-        if (goalNameDisplay) goalNameDisplay.innerText = goal.name;
-        if (goalTarget) goalTarget.innerText = goal.amount.toFixed(2) + ' €';
-        if (goalName) goalName.value = goal.name;
-        if (goalAmount) goalAmount.value = goal.amount;
+        const goal = user.financialGoal;
+        const goalInputs = document.querySelector('.goal-inputs');
+        const goalProgress = document.getElementById('goalProgress');
+        const goalActions = document.getElementById('goalActions');
         
-        goal.saved = goal.saved || 0;
-        goal.history = goal.history || [];
+        if (!goalInputs || !goalProgress) {
+            console.log('Элементы финансовой цели не найдены');
+            return;
+        }
         
-        if (goalInputs) goalInputs.style.display = 'none';
-        if (goalProgress) goalProgress.style.display = 'block';
-        if (goalActions) goalActions.style.display = 'flex';
-        
-        updateGoalDisplay();
-    } else {
-        console.log('Цель не существует, показываем форму ввода');
-        const goalName = document.getElementById('goalName');
-        const goalAmount = document.getElementById('goalAmount');
-        
-        if (goalName) goalName.value = '';
-        if (goalAmount) goalAmount.value = '';
-        if (goalInputs) goalInputs.style.display = 'flex';
-        if (goalProgress) goalProgress.style.display = 'none';
-    }
+        if (goal?.name && goal.amount > 0) {
+            console.log('Цель существует:', goal);
+            
+            const goalNameDisplay = document.getElementById('goalNameDisplay');
+            const goalTarget = document.getElementById('goalTarget');
+            const goalName = document.getElementById('goalName');
+            const goalAmount = document.getElementById('goalAmount');
+            
+            if (goalNameDisplay) goalNameDisplay.innerText = goal.name;
+            if (goalTarget) goalTarget.innerText = goal.amount.toFixed(2) + ' €';
+            if (goalName) goalName.value = goal.name;
+            if (goalAmount) goalAmount.value = goal.amount;
+            
+            goal.saved = goal.saved || 0;
+            goal.history = goal.history || [];
+            
+            if (goalInputs) goalInputs.style.display = 'none';
+            if (goalProgress) goalProgress.style.display = 'block';
+            if (goalActions) goalActions.style.display = 'flex';
+            
+            updateGoalDisplay();
+        } else {
+            console.log('Цель не существует, показываем форму ввода');
+            const goalName = document.getElementById('goalName');
+            const goalAmount = document.getElementById('goalAmount');
+            
+            if (goalName) goalName.value = '';
+            if (goalAmount) goalAmount.value = '';
+            if (goalInputs) goalInputs.style.display = 'flex';
+            if (goalProgress) goalProgress.style.display = 'none';
+        }
+    }, 100);
 }
 
 // Обновление отображения цели
@@ -255,6 +261,9 @@ export async function withdrawFromGoal() {
     loadFinancialGoal();
     showNotification(`Снято ${amount} €`);
 }
+
+// Регистрируем функцию загрузки финансовой цели
+registerLoadFinancialGoal(loadFinancialGoal);
 
 // ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
 window.updateFinanceStats = updateFinanceStats;
