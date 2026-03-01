@@ -119,10 +119,18 @@ window.setView = function(view) {
     if (mainNav) mainNav.classList.remove('active');
     
     // Обновляем контент вкладки
-    if (view === 'calendar' && window.buildCalendar) window.buildCalendar();
-    if (view === 'stats' && window.loadYearStats) window.loadYearStats();
-    if (view === 'finance' && window.updateFinanceStats) window.updateFinanceStats();
-    if (view === 'dashboard' && window.buildYearChart) setTimeout(() => window.buildYearChart(), 100);
+    if (view === 'calendar' && window.buildCalendar) {
+        setTimeout(() => window.buildCalendar(), 50);
+    }
+    if (view === 'stats' && window.loadYearStats) {
+        setTimeout(() => window.loadYearStats(), 50);
+    }
+    if (view === 'finance' && window.updateFinanceStats) {
+        setTimeout(() => window.updateFinanceStats(), 50);
+    }
+    if (view === 'dashboard' && window.buildYearChart) {
+        setTimeout(() => window.buildYearChart(), 100);
+    }
 };
 
 // Бургер-меню
