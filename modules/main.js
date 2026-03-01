@@ -2,6 +2,7 @@
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal, showNotification } from './utils.js';
+import { loadUserDataToUI } from './auth.js';
 
 // Глобальные переменные
 window.currentUser = null;
@@ -11,8 +12,15 @@ window.currentYear = new Date().getFullYear();
 
 // Инициализация приложения
 export function initApp(user, userData) {
+    console.log('initApp вызван с данными:', user, userData);
+    
     window.currentUser = user;
     window.currentUserData = userData;
+    
+    // Загружаем данные пользователя в UI
+    if (loadUserDataToUI) {
+        loadUserDataToUI();
+    }
     
     // Обновляем отображение
     if (window.updateMonthDisplay) window.updateMonthDisplay();
@@ -46,17 +54,26 @@ window.updateLoadingStatus = function(text) {
 
 // Проверка авторизации
 onAuthStateChanged(auth, async (user) => {
+    console.log('onAuthStateChanged:', user);
+    
     if (user) {
         window.updateLoadingStatus('Загрузка данных...');
         try {
             const userDoc = await getDoc(doc(db, "users", user.uid));
             if (userDoc.exists()) {
                 const userData = userDoc.data();
+                console.log('Данные пользователя из Firebase:', userData);
+                
                 window.currentUser = { uid: user.uid, ...userData };
                 window.currentUserData = userData;
                 
                 hidePreloader();
                 document.getElementById('app').classList.remove('hidden');
+                
+                // Загружаем данные в UI
+                if (loadUserDataToUI) {
+                    loadUserDataToUI();
+                }
                 
                 // Устанавливаем тему
                 if (window.setTheme) window.setTheme(userData.theme || 'dark');
@@ -64,6 +81,7 @@ onAuthStateChanged(auth, async (user) => {
                 // Инициализируем
                 initApp(window.currentUser, userData);
             } else {
+                console.log('Документ пользователя не найден');
                 hidePreloader();
                 showModal('authModal');
                 window.showLoginForm();
@@ -75,6 +93,7 @@ onAuthStateChanged(auth, async (user) => {
             window.showLoginForm();
         }
     } else {
+        console.log('Пользователь не авторизован');
         hidePreloader();
         document.getElementById('app').classList.add('hidden');
         showModal('authModal');
@@ -84,6 +103,8 @@ onAuthStateChanged(auth, async (user) => {
 
 // Загрузка страницы
 window.addEventListener('load', function() {
+    console.log('Страница загружена');
+    
     // Восстанавливаем язык
     const savedLang = localStorage.getItem('vaillant_language') || 'ru';
     setLanguage(savedLang);
