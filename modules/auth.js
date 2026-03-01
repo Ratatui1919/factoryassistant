@@ -4,6 +4,7 @@ import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, s
 import { t, showModal, hideModal, showNotification, getAvatarUrl, getDisplayName } from './utils.js';
 import { BASE_RATE, LUNCH_COST_REAL, NIGHT_BONUS_PERCENT } from './salary.js';
 import { initApp } from './main.js';
+import { loadFinancialGoal } from './finance.js';
 
 let currentUser = null;
 let currentUserData = null;
@@ -28,10 +29,14 @@ export async function updateUserData(newData) {
 
 // Загрузка данных пользователя в UI
 export function loadUserDataToUI() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        console.log('loadUserDataToUI: currentUser отсутствует');
+        return;
+    }
     
     console.log('Загрузка данных пользователя в UI:', currentUser);
     
+    // Основные поля профиля
     const fullNameEl = document.getElementById('fullName');
     const employeeIdEl = document.getElementById('employeeId');
     const cardIdEl = document.getElementById('cardId');
@@ -51,6 +56,7 @@ export function loadUserDataToUI() {
     if (weatherEnabledEl) weatherEnabledEl.checked = currentUser.weatherEffectsEnabled !== false;
     if (weatherModeEl) weatherModeEl.value = currentUser.weatherEffectMode || 'auto';
     
+    // Настройки зарплаты
     if (currentUser.settings) {
         const hourlyRate = document.getElementById('hourlyRate');
         const lunchCost = document.getElementById('lunchCost');
@@ -79,10 +85,12 @@ export function loadUserDataToUI() {
         if (accruedWeekendsInput) accruedWeekendsInput.value = currentUser.settings.accruedWeekends || 0;
     }
     
+    // Аватар
     let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.email);
     if (avatarPreview) avatarPreview.src = avatarUrl;
     if (profileAvatar) profileAvatar.src = avatarUrl;
     
+    // Имя пользователя
     if (userNameEl) userNameEl.textContent = getDisplayName(currentUser);
     if (profileNameEl) profileNameEl.textContent = getDisplayName(currentUser);
     
@@ -343,3 +351,20 @@ window.saveProfile = saveProfile;
 window.previewAvatar = previewAvatar;
 window.exportData = exportData;
 window.clearAllData = clearAllData;
+
+// ===== ЭКСПОРТ ДЛЯ ДРУГИХ МОДУЛЕЙ =====
+export { 
+    getCurrentUser, 
+    getUserData, 
+    updateUserData, 
+    loadUserDataToUI, 
+    showLoginForm, 
+    showRegisterForm, 
+    register, 
+    login, 
+    logout, 
+    saveProfile, 
+    previewAvatar, 
+    exportData, 
+    clearAllData 
+};
