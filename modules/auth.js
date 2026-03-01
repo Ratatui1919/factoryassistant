@@ -1,9 +1,7 @@
-// modules/auth.js - АВТОРИЗАЦИЯ
+// modules/auth.js - АВТОРИЗАЦИЯ (УПРОЩЕННАЯ)
 
 import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc, updateDoc } from './firebase-config.js';
-import { t, showModal, hideModal, showNotification, getAvatarUrl, getDisplayName } from './utils.js';
-import { BASE_RATE, LUNCH_COST_REAL, NIGHT_BONUS_PERCENT } from './salary.js';
-import { registerLoadUserData, initApp } from './main.js';
+import { showModal, hideModal, showNotification } from './utils.js';
 
 let currentUser = null;
 let currentUserData = null;
@@ -25,96 +23,6 @@ export async function updateUserData(newData) {
     currentUser = { uid: currentUser.uid, ...currentUserData };
     await updateDoc(doc(db, "users", currentUser.uid), newData);
 }
-
-// Загрузка данных пользователя в UI
-export function loadUserDataToUI() {
-    console.log('loadUserDataToUI вызван, currentUser:', currentUser);
-    
-    if (!currentUser) {
-        console.log('loadUserDataToUI: currentUser отсутствует, ждем...');
-        // Пробуем еще раз через секунду
-        setTimeout(() => {
-            if (currentUser) {
-                console.log('loadUserDataToUI: повторная попытка с currentUser:', currentUser);
-                loadUserDataToUIImpl();
-            } else {
-                console.log('loadUserDataToUI: currentUser все еще отсутствует');
-            }
-        }, 500);
-        return;
-    }
-    
-    loadUserDataToUIImpl();
-}
-
-function loadUserDataToUIImpl() {
-    if (!currentUser) return;
-    
-    console.log('Загрузка данных пользователя в UI:', currentUser);
-    
-    // Основные поля профиля
-    const fullNameEl = document.getElementById('fullName');
-    const employeeIdEl = document.getElementById('employeeId');
-    const cardIdEl = document.getElementById('cardId');
-    const emailEl = document.getElementById('email');
-    const weatherEnabledEl = document.getElementById('weatherEffectsEnabled');
-    const weatherModeEl = document.getElementById('weatherEffectMode');
-    const avatarPreview = document.getElementById('avatarPreview');
-    const profileAvatar = document.getElementById('profileAvatar');
-    const userNameEl = document.getElementById('userName');
-    const profileNameEl = document.getElementById('profileName');
-    
-    if (fullNameEl) fullNameEl.value = currentUser.fullName || '';
-    if (employeeIdEl) employeeIdEl.value = currentUser.employeeId || '';
-    if (cardIdEl) cardIdEl.value = currentUser.cardId || '';
-    if (emailEl) emailEl.value = currentUser.email || '';
-    
-    if (weatherEnabledEl) weatherEnabledEl.checked = currentUser.weatherEffectsEnabled !== false;
-    if (weatherModeEl) weatherModeEl.value = currentUser.weatherEffectMode || 'auto';
-    
-    // Настройки зарплаты
-    if (currentUser.settings) {
-        const hourlyRate = document.getElementById('hourlyRate');
-        const lunchCost = document.getElementById('lunchCost');
-        const nightBonus = document.getElementById('nightBonus');
-        const saturdayBonus = document.getElementById('saturdayBonus');
-        const sundayBonus = document.getElementById('sundayBonus');
-        const extraBonus = document.getElementById('extraBonus');
-        const personalDoctorDays = document.getElementById('personalDoctorDays');
-        const accompanyDoctorDays = document.getElementById('accompanyDoctorDays');
-        const usedPersonalDoctor = document.getElementById('usedPersonalDoctor');
-        const usedAccompanyDoctor = document.getElementById('usedAccompanyDoctor');
-        const usedWeekends = document.getElementById('usedWeekends');
-        const accruedWeekendsInput = document.getElementById('accruedWeekendsInput');
-        
-        if (hourlyRate) hourlyRate.value = currentUser.settings.hourlyRate || BASE_RATE;
-        if (lunchCost) lunchCost.value = currentUser.settings.lunchCost || LUNCH_COST_REAL;
-        if (nightBonus) nightBonus.value = currentUser.settings.nightBonus || NIGHT_BONUS_PERCENT;
-        if (saturdayBonus) saturdayBonus.value = currentUser.settings.saturdayBonus || 1.5;
-        if (sundayBonus) sundayBonus.value = currentUser.settings.sundayBonus || 2.0;
-        if (extraBonus) extraBonus.value = currentUser.settings.extraBonus || 25;
-        if (personalDoctorDays) personalDoctorDays.value = currentUser.settings.personalDoctorDays || 7;
-        if (accompanyDoctorDays) accompanyDoctorDays.value = currentUser.settings.accompanyDoctorDays || 6;
-        if (usedPersonalDoctor) usedPersonalDoctor.value = currentUser.settings.usedPersonalDoctor || 0;
-        if (usedAccompanyDoctor) usedAccompanyDoctor.value = currentUser.settings.usedAccompanyDoctor || 0;
-        if (usedWeekends) usedWeekends.value = currentUser.settings.usedWeekends || 0;
-        if (accruedWeekendsInput) accruedWeekendsInput.value = currentUser.settings.accruedWeekends || 0;
-    }
-    
-    // Аватар
-    let avatarUrl = currentUser.avatar || getAvatarUrl(currentUser.email);
-    if (avatarPreview) avatarPreview.src = avatarUrl;
-    if (profileAvatar) profileAvatar.src = avatarUrl;
-    
-    // Имя пользователя
-    if (userNameEl) userNameEl.textContent = getDisplayName(currentUser);
-    if (profileNameEl) profileNameEl.textContent = getDisplayName(currentUser);
-    
-    console.log('Данные загружены в UI');
-}
-
-// Регистрируем функцию загрузки данных в main
-registerLoadUserData(loadUserDataToUI);
 
 // Показать форму входа
 export function showLoginForm() {
@@ -165,9 +73,9 @@ export async function register() {
             weatherEffectsEnabled: true,
             weatherEffectMode: 'auto',
             settings: { 
-                hourlyRate: BASE_RATE, 
-                lunchCost: LUNCH_COST_REAL, 
-                nightBonus: NIGHT_BONUS_PERCENT,
+                hourlyRate: 6.10, 
+                lunchCost: 1.31, 
+                nightBonus: 20,
                 saturdayBonus: 1.5, 
                 sundayBonus: 2.0, 
                 extraBonus: 25,
@@ -185,12 +93,9 @@ export async function register() {
         await setDoc(doc(db, "users", user.uid), userData);
         alert('Регистрация успешна!');
         
-        const regEmail = document.getElementById('regEmail');
-        const regPass = document.getElementById('regPass');
-        const regConfirm = document.getElementById('regConfirm');
-        if (regEmail) regEmail.value = '';
-        if (regPass) regPass.value = '';
-        if (regConfirm) regConfirm.value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPass').value = '';
+        document.getElementById('regConfirm').value = '';
         
         showLoginForm();
         
@@ -229,16 +134,9 @@ export async function login() {
         hideModal('authModal');
         document.getElementById('app').classList.remove('hidden');
         
-        // Загружаем данные в UI
-        loadUserDataToUI();
+        // Перезагружаем страницу для применения всех данных
+        window.location.reload();
         
-        // Устанавливаем тему
-        if (window.setTheme) window.setTheme(currentUser.theme || 'dark');
-        
-        // Запускаем приложение
-        initApp(currentUser, currentUserData);
-        
-        showNotification('Добро пожаловать!');
     } catch (error) {
         alert('Ошибка входа: ' + error.message);
     }
@@ -268,9 +166,9 @@ export async function saveProfile() {
         weatherEffectsEnabled: document.getElementById('weatherEffectsEnabled')?.checked || false,
         weatherEffectMode: document.getElementById('weatherEffectMode')?.value || 'auto',
         settings: {
-            hourlyRate: parseFloat(document.getElementById('hourlyRate')?.value) || BASE_RATE,
-            lunchCost: parseFloat(document.getElementById('lunchCost')?.value) || LUNCH_COST_REAL,
-            nightBonus: parseFloat(document.getElementById('nightBonus')?.value) || NIGHT_BONUS_PERCENT,
+            hourlyRate: parseFloat(document.getElementById('hourlyRate')?.value) || 6.10,
+            lunchCost: parseFloat(document.getElementById('lunchCost')?.value) || 1.31,
+            nightBonus: parseFloat(document.getElementById('nightBonus')?.value) || 20,
             saturdayBonus: parseFloat(document.getElementById('saturdayBonus')?.value) || 1.5,
             sundayBonus: parseFloat(document.getElementById('sundayBonus')?.value) || 2.0,
             extraBonus: parseFloat(document.getElementById('extraBonus')?.value) || 25,
@@ -288,14 +186,12 @@ export async function saveProfile() {
     
     await updateDoc(doc(db, "users", currentUser.uid), updates);
     
-    const userNameEl = document.getElementById('userName');
-    const profileNameEl = document.getElementById('profileName');
-    if (userNameEl) userNameEl.textContent = getDisplayName(currentUser);
-    if (profileNameEl) profileNameEl.textContent = getDisplayName(currentUser);
-    
-    if (window.toggleWeatherEffect) window.toggleWeatherEffect();
-    
     showNotification('Профиль сохранён!');
+    
+    // Перезагружаем страницу для применения всех данных
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
 }
 
 // Предпросмотр аватара
@@ -310,6 +206,11 @@ export function previewAvatar(input) {
             if (currentUser) {
                 await updateDoc(doc(db, "users", currentUser.uid), { avatar: e.target.result });
                 showNotification('Аватар обновлён');
+                
+                // Перезагружаем страницу для применения аватара
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             }
         };
         reader.readAsDataURL(input.files[0]);
@@ -352,11 +253,12 @@ export async function clearAllData() {
             settings: currentUser.settings
         });
         
-        if (window.buildCalendar) window.buildCalendar();
-        if (window.calculateAllStats) window.calculateAllStats();
-        if (window.loadFinancialGoal) window.loadFinancialGoal();
-        
         showNotification('Все данные очищены');
+        
+        // Перезагружаем страницу
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     }
 }
 
