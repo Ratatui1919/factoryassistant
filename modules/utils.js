@@ -1,6 +1,5 @@
 // modules/utils.js - ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 
-import { db } from './firebase-config.js';
 import { translations } from './translations.js';
 
 // Текущий язык
@@ -11,7 +10,7 @@ export function t(key) {
     return translations[currentLanguage]?.[key] || translations.ru[key] || key;
 }
 
-// Установка языка (ЭКСПОРТИРУЕМ ФУНКЦИЮ)
+// Установка языка (ЭКСПОРТИРУЕМ И ДЕЛАЕМ ГЛОБАЛЬНОЙ)
 export function setLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('vaillant_language', lang);
@@ -28,6 +27,9 @@ export function setLanguage(lang) {
     // Переводим все элементы
     translatePage();
 }
+
+// Делаем функцию глобальной
+window.setLanguage = setLanguage;
 
 // Перевод всей страницы
 export function translatePage() {
@@ -95,5 +97,3 @@ export function formatDate(date, format = 'full') {
         options[format]
     );
 }
-
-export { db };
