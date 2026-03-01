@@ -1,4 +1,4 @@
-// js/financial-tip.js - ФИНАНСОВЫЕ СОВЕТЫ
+// modules/financial-tip.js - ФИНАНСОВЫЕ СОВЕТЫ
 
 import { t } from './utils.js';
 
@@ -22,10 +22,11 @@ window.updateFinancialTip = function() {
     tipEl.textContent = t(tipKey) || 'Откладывай минимум 10% от зарплаты';
     
     if (tipDateEl) {
+        const lang = document.documentElement.lang || 'ru';
         tipDateEl.textContent = today.toLocaleDateString(
-            currentLanguage === 'ru' ? 'ru-RU' : 
-            currentLanguage === 'sk' ? 'sk-SK' : 
-            currentLanguage === 'uk' ? 'uk-UA' : 'en-US'
+            lang === 'ru' ? 'ru-RU' : 
+            lang === 'sk' ? 'sk-SK' : 
+            lang === 'uk' ? 'uk-UA' : 'en-US'
         );
     }
 };
