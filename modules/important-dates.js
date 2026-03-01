@@ -1,47 +1,132 @@
-// modules/important-dates.js - ОЧЕНЬ ПРОСТАЯ ВЕРСИЯ
+// modules/important-dates.js - РАБОЧАЯ ВЕРСИЯ СО ВСЕМИ ПРАЗДНИКАМИ
 
 (function() {
     console.log('🔥 Модуль важных дат запущен');
 
-    // Праздники 2026
-    const holidays = [
-        { month: 3, day: 3, name: 'Страстная пятница', icon: '✝️' },
-        { month: 3, day: 6, name: 'Пасхальный понедельник', icon: '🐣' },
-    ];
+    // ВСЕ ПРАЗДНИКИ 2026 ПО МЕСЯЦАМ
+    const holidays = {
+        0: [ // Январь
+            { day: 1, name: '🇸🇰 День образования Словацкой Республики', icon: '🇸🇰' },
+            { day: 6, name: '👑 Богоявление', icon: '👑' }
+        ],
+        1: [ // Февраль
+            // нет праздников
+        ],
+        2: [ // Март
+            // нет праздников
+        ],
+        3: [ // Апрель
+            { day: 3, name: '✝️ Страстная пятница', icon: '✝️' },
+            { day: 6, name: '🐣 Пасхальный понедельник', icon: '🐣' }
+        ],
+        4: [ // Май
+            { day: 1, name: '⚒️ День труда', icon: '⚒️' }
+        ],
+        5: [ // Июнь
+            // нет праздников
+        ],
+        6: [ // Июль
+            { day: 5, name: '📜 День Кирилла и Мефодия', icon: '📜' }
+        ],
+        7: [ // Август
+            { day: 29, name: '⚔️ День Словацкого восстания', icon: '⚔️' }
+        ],
+        8: [ // Сентябрь
+            // нет праздников
+        ],
+        9: [ // Октябрь
+            // нет праздников
+        ],
+        10: [ // Ноябрь
+            { day: 1, name: '🕯️ День всех святых', icon: '🕯️' }
+        ],
+        11: [ // Декабрь
+            { day: 24, name: '🎄 Сочельник', icon: '🎄' },
+            { day: 25, name: '🎅 Рождество', icon: '🎅' },
+            { day: 26, name: '🎁 Второй день Рождества', icon: '🎁' }
+        ]
+    };
 
-    // Функция обновления всего
-    function updateAll() {
-        console.log('🔄 Обновление...');
+    // ПОЛУЧАЕМ 3-Й РАБОЧИЙ ДЕНЬ
+    function getSalaryDay(month, year = 2026) {
+        let workDays = 0;
+        let day = 1;
+        const maxDays = new Date(year, month + 1, 0).getDate();
         
-        // Получаем текущий месяц из заголовка
+        while (workDays < 3 && day <= maxDays) {
+            const date = new Date(year, month, day);
+            const dayOfWeek = date.getDay(); // 0 = вс, 6 = сб
+            
+            // Проверяем выходной
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            
+            // Проверяем праздник
+            const monthHolidays = holidays[month] || [];
+            const isHoliday = monthHolidays.some(h => h.day === day);
+            
+            if (!isWeekend && !isHoliday) {
+                workDays++;
+                if (workDays === 3) return day;
+            }
+            day++;
+        }
+        return day;
+    }
+
+    // ПОЛУЧАЕМ ТЕКУЩИЙ МЕСЯЦ ИЗ ЗАГОЛОВКА
+    function getCurrentMonth() {
         const title = document.getElementById('calendarMonth')?.textContent || '';
-        let currentMonth = new Date().getMonth();
         
-        if (title.includes('апрель') || title.includes('Апрель')) currentMonth = 3;
-        else if (title.includes('март') || title.includes('Март')) currentMonth = 2;
+        if (title.includes('январь') || title.includes('Январь')) return 0;
+        if (title.includes('февраль') || title.includes('Февраль')) return 1;
+        if (title.includes('март') || title.includes('Март')) return 2;
+        if (title.includes('апрель') || title.includes('Апрель')) return 3;
+        if (title.includes('май') || title.includes('Май')) return 4;
+        if (title.includes('июнь') || title.includes('Июнь')) return 5;
+        if (title.includes('июль') || title.includes('Июль')) return 6;
+        if (title.includes('август') || title.includes('Август')) return 7;
+        if (title.includes('сентябрь') || title.includes('Сентябрь')) return 8;
+        if (title.includes('октябрь') || title.includes('Октябрь')) return 9;
+        if (title.includes('ноябрь') || title.includes('Ноябрь')) return 10;
+        if (title.includes('декабрь') || title.includes('Декабрь')) return 11;
         
-        console.log('Текущий месяц:', currentMonth + 1);
+        return new Date().getMonth();
+    }
+
+    // ОБНОВЛЕНИЕ КАЛЕНДАРЯ
+    function updateCalendar() {
+        const month = getCurrentMonth();
+        const year = 2026;
         
-        // Очищаем старые иконки
+        console.log('Обновляем календарь для месяца:', month + 1);
+        
+        // Удаляем старые иконки
         document.querySelectorAll('.day-icons-container').forEach(el => el.remove());
         document.querySelectorAll('.has-salary, .has-holiday').forEach(el => {
             el.classList.remove('has-salary', 'has-holiday');
         });
         
-        // Добавляем новые иконки
+        // Получаем день зарплаты
+        const salaryDay = getSalaryDay(month, year);
+        console.log('День зарплаты:', salaryDay);
+        
+        // Получаем праздники месяца
+        const monthHolidays = holidays[month] || [];
+        
+        // Добавляем иконки в календарь
         setTimeout(() => {
             const cells = document.querySelectorAll('#calendarGrid .day:not(.empty)');
+            
             cells.forEach(cell => {
                 const dayNum = cell.querySelector('.day-number')?.textContent;
                 if (!dayNum) return;
                 
                 const day = parseInt(dayNum);
+                const hasSalary = (day === salaryDay);
+                const holiday = monthHolidays.find(h => h.day === day);
                 
-                // Проверяем праздники
-                const holiday = holidays.find(h => h.month === currentMonth && h.day === day);
-                if (holiday) {
-                    cell.classList.add('has-holiday');
-                    
+                if (hasSalary || holiday) {
+                    // Создаем контейнер для иконок
                     let container = cell.querySelector('.day-icons-container');
                     if (!container) {
                         container = document.createElement('div');
@@ -49,67 +134,224 @@
                         cell.appendChild(container);
                     }
                     
-                    const icon = document.createElement('span');
-                    icon.className = 'day-icon-important';
-                    icon.textContent = holiday.icon;
-                    icon.title = holiday.name;
-                    container.appendChild(icon);
+                    // Добавляем иконку зарплаты
+                    if (hasSalary) {
+                        cell.classList.add('has-salary');
+                        const icon = document.createElement('span');
+                        icon.className = 'day-icon-important salary-icon';
+                        icon.textContent = '💰';
+                        icon.title = 'Зарплата';
+                        container.appendChild(icon);
+                    }
+                    
+                    // Добавляем иконку праздника
+                    if (holiday) {
+                        cell.classList.add('has-holiday');
+                        const icon = document.createElement('span');
+                        icon.className = 'day-icon-important holiday-icon';
+                        icon.textContent = holiday.icon;
+                        icon.title = holiday.name;
+                        container.appendChild(icon);
+                    }
                 }
             });
         }, 100);
-        
-        // Обновляем виджет
-        setTimeout(() => {
-            const widget = document.getElementById('importantDatesWidget');
-            if (widget) widget.remove();
-            
-            const insertPoint = document.querySelector('.stats-row');
-            if (!insertPoint) return;
-            
-            const newWidget = document.createElement('div');
-            newWidget.className = 'important-dates-widget glass-effect';
-            newWidget.id = 'importantDatesWidget';
-            newWidget.innerHTML = `
-                <div class="widget-header">
-                    <i class="fas fa-calendar-star"></i>
-                    <h3>📅 Ближайшие даты</h3>
-                </div>
-                <div class="dates-list">
-                    <div class="date-item holiday">
-                        <div class="date-icon">✝️</div>
-                        <div class="date-info">
-                            <div class="date-title">Страстная пятница</div>
-                            <div class="date-day">3 апреля</div>
-                        </div>
-                        <div class="date-countdown">тест</div>
-                    </div>
-                </div>
-            `;
-            
-            insertPoint.parentNode.insertBefore(newWidget, insertPoint.nextSibling);
-        }, 200);
     }
 
-    // Добавляем стили
+    // ОБНОВЛЕНИЕ ВИДЖЕТА
+    function updateWidget() {
+        const month = getCurrentMonth();
+        const year = 2026;
+        const today = new Date().getDate();
+        
+        // Удаляем старый виджет
+        const oldWidget = document.getElementById('importantDatesWidget');
+        if (oldWidget) oldWidget.remove();
+        
+        // Собираем все даты месяца
+        const allDates = [];
+        
+        // Добавляем зарплату
+        const salaryDay = getSalaryDay(month, year);
+        allDates.push({
+            day: salaryDay,
+            type: 'salary',
+            name: '💰 Зарплата',
+            icon: '💰',
+            date: new Date(year, month, salaryDay)
+        });
+        
+        // Добавляем праздники
+        (holidays[month] || []).forEach(h => {
+            allDates.push({
+                day: h.day,
+                type: 'holiday',
+                name: h.name,
+                icon: h.icon,
+                date: new Date(year, month, h.day)
+            });
+        });
+        
+        // Сортируем по дню
+        allDates.sort((a, b) => a.day - b.day);
+        
+        // Создаем виджет
+        const insertPoint = document.querySelector('.stats-row');
+        if (!insertPoint) return;
+        
+        const widget = document.createElement('div');
+        widget.className = 'important-dates-widget glass-effect';
+        widget.id = 'importantDatesWidget';
+        
+        let html = `
+            <div class="widget-header">
+                <i class="fas fa-calendar-star"></i>
+                <h3>📅 Ближайшие даты</h3>
+            </div>
+            <div class="dates-list">
+        `;
+        
+        allDates.forEach(d => {
+            const diff = d.day - today;
+            let countdown = '';
+            if (diff === 0) countdown = 'сегодня';
+            else if (diff === 1) countdown = 'завтра';
+            else if (diff > 1) countdown = `через ${diff} дн.`;
+            else countdown = 'прошло';
+            
+            const monthName = d.date.toLocaleDateString('ru-RU', { month: 'long' });
+            
+            html += `
+                <div class="date-item ${d.type}">
+                    <div class="date-icon">${d.icon}</div>
+                    <div class="date-info">
+                        <div class="date-title">${d.name}</div>
+                        <div class="date-day">${d.day} ${monthName}</div>
+                    </div>
+                    <div class="date-countdown">${countdown}</div>
+                </div>
+            `;
+        });
+        
+        html += `</div>`;
+        widget.innerHTML = html;
+        
+        insertPoint.parentNode.insertBefore(widget, insertPoint.nextSibling);
+    }
+
+    // ДОБАВЛЯЕМ СТИЛИ
     const style = document.createElement('style');
     style.textContent = `
-        .day-icons-container { display: flex; gap: 2px; justify-content: center; }
-        .day-icon-important { font-size: 1rem; }
-        .day.has-holiday { border: 2px solid orange !important; }
-        .important-dates-widget { margin: 20px 0; padding: 20px; border-radius: 20px; background: var(--glass-bg); }
-        .date-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--dark-light); border-radius: 12px; margin: 5px 0; }
+        .day-icons-container {
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+            margin-top: 2px;
+        }
+        .day-icon-important {
+            font-size: 1rem;
+        }
+        .day.has-salary {
+            border: 2px solid #00b060 !important;
+            background: rgba(0,176,96,0.1) !important;
+        }
+        .day.has-holiday {
+            border: 2px solid #f59e0b !important;
+            background: rgba(245,158,11,0.1) !important;
+        }
+        .day.has-salary.has-holiday {
+            border: 2px solid !important;
+            border-color: #00b060 #f59e0b #00b060 #f59e0b !important;
+        }
+        .important-dates-widget {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+        }
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .widget-header h3 {
+            color: var(--primary);
+            margin: 0;
+        }
+        .dates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .date-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--dark-light);
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        .date-item.salary {
+            border-left-color: #00b060;
+        }
+        .date-item.holiday {
+            border-left-color: #f59e0b;
+        }
+        .date-icon {
+            font-size: 1.5rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        .date-info {
+            flex: 1;
+        }
+        .date-title {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .date-day {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .date-countdown {
+            font-size: 0.85rem;
+            color: var(--primary);
+            white-space: nowrap;
+            padding: 4px 8px;
+            background: var(--dark);
+            border-radius: 20px;
+        }
     `;
     document.head.appendChild(style);
 
-    // Запускаем
-    setTimeout(updateAll, 2000);
-    
-    // Перехватываем смену месяца
-    const orig = window.changeMonth;
-    if (orig) {
-        window.changeMonth = function(d) {
-            orig(d);
-            setTimeout(updateAll, 500);
+    // ЗАПУСК
+    setTimeout(() => {
+        updateCalendar();
+        updateWidget();
+    }, 1000);
+
+    // ПЕРЕХВАТ СМЕНЫ МЕСЯЦА
+    const originalChangeMonth = window.changeMonth;
+    if (originalChangeMonth) {
+        window.changeMonth = function(delta) {
+            originalChangeMonth(delta);
+            setTimeout(() => {
+                updateCalendar();
+                updateWidget();
+            }, 300);
+        };
+    }
+
+    // ПЕРЕХВАТ ОТКРЫТИЯ КАЛЕНДАРЯ
+    const originalSetView = window.setView;
+    if (originalSetView) {
+        window.setView = function(view) {
+            originalSetView(view);
+            if (view === 'calendar') setTimeout(updateCalendar, 300);
+            if (view === 'dashboard') setTimeout(updateWidget, 300);
         };
     }
 })();
