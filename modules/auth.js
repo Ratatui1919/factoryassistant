@@ -86,27 +86,27 @@ function loadUserDataToUI() {
 }
 
 // Показать форму входа
-window.showLoginForm = function() {
+export function showLoginForm() {
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     const firstTab = document.querySelectorAll('.auth-tab')[0];
     const loginForm = document.getElementById('loginForm');
     if (firstTab) firstTab.classList.add('active');
     if (loginForm) loginForm.classList.add('active');
-};
+}
 
 // Показать форму регистрации
-window.showRegisterForm = function() {
+export function showRegisterForm() {
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     const secondTab = document.querySelectorAll('.auth-tab')[1];
     const registerForm = document.getElementById('registerForm');
     if (secondTab) secondTab.classList.add('active');
     if (registerForm) registerForm.classList.add('active');
-};
+}
 
 // Регистрация
-window.register = async function() {
+export async function register() {
     const email = document.getElementById('regEmail')?.value.trim();
     const pass = document.getElementById('regPass')?.value.trim();
     const confirm = document.getElementById('regConfirm')?.value.trim();
@@ -161,15 +161,15 @@ window.register = async function() {
         if (regPass) regPass.value = '';
         if (regConfirm) regConfirm.value = '';
         
-        window.showLoginForm();
+        showLoginForm();
         
     } catch (error) {
         alert('Ошибка: ' + error.message);
     }
-};
+}
 
 // Вход
-window.login = async function() {
+export async function login() {
     const email = document.getElementById('loginEmail')?.value.trim();
     const pass = document.getElementById('loginPass')?.value.trim();
     const remember = document.getElementById('rememberMe')?.checked;
@@ -211,21 +211,130 @@ window.login = async function() {
     } catch (error) {
         alert('Ошибка входа: ' + error.message);
     }
-};
+}
 
 // Выход
-window.logout = async function() {
+export async function logout() {
     if (confirm('Выйти?')) { 
         await signOut(auth); 
         currentUser = null; 
         currentUserData = null;
         document.getElementById('app').classList.add('hidden'); 
         showModal('authModal'); 
-        window.showLoginForm();
+        showLoginForm();
     }
-};
+}
 
-// Делаем функции глобальными
+// Сохранение профиля
+export async function saveProfile() {
+    if (!currentUser) return;
+    
+    const updates = {
+        fullName: document.getElementById('fullName')?.value || '',
+        employeeId: document.getElementById('employeeId')?.value || '',
+        cardId: document.getElementById('cardId')?.value || '',
+        email: document.getElementById('email')?.value || '',
+        weatherEffectsEnabled: document.getElementById('weatherEffectsEnabled')?.checked || false,
+        weatherEffectMode: document.getElementById('weatherEffectMode')?.value || 'auto',
+        settings: {
+            hourlyRate: parseFloat(document.getElementById('hourlyRate')?.value) || BASE_RATE,
+            lunchCost: parseFloat(document.getElementById('lunchCost')?.value) || LUNCH_COST_REAL,
+            nightBonus: parseFloat(document.getElementById('nightBonus')?.value) || NIGHT_BONUS_PERCENT,
+            saturdayBonus: parseFloat(document.getElementById('saturdayBonus')?.value) || 1.5,
+            sundayBonus: parseFloat(document.getElementById('sundayBonus')?.value) || 2.0,
+            extraBonus: parseFloat(document.getElementById('extraBonus')?.value) || 25,
+            personalDoctorDays: parseInt(document.getElementById('personalDoctorDays')?.value) || 7,
+            accompanyDoctorDays: parseInt(document.getElementById('accompanyDoctorDays')?.value) || 6,
+            usedPersonalDoctor: parseInt(document.getElementById('usedPersonalDoctor')?.value) || 0,
+            usedAccompanyDoctor: parseInt(document.getElementById('usedAccompanyDoctor')?.value) || 0,
+            usedWeekends: parseInt(document.getElementById('usedWeekends')?.value) || 0,
+            accruedWeekends: parseInt(document.getElementById('accruedWeekendsInput')?.value) || 0
+        }
+    };
+    
+    currentUser = { ...currentUser, ...updates };
+    currentUserData = { ...currentUserData, ...updates };
+    
+    await updateDoc(doc(db, "users", currentUser.uid), updates);
+    
+    const userNameEl = document.getElementById('userName');
+    const profileNameEl = document.getElementById('profileName');
+    if (userNameEl) userNameEl.textContent = getDisplayName(currentUser);
+    if (profileNameEl) profileNameEl.textContent = getDisplayName(currentUser);
+    
+    if (window.toggleWeatherEffect) window.toggleWeatherEffect();
+    
+    showNotification('Профиль сохранён!');
+}
+
+// Предпросмотр аватара
+export function previewAvatar(input) {
+    if (input.files?.[0]) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const avatarPreview = document.getElementById('avatarPreview');
+            const profileAvatar = document.getElementById('profileAvatar');
+            if (avatarPreview) avatarPreview.src = e.target.result;
+            if (profileAvatar) profileAvatar.src = e.target.result;
+            if (currentUser) {
+                await updateDoc(doc(db, "users", currentUser.uid), { avatar: e.target.result });
+                showNotification('Аватар обновлён');
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Экспорт данных
+export function exportData() {
+    if (!currentUser) return;
+    
+    const data = {
+        user: currentUser.name,
+        records: currentUser.records,
+        financialGoal: currentUser.financialGoal,
+        settings: currentUser.settings
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vaillant_${currentUser.name}_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    showNotification('Данные экспортированы');
+}
+
+// Очистка всех данных
+export async function clearAllData() {
+    if (!currentUser) return;
+    if (confirm('Удалить ВСЕ данные?')) {
+        currentUser.records = [];
+        currentUser.financialGoal = null;
+        currentUser.settings.usedPersonalDoctor = 0;
+        currentUser.settings.usedAccompanyDoctor = 0;
+        currentUser.settings.usedWeekends = 0;
+        
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            records: currentUser.records,
+            financialGoal: currentUser.financialGoal,
+            settings: currentUser.settings
+        });
+        
+        if (window.buildCalendar) window.buildCalendar();
+        if (window.calculateAllStats) window.calculateAllStats();
+        if (window.loadFinancialGoal) window.loadFinancialGoal();
+        
+        showNotification('Все данные очищены');
+    }
+}
+
+// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
+window.showLoginForm = showLoginForm;
+window.showRegisterForm = showRegisterForm;
+window.register = register;
+window.login = login;
+window.logout = logout;
 window.saveProfile = saveProfile;
 window.previewAvatar = previewAvatar;
 window.exportData = exportData;
