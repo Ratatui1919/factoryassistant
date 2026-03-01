@@ -37,13 +37,18 @@ const HEALTH_RATE = 0.10;
 const TAX_RATE = 0.19;
 const NON_TAXABLE = 410;
 
-// 30+ финансовых советов
+// Финансовые советы
 const FINANCIAL_TIPS = [
   "Откладывай минимум 10% от зарплаты",
-  "Используй надчасы для допдохода",
-  "Суббота +25€ бонуса",
-  "Ночные +20%",
-  "Следи за перепустками"
+  "Используй надчасы для дополнительного дохода",
+  "Субботние смены приносят +25€ бонуса",
+  "Ночные смены оплачиваются на 20% выше",
+  "Следи за количеством перепусток",
+  "Создай финансовую подушку безопасности",
+  "Инвестируй хотя бы 5% от дохода",
+  "Избегай кредитов с высокими процентами",
+  "Планируй крупные покупки заранее",
+  "Используй кэшбэк и бонусные программы"
 ];
 
 const translations = {
@@ -393,7 +398,7 @@ function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 function showMessage(msg, isError = false) { alert(isError ? '❌ ' + msg : '✅ ' + msg); }
 
-// ===== УВЕДОМЛЕНИЯ =====
+// Уведомления
 function showNotification(msg, duration = 3000) {
   const notification = document.getElementById('notification');
   const messageEl = document.getElementById('notificationMessage');
@@ -413,7 +418,7 @@ window.hideNotification = function() {
   if (notification) notification.classList.add('hidden');
 };
 
-// ===== БУРГЕР-МЕНЮ =====
+// Бургер-меню
 window.toggleMobileMenu = function() {
   const nav = document.getElementById('mainNav');
   nav.classList.toggle('active');
@@ -594,25 +599,25 @@ function updateDateTime() {
   if (dateEl) {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     dateEl.textContent = new Date().toLocaleDateString(
-      currentLanguage === 'ru' ? 'ru-RU' : currentLanguage === 'sk' ? 'sk-SK' : currentLanguage === 'uk' ? 'uk-UA' : 'en-US',
+      currentLanguage === 'ru' ? 'ru-RU' : 
+      currentLanguage === 'sk' ? 'sk-SK' : 
+      currentLanguage === 'uk' ? 'uk-UA' : 'en-US',
       options
     );
   }
 }
 
-// ===== РЕАЛЬНАЯ ПОГОДА (ИСПРАВЛЕНО) =====
+// Реальная погода для Тренчина
 async function updateWeather() {
   const weatherTemp = document.getElementById('weatherTemp');
   if (!weatherTemp) return;
   
   try {
-    // Используем бесплатное API для погоды в Тренчине
-    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.89&longitude=17.99&current_weather=true&hourly=temperature_2m&timezone=auto');
+    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.89&longitude=17.99&current_weather=true&timezone=auto');
     const data = await response.json();
     const temp = Math.round(data.current_weather.temperature);
     const weatherCode = data.current_weather.weathercode;
     
-    // Определяем иконку по коду погоды
     let icon = '☀️';
     if (weatherCode >= 51 && weatherCode <= 67) icon = '🌧️';
     else if (weatherCode >= 71 && weatherCode <= 77) icon = '❄️';
@@ -623,13 +628,11 @@ async function updateWeather() {
     weatherTemp.innerHTML = `${icon} ${temp}°C`;
   } catch (error) {
     console.error('Ошибка получения погоды:', error);
-    // Если API не работает, показываем случайную
     const temps = [2, 3, 4, 5, 6, 7, 8];
     const randomTemp = temps[Math.floor(Math.random() * temps.length)];
     weatherTemp.innerHTML = `☀️ ${randomTemp}°C`;
   }
   
-  // Обновляем погодные эффекты
   toggleWeatherEffect();
 }
 
@@ -750,7 +753,9 @@ function updateFinancialTip() {
   
   if (tipDateEl) {
     tipDateEl.textContent = today.toLocaleDateString(
-      currentLanguage === 'ru' ? 'ru-RU' : currentLanguage === 'sk' ? 'sk-SK' : currentLanguage === 'uk' ? 'uk-UA' : 'en-US'
+      currentLanguage === 'ru' ? 'ru-RU' : 
+      currentLanguage === 'sk' ? 'sk-SK' : 
+      currentLanguage === 'uk' ? 'uk-UA' : 'en-US'
     );
   }
 }
@@ -1099,12 +1104,12 @@ function buildCalendar() {
     let cell = document.createElement('div');
     cell.className = 'day';
     
-    // ИСПРАВЛЕНО: прошлые дни и сегодняшний можно редактировать
     let isPast = false;
     if (currentYear < todayYear) isPast = true;
     else if (currentYear === todayYear && currentMonth < todayMonth) isPast = true;
     else if (currentYear === todayYear && currentMonth === todayMonth && d < todayDate) isPast = true;
     
+    // Только строго будущие дни блокируем
     if (!isPast && !(currentYear === todayYear && currentMonth === todayMonth && d === todayDate)) {
       cell.classList.add('future');
     }
@@ -1124,7 +1129,7 @@ function buildCalendar() {
       }
     }
     
-    // ИСПРАВЛЕНО: клик для прошлых и сегодняшнего дня
+    // Кликабельно для прошлых дней и сегодня
     if (isPast || (currentYear === todayYear && currentMonth === todayMonth && d === todayDate)) {
       cell.onclick = () => { selectedDay = d; showModal('dayModal'); };
     }
@@ -1174,7 +1179,7 @@ function calculateDayEarnings(record, rate, settings) {
   }
 }
 
-// ===== ДАШБОРД (ИСПРАВЛЕН) =====
+// ===== ДАШБОРД (ИСПРАВЛЕНО) =====
 function calculateDashboardStats() {
   if (!currentUser) return;
   
@@ -1278,7 +1283,7 @@ function buildPieChart(net, tax, lunch, savings) {
   });
 }
 
-// ===== СТАТИСТИКА (ИСПРАВЛЕНО) =====
+// ===== СТАТИСТИКА (ПОЛНОСТЬЮ ИСПРАВЛЕНО) =====
 function loadYearStats() {
   if (!currentUser) return;
   
@@ -1316,18 +1321,26 @@ function loadYearStats() {
   
   const monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
   let bestMonth = { value: 0, name: '' };
+  let bestMonthIndex = -1;
   
   monthTotals.forEach((total, index) => {
     if (total > bestMonth.value) {
       bestMonth.value = total;
       bestMonth.name = monthNames[index];
+      bestMonthIndex = index;
     }
   });
   
+  // Обновляем карточки статистики
   document.getElementById('totalEarned').innerText = totalGross.toFixed(2) + ' €';
   document.getElementById('totalHours').innerText = totalHours;
   document.getElementById('totalLunch').innerText = totalLunch.toFixed(2) + ' €';
-  document.getElementById('bestMonth').innerText = bestMonth.name + ' ' + bestMonth.value.toFixed(0) + '€';
+  
+  if (bestMonthIndex !== -1) {
+    document.getElementById('bestMonth').innerText = bestMonth.name + ' ' + bestMonth.value.toFixed(0) + '€';
+  } else {
+    document.getElementById('bestMonth').innerText = '-';
+  }
   
   buildStatsChart(monthTotals);
 }
@@ -1346,10 +1359,25 @@ function buildStatsChart(monthTotals) {
         data: monthTotals,
         backgroundColor: 'rgba(0,176,96,0.7)',
         borderColor: '#00b060',
-        borderWidth: 1
+        borderWidth: 1,
+        borderRadius: 8
       }]
     },
-    options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } } }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#fff' } }
+      },
+      scales: {
+        y: { 
+          grid: { color: '#334155' }, 
+          ticks: { color: '#94a3b8' } 
+        },
+        x: { 
+          ticks: { color: '#94a3b8' } 
+        }
+      }
+    }
   });
 }
 
@@ -1389,7 +1417,7 @@ window.saveProfile = async function() {
   updateUserDisplay();
   updateWeekendStats();
   toggleWeatherEffect();
-  calculateAllStats(); // ← ВАЖНО: обновляем статистику после сохранения
+  calculateAllStats();
   showNotification('Профиль сохранён!');
 };
 
@@ -1518,7 +1546,21 @@ function buildYearChart() {
         tension: 0.4
       }]
     },
-    options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } } }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#fff' } }
+      },
+      scales: {
+        y: { 
+          grid: { color: '#334155' }, 
+          ticks: { color: '#94a3b8' } 
+        },
+        x: { 
+          ticks: { color: '#94a3b8' } 
+        }
+      }
+    }
   });
 }
 
