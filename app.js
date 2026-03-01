@@ -1194,7 +1194,8 @@ function calculateDashboardStats() {
   const workDays = monthly.filter(r => {
     const d = new Date(r.date);
     const dayOfWeek = d.getDay();
-    return dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'off' && r.type !== 'sick' && r.type !== 'vacation';
+    // Учитываем, что тип 'work' - это обычная смена. Выходные и больничные не считаем за обеды.
+    return dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'off' && r.type !== 'sick' && r.type !== 'vacation' && r.type !== 'doctor';
   }).length;
   
   const rate = currentUser.settings?.hourlyRate || BASE_RATE;
@@ -1216,6 +1217,7 @@ function calculateDashboardStats() {
     if (r.type === 'doctor') stats.doctorDays++;
   });
   
+  // Добавляем бонус за надчасы (каждые 2 надчаса = +25 евро)
   stats.gross += Math.floor(stats.extraBlocks / 2) * (currentUser.settings?.extraBonus || 25);
   stats.gross -= lunchCost;
   
@@ -1244,7 +1246,7 @@ function buildYearChart() {
   const canvas = document.getElementById('yearChart');
   if (!canvas || !currentUser) return;
   
-  // Собираем доход ПО МЕСЯЦАМ за всё время
+  // Собираем доход ПО МЕСЯЦАМ за ТЕКУЩИЙ год (currentYear)
   const months = new Array(12).fill(0);
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -1254,10 +1256,11 @@ function buildYearChart() {
     if (r.type === 'off') return;
     const d = new Date(r.date);
     d.setHours(0,0,0,0);
-    if (d > today) return;
-    
-    const amount = calculateDayEarnings(r, rate, currentUser.settings);
-    months[d.getMonth()] += amount;
+    // Проверяем, что запись за текущий год и не в будущем
+    if (d.getFullYear() === currentYear && d <= today) {
+      const amount = calculateDayEarnings(r, rate, currentUser.settings);
+      months[d.getMonth()] += amount;
+    }
   });
   
   if (yearChart) yearChart.destroy();
@@ -1367,6 +1370,7 @@ function loadYearStats() {
   
   let totalGross = 0, totalHours = 0, totalLunch = 0;
   const monthTotals = new Array(12).fill(0);
+  let extraBlocksCount = 0;
   
   yearRecords.forEach(r => {
     const d = new Date(r.date);
@@ -1376,14 +1380,16 @@ function loadYearStats() {
     totalGross += amount;
     monthTotals[d.getMonth()] += amount;
     
+    // Считаем обеды: за каждый рабочий день (не выходной, не больничный, не отпуск), который был
     const dayOfWeek = d.getDay();
-    if (dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'sick' && r.type !== 'vacation') {
+    if (dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'sick' && r.type !== 'vacation' && r.type !== 'doctor') {
       totalLunch += currentUser.settings?.lunchCost || LUNCH_COST_REAL;
     }
+    if (r.type === 'extra') extraBlocksCount++;
   });
   
-  const extraCount = yearRecords.filter(r => r.type === 'extra').length;
-  totalGross += Math.floor(extraCount / 2) * (currentUser.settings?.extraBonus || 25);
+  // Добавляем бонус за надчасы (каждые 2 надчаса = +25 евро)
+  totalGross += Math.floor(extraBlocksCount / 2) * (currentUser.settings?.extraBonus || 25);
   totalGross -= totalLunch;
   
   const monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
@@ -1547,7 +1553,7 @@ window.previewAvatar = function(input) {
 function calculateAllStats() {
   calculateDashboardStats();
   updateWeekendStats();
-  buildYearChart();
+  buildYearChart(); // Теперь этот график будет перестраиваться при изменении месяца/года
   updateFinanceStats();
 }
 
@@ -1559,10 +1565,12 @@ function updateWeekendStats() {
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   let weekendsThisMonth = 0;
   
+  // Считаем ВСЕ субботы и воскресенья в месяце (не только прошедшие)
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(currentYear, currentMonth, d);
-    date.setHours(0,0,0,0);
-    if ((date.getDay() === 0 || date.getDay() === 6) && date < today) weekendsThisMonth++;
+    if (date.getDay() === 0 || date.getDay() === 6) {
+      weekendsThisMonth++;
+    }
   }
   
   document.getElementById('weekendsThisMonth').innerText = weekendsThisMonth;
