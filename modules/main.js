@@ -1,59 +1,13 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (УПРОЩЕННЫЙ)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
-import { setLanguage, showModal, hideModal, showNotification } from './utils.js';
+import { setLanguage, showModal, hideModal } from './utils.js';
 
 // Глобальные переменные
 window.currentUser = null;
 window.currentUserData = null;
 window.currentMonth = new Date().getMonth();
 window.currentYear = new Date().getFullYear();
-
-// Функция загрузки данных пользователя в UI (будет определена позже)
-let loadUserDataToUIFn = null;
-let loadFinancialGoalFn = null;
-
-// Регистрируем функции
-export function registerLoadUserData(fn) {
-    loadUserDataToUIFn = fn;
-}
-
-export function registerLoadFinancialGoal(fn) {
-    loadFinancialGoalFn = fn;
-}
-
-// Инициализация приложения
-export function initApp(user, userData) {
-    console.log('initApp вызван с данными:', user, userData);
-    
-    window.currentUser = user;
-    window.currentUserData = userData;
-    
-    // Загружаем данные пользователя в UI
-    if (loadUserDataToUIFn) {
-        setTimeout(() => {
-            loadUserDataToUIFn();
-        }, 100);
-    }
-    
-    // Загружаем финансовую цель
-    if (loadFinancialGoalFn) {
-        setTimeout(() => {
-            loadFinancialGoalFn();
-        }, 200);
-    }
-    
-    // Обновляем отображение
-    if (window.updateMonthDisplay) window.updateMonthDisplay();
-    if (window.buildCalendar) window.buildCalendar();
-    if (window.calculateAllStats) window.calculateAllStats();
-    
-    // Запускаем время
-    if (window.updateDateTime) window.updateDateTime();
-    if (window.updateWeather) window.updateWeather();
-    if (window.updateFinancialTip) window.updateFinancialTip();
-    if (window.updateExchangeRate) window.updateExchangeRate();
-}
 
 // Скрыть прелоадер
 function hidePreloader() {
@@ -72,37 +26,110 @@ window.updateLoadingStatus = function(text) {
     if (statusEl) statusEl.textContent = text;
 };
 
+// Загрузка всех данных после авторизации
+async function loadAllUserData(user) {
+    console.log('Загрузка данных для пользователя:', user.uid);
+    
+    try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists()) {
+            console.log('Документ пользователя не найден');
+            return false;
+        }
+        
+        const userData = userDoc.data();
+        console.log('Данные пользователя загружены:', userData);
+        
+        window.currentUser = { uid: user.uid, ...userData };
+        window.currentUserData = userData;
+        
+        // Загружаем данные в UI
+        setTimeout(() => {
+            // Заполняем поля профиля
+            const fullNameEl = document.getElementById('fullName');
+            const employeeIdEl = document.getElementById('employeeId');
+            const cardIdEl = document.getElementById('cardId');
+            const emailEl = document.getElementById('email');
+            
+            if (fullNameEl) fullNameEl.value = userData.fullName || '';
+            if (employeeIdEl) employeeIdEl.value = userData.employeeId || '';
+            if (cardIdEl) cardIdEl.value = userData.cardId || '';
+            if (emailEl) emailEl.value = userData.email || '';
+            
+            // Настройки зарплаты
+            if (userData.settings) {
+                const hourlyRate = document.getElementById('hourlyRate');
+                const lunchCost = document.getElementById('lunchCost');
+                const nightBonus = document.getElementById('nightBonus');
+                const saturdayBonus = document.getElementById('saturdayBonus');
+                const sundayBonus = document.getElementById('sundayBonus');
+                const extraBonus = document.getElementById('extraBonus');
+                
+                if (hourlyRate) hourlyRate.value = userData.settings.hourlyRate || 6.10;
+                if (lunchCost) lunchCost.value = userData.settings.lunchCost || 1.31;
+                if (nightBonus) nightBonus.value = userData.settings.nightBonus || 20;
+                if (saturdayBonus) saturdayBonus.value = userData.settings.saturdayBonus || 1.5;
+                if (sundayBonus) sundayBonus.value = userData.settings.sundayBonus || 2.0;
+                if (extraBonus) extraBonus.value = userData.settings.extraBonus || 25;
+            }
+            
+            // Аватар
+            const avatarPreview = document.getElementById('avatarPreview');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const avatarUrl = userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.email?.split('@')[0] || 'User')}&background=00b060&color=fff&size=128`;
+            
+            if (avatarPreview) avatarPreview.src = avatarUrl;
+            if (profileAvatar) profileAvatar.src = avatarUrl;
+            
+            // Имя пользователя
+            const userName = document.getElementById('userName');
+            const profileName = document.getElementById('profileName');
+            const displayName = userData.fullName || userData.email?.split('@')[0] || 'User';
+            
+            if (userName) userName.textContent = displayName;
+            if (profileName) profileName.textContent = displayName;
+            
+            // Финансовая цель
+            setTimeout(() => {
+                if (window.loadFinancialGoal) window.loadFinancialGoal();
+            }, 200);
+            
+            // Обновляем отображение
+            if (window.updateMonthDisplay) window.updateMonthDisplay();
+            if (window.buildCalendar) window.buildCalendar();
+            if (window.calculateAllStats) window.calculateAllStats();
+            
+            // Запускаем время
+            if (window.updateDateTime) window.updateDateTime();
+            if (window.updateWeather) window.updateWeather();
+            if (window.updateFinancialTip) window.updateFinancialTip();
+            if (window.updateExchangeRate) window.updateExchangeRate();
+        }, 100);
+        
+        return true;
+    } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        return false;
+    }
+}
+
 // Проверка авторизации
 onAuthStateChanged(auth, async (user) => {
-    console.log('onAuthStateChanged:', user);
+    console.log('onAuthStateChanged:', user ? 'пользователь есть' : 'пользователя нет');
     
     if (user) {
         window.updateLoadingStatus('Загрузка данных...');
-        try {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                console.log('Данные пользователя из Firebase:', userData);
-                
-                window.currentUser = { uid: user.uid, ...userData };
-                window.currentUserData = userData;
-                
-                hidePreloader();
-                document.getElementById('app').classList.remove('hidden');
-                
-                // Устанавливаем тему
-                if (window.setTheme) window.setTheme(userData.theme || 'dark');
-                
-                // Инициализируем
-                initApp(window.currentUser, userData);
-            } else {
-                console.log('Документ пользователя не найден');
-                hidePreloader();
-                showModal('authModal');
-                window.showLoginForm();
+        const success = await loadAllUserData(user);
+        
+        if (success) {
+            hidePreloader();
+            document.getElementById('app').classList.remove('hidden');
+            
+            // Устанавливаем тему
+            if (window.setTheme && window.currentUser?.theme) {
+                window.setTheme(window.currentUser.theme);
             }
-        } catch (error) {
-            console.error('Ошибка загрузки данных:', error);
+        } else {
             hidePreloader();
             showModal('authModal');
             window.showLoginForm();
@@ -163,9 +190,9 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
-        if (loadFinancialGoalFn) {
-            setTimeout(() => loadFinancialGoalFn(), 100);
-        }
+        setTimeout(() => {
+            if (window.loadFinancialGoal) window.loadFinancialGoal();
+        }, 100);
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
