@@ -1,197 +1,350 @@
-/* mobile-theme-3.css - Neo Brutalism (Яркий, дерзкий, с толстыми границами) */
+/* mobile-theme-1.css - Material You */
 
 @media (max-width: 768px) {
     /* ===== БАЗОВЫЕ НАСТРОЙКИ ===== */
     body {
         font-size: 14px;
-        background: #ffd700;
+        background: #f8fafc;
     }
     
     .theme-dark body {
-        background: #2d2d2d;
+        background: #0f172a;
     }
     
-    /* ===== ТОЛСТЫЕ ГРАНИЦЫ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ ===== */
-    .kpi-card,
-    .stat-box,
-    .exchange-rate-card,
-    .important-widget,
-    .profile-card,
-    .finance-goals,
-    .chart-container,
-    .day,
-    .nav-btn {
-        border: 3px solid black !important;
-        box-shadow: 5px 5px 0px 0px black !important;
+    main {
+        padding: 12px;
     }
     
-    /* ===== ВЕРХНЯЯ НАВИГАЦИЯ (ОСТАВЛЯЕМ СВЕРХУ) ===== */
+    /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
     nav {
-        position: relative;
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 40px;
+        border: 1px solid rgba(0, 176, 96, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        padding: 10px;
-        background: white;
-        border-bottom: 3px solid black;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 5px;
+        z-index: 1000;
     }
     
     .theme-dark nav {
-        background: #1a1a1a;
+        background: rgba(18, 22, 32, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
     }
     
     .nav-btn {
-        flex: 1 1 auto;
-        padding: 12px 8px;
-        background: var(--primary);
-        color: black;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        border-radius: 0;
+        flex: 1;
+        padding: 8px 0;
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.7rem;
+        color: #64748b;
+        transition: all 0.3s;
+        background: transparent;
+        border: none;
+    }
+    
+    .theme-dark .nav-btn {
+        color: #94a3b8;
+    }
+    
+    .nav-btn i {
+        font-size: 1.4rem;
     }
     
     .nav-btn.active {
-        background: black;
-        color: var(--primary);
+        color: #00b060;
+        background: rgba(0, 176, 96, 0.1);
     }
     
     /* ===== ХЕДЕР ===== */
     header {
-        padding: 16px;
-        background: white;
-        border-bottom: 3px solid black;
+        padding: 12px 16px;
+        background: transparent;
+        border-bottom: none;
+        margin-bottom: 60px; /* Отступ для нижней навигации */
     }
     
-    .theme-dark header {
-        background: #1a1a1a;
+    .header-left {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .logo h1 {
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, #00b060, #00ff9d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     
     .header-badge {
-        background: black;
-        color: var(--primary);
-        border: 2px solid var(--primary);
+        display: none;
+    }
+    
+    .language-selector {
+        margin: 0;
+    }
+    
+    .lang-btn {
+        padding: 4px 8px;
+        font-size: 0.7rem;
     }
     
     .header-widget {
         background: white;
-        border: 3px solid black;
-        border-radius: 0;
-        padding: 8px 16px;
+        border-radius: 30px;
+        padding: 6px 16px;
+        min-width: auto;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
     
     .theme-dark .header-widget {
-        background: #1a1a1a;
+        background: #1e293b;
+    }
+    
+    .user-info {
+        padding: 3px 10px 3px 3px;
+        background: white;
+    }
+    
+    .theme-dark .user-info {
+        background: #1e293b;
+    }
+    
+    .user-info img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .logout-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* ===== СЕЛЕКТОР МЕСЯЦА ===== */
+    .month-selector {
+        padding: 8px 12px;
+        margin-bottom: 20px;
+        background: white;
+    }
+    
+    .theme-dark .month-selector {
+        background: #1e293b;
+    }
+    
+    .month-selector h2 {
+        font-size: 1.1rem;
+        min-width: 140px;
+    }
+    
+    .month-selector button {
+        width: 36px;
+        height: 36px;
     }
     
     /* ===== KPI КАРТОЧКИ ===== */
     .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        padding: 16px;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px;
+        padding: 0 0 16px;
+        margin: 0 0 16px;
+        scrollbar-width: none;
+    }
+    
+    .kpi-grid::-webkit-scrollbar {
+        display: none;
     }
     
     .kpi-card {
-        background: var(--primary);
-        border-radius: 0;
-        padding: 20px;
+        flex: 0 0 160px;
+        scroll-snap-align: start;
+        background: white;
+        border: none;
+        border-radius: 28px;
+        padding: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    .theme-dark .kpi-card {
+        background: #1e293b;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
     
     .kpi-icon {
-        background: black;
-        color: var(--primary);
-        border-radius: 0;
+        width: 45px;
+        height: 45px;
+        border-radius: 18px;
+        background: rgba(0, 176, 96, 0.1);
     }
     
     .kpi-value {
-        color: black;
-        font-weight: 800;
+        font-size: 1.3rem;
     }
     
     /* ===== КУРС ВАЛЮТ ===== */
     .exchange-rate-card {
-        margin: 16px;
-        background: #ff6b6b;
-        border-radius: 0;
+        margin: 0 0 20px;
         padding: 20px;
+        border-radius: 32px;
+        background: linear-gradient(135deg, #00b060, #009048);
+        border: none;
+        color: white;
+    }
+    
+    .exchange-rate-card .btn-primary {
+        background: white;
+        color: #00b060;
+        border-radius: 40px;
+        padding: 8px 20px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
     .currency-display {
-        background: white;
-        border: 3px solid black;
-        border-radius: 0;
-        padding: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 60px;
+        padding: 12px;
+        margin: 15px 0;
     }
     
     .currency-value {
-        color: black;
+        color: white;
         font-size: 2rem;
-        font-weight: 800;
     }
     
-    .update-btn {
-        background: black;
+    .converter-input,
+    .converter-result {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .converter-input input,
+    .converter-result span {
         color: white;
+    }
+    
+    /* ===== СТАТИСТИКА В РЯД ===== */
+    .stats-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-box {
+        flex: 1 1 calc(50% - 6px);
+        background: white;
         border: none;
-        border-radius: 0;
+        border-radius: 24px;
+        padding: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+    
+    .theme-dark .stat-box {
+        background: #1e293b;
+    }
+    
+    .stat-box i {
+        font-size: 1.5rem;
     }
     
     /* ===== КАЛЕНДАРЬ ===== */
     .calendar-weekdays span {
-        background: black;
-        color: white;
+        padding: 10px 0;
+        background: transparent;
         border: none;
-        border-radius: 0;
-        padding: 12px 0;
+        font-size: 0.8rem;
+        color: #00b060;
     }
     
     .calendar-grid {
-        gap: 8px;
-        padding: 16px;
+        gap: 6px;
+        margin-bottom: 20px;
     }
     
     .day {
         background: white;
-        border-radius: 0;
-        padding: 12px 0;
+        border: none;
+        border-radius: 16px;
+        padding: 8px 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     
     .theme-dark .day {
-        background: #1a1a1a;
+        background: #1e293b;
+    }
+    
+    /* ===== ЛЕГЕНДА ===== */
+    .calendar-legend {
+        padding: 16px;
+        background: white;
+        border-radius: 28px;
+    }
+    
+    .theme-dark .calendar-legend {
+        background: #1e293b;
+    }
+    
+    .legend-item {
+        background: #f8fafc;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 30px;
+    }
+    
+    .theme-dark .legend-item {
+        background: #0f172a;
     }
     
     /* ===== ВАЖНЫЕ ДАТЫ ===== */
     .important-widget {
-        margin: 16px;
-        background: #4ecdc4;
-        border-radius: 0;
+        margin: 20px 0;
         padding: 20px;
+        border-radius: 32px;
+        background: white;
+        border: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    .theme-dark .important-widget {
+        background: #1e293b;
     }
     
     .widget-item {
-        background: white;
-        border: 3px solid black;
-        border-radius: 0;
-        padding: 15px;
-        margin-bottom: 10px;
+        background: #f8fafc;
+        border: none;
+        border-radius: 20px;
+        margin-bottom: 8px;
+        padding: 12px;
+    }
+    
+    .theme-dark .widget-item {
+        background: #0f172a;
     }
     
     .item-badge {
-        background: black;
-        color: white;
-        border-radius: 0;
-        padding: 5px 15px;
-        font-weight: 700;
+        background: rgba(0, 176, 96, 0.1);
+        border-radius: 40px;
+        padding: 4px 12px;
     }
     
-    /* ===== КНОПКИ ===== */
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
-        border-radius: 0 !important;
-        border: 3px solid black !important;
-        font-weight: 700;
-        text-transform: uppercase;
+    .item-badge.today {
+        background: rgba(0, 176, 96, 0.2);
     }
 }
