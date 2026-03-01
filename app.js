@@ -15,27 +15,6 @@ import {
   getDocs
 } from './firebase-config.js';
 
-// Скрываем прелоадер после полной загрузки
-window.addEventListener('load', function() {
-    setTimeout(() => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-            preloader.classList.add('hidden');
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 300);
-        }
-    }, 500); // Небольшая задержка для плавности
-});
-
-// Показываем прелоадер пока проверяется авторизация
-document.addEventListener('DOMContentLoaded', function() {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        preloader.style.display = 'flex';
-    }
-});
-
 let currentUser = null;
 let currentUserData = null;
 let currentMonth = new Date().getMonth();
@@ -59,6 +38,32 @@ const SOCIAL_RATE = 0.094;
 const HEALTH_RATE = 0.10;
 const TAX_RATE = 0.19;
 const NON_TAXABLE = 410;
+
+// Функции для управления прелоадером
+function hidePreloader() {
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    preloader.style.opacity = '0';
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 300);
+  }
+}
+
+function updateLoadingStatus(text) {
+  const statusEl = document.getElementById('loadingStatus');
+  if (statusEl) {
+    statusEl.textContent = text;
+  }
+}
+
+function showPreloader() {
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    preloader.style.display = 'flex';
+    preloader.style.opacity = '1';
+  }
+}
 
 // ПОЛНЫЕ ПЕРЕВОДЫ ДЛЯ ВСЕХ ЯЗЫКОВ
 const translations = {
@@ -675,9 +680,17 @@ const translations = {
   }
 };
 
-function showModal(id) { document.getElementById(id).style.display = 'flex'; }
-function hideModal(id) { document.getElementById(id).style.display = 'none'; }
-function showMessage(msg, isError = false) { alert(isError ? '❌ ' + msg : '✅ ' + msg); }
+function showModal(id) { 
+  document.getElementById(id).style.display = 'flex'; 
+}
+
+function hideModal(id) { 
+  document.getElementById(id).style.display = 'none'; 
+}
+
+function showMessage(msg, isError = false) { 
+  alert(isError ? '❌ ' + msg : '✅ ' + msg); 
+}
 
 // Уведомления
 function showNotification(msg, duration = 3000) {
@@ -717,7 +730,6 @@ function translateElement(el) {
   } else if (el.tagName === 'OPTION') {
     el.textContent = translations[currentLanguage][key];
   } else if (el.tagName === 'SELECT') {
-    // Для select переводим options
     Array.from(el.options).forEach(option => {
       const optionKey = option.getAttribute('data-lang');
       if (optionKey && translations[currentLanguage][optionKey]) {
@@ -725,7 +737,6 @@ function translateElement(el) {
       }
     });
   } else {
-    // Сохраняем иконки если они есть
     const icon = el.querySelector('i');
     if (icon) {
       const text = document.createTextNode(' ' + translations[currentLanguage][key]);
@@ -742,7 +753,6 @@ window.setLanguage = function(lang) {
   currentLanguage = lang;
   localStorage.setItem('vaillant_language', lang);
   
-  // Обновляем активную кнопку языка
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.remove('active');
     if (btn.dataset.lang === lang) {
@@ -750,12 +760,10 @@ window.setLanguage = function(lang) {
     }
   });
   
-  // Переводим все элементы с data-lang
   document.querySelectorAll('[data-lang]').forEach(el => {
     translateElement(el);
   });
   
-  // Переводим placeholder'ы
   document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
     const key = el.getAttribute('data-lang-placeholder');
     if (key && translations[lang] && translations[lang][key]) {
@@ -935,7 +943,6 @@ window.updateExchangeRate = async function() {
   const originalText = updateBtn.innerHTML;
   
   try {
-    // Показываем загрузку
     updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span data-lang="update">Обновление...</span>';
     updateBtn.disabled = true;
     
@@ -944,15 +951,12 @@ window.updateExchangeRate = async function() {
     exchangeRate = data.rates.UAH;
     lastRateUpdate = new Date();
     
-    // Обновляем отображение курса
     if (rateSpan) {
       rateSpan.textContent = exchangeRate.toFixed(2);
     }
     
-    // Обновляем результат конвертера
     updateConverter();
     
-    // Обновляем время последнего обновления
     const lastUpdateSpan = document.getElementById('lastUpdateTime');
     if (lastUpdateSpan) {
       lastUpdateSpan.textContent = lastRateUpdate.toLocaleTimeString();
@@ -963,11 +967,9 @@ window.updateExchangeRate = async function() {
     console.error('Ошибка получения курса валют:', error);
     showNotification(translations[currentLanguage]?.importError || 'Ошибка обновления курса', 2000);
   } finally {
-    // Возвращаем кнопку в исходное состояние
     updateBtn.innerHTML = originalText;
     updateBtn.disabled = false;
     
-    // Переводим текст кнопки обратно
     const span = updateBtn.querySelector('span[data-lang="update"]');
     if (span) {
       span.textContent = translations[currentLanguage]?.update || 'Обновить';
@@ -975,7 +977,6 @@ window.updateExchangeRate = async function() {
   }
 };
 
-// Функция для обновления конвертера
 function updateConverter() {
   const euroInput = document.getElementById('euroInput');
   const uahResult = document.getElementById('uahResult');
@@ -986,7 +987,6 @@ function updateConverter() {
   }
 }
 
-// Слушатель для инпута евро
 document.addEventListener('DOMContentLoaded', function() {
   const euroInput = document.getElementById('euroInput');
   if (euroInput) {
@@ -994,7 +994,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Обновление отображения курса
 function updateExchangeRateDisplay() {
   const rateSpan = document.getElementById('currentRate');
   const lastUpdateSpan = document.getElementById('lastUpdateTime');
@@ -1009,7 +1008,6 @@ function updateExchangeRateDisplay() {
     lastUpdateSpan.textContent = '--:--';
   }
   
-  // Обновляем конвертер
   updateConverter();
 }
 
@@ -1031,7 +1029,6 @@ function updateDateTime() {
   }
 }
 
-// Реальная погода для Тренчина
 async function updateWeather() {
   const weatherTemp = document.getElementById('weatherTemp');
   if (!weatherTemp) return;
@@ -1215,6 +1212,8 @@ window.showRegisterForm = function() {
 };
 
 window.register = async function() {
+  updateLoadingStatus('Регистрация...');
+  
   const email = document.getElementById('regEmail')?.value.trim();
   const pass = document.getElementById('regPass')?.value.trim();
   const confirm = document.getElementById('regConfirm')?.value.trim();
@@ -1269,10 +1268,14 @@ window.register = async function() {
     
   } catch (error) {
     showMessage(translations[currentLanguage]?.importError || 'Ошибка: ' + error.message, true);
+  } finally {
+    hidePreloader();
   }
 };
 
 window.login = async function() {
+  updateLoadingStatus('Выполняется вход...');
+  
   const email = document.getElementById('loginEmail')?.value.trim();
   const pass = document.getElementById('loginPass')?.value.trim();
   const remember = document.getElementById('rememberMe')?.checked;
@@ -1340,23 +1343,25 @@ window.login = async function() {
     updateDateTime();
     updateWeather();
     updateFinancialTip();
-    
-    // Получаем курс валют при входе
     updateExchangeRate();
     
     showNotification(translations[currentLanguage]?.login || 'Добро пожаловать!');
   } catch (error) {
     showMessage(translations[currentLanguage]?.importError || 'Ошибка входа: ' + error.message, true);
+  } finally {
+    hidePreloader();
   }
 };
 
 window.logout = async function() {
   if (confirm(translations[currentLanguage]?.cancel || 'Выйти?')) { 
+    showPreloader();
+    updateLoadingStatus('Выход из системы...');
+    
     await signOut(auth); 
     currentUser = null; 
     document.getElementById('app').classList.add('hidden'); 
-    showModal('authModal'); 
-    window.showLoginForm();
+    
     if (updateInterval) clearInterval(updateInterval);
     if (weatherParticles) {
       document.body.removeChild(weatherParticles);
@@ -1385,12 +1390,13 @@ window.setView = function(view) {
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
+    updateLoadingStatus('Загрузка данных пользователя...');
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       currentUserData = userDoc.data();
       currentUser = { uid: user.uid, ...currentUserData };
       
-      hideModal('authModal');
+      hidePreloader();
       document.getElementById('app').classList.remove('hidden');
       
       document.getElementById('fullName').value = currentUser.fullName || '';
@@ -1432,15 +1438,18 @@ onAuthStateChanged(auth, async (user) => {
       updateDateTime();
       updateWeather();
       updateFinancialTip();
-      
-      // Получаем курс валют при автологине
       updateExchangeRate();
+    } else {
+      hidePreloader();
+      showModal('authModal');
+      window.showLoginForm();
     }
   } else {
-    currentUser = null;
+    hidePreloader();
     document.getElementById('app').classList.add('hidden');
     showModal('authModal');
     window.showLoginForm();
+    
     if (updateInterval) clearInterval(updateInterval);
     if (weatherParticles) {
       document.body.removeChild(weatherParticles);
@@ -1474,17 +1483,10 @@ window.onload = function() {
     }
   }, 500);
   
-  showModal('authModal');
-  window.showLoginForm();
-  
-  // Добавляем слушатель для инпута евро
   const euroInput = document.getElementById('euroInput');
   if (euroInput) {
     euroInput.addEventListener('input', updateConverter);
   }
-  
-  // Получаем курс валют при загрузке
-  updateExchangeRate();
 };
 
 function updateMonthDisplay() {
@@ -1629,14 +1631,12 @@ function calculateDashboardStats() {
   const today = new Date();
   today.setHours(0,0,0,0);
   
-  // Фильтруем записи ТОЛЬКО за текущий месяц
   let monthly = (currentUser.records || []).filter(r => {
     const d = new Date(r.date);
     d.setHours(0,0,0,0);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear && d <= today;
   });
   
-  // Считаем рабочие дни для обедов
   const workDays = monthly.filter(r => {
     const d = new Date(r.date);
     const dayOfWeek = d.getDay();
@@ -1670,11 +1670,9 @@ function calculateDashboardStats() {
     if (r.type === 'doctor') stats.doctorDays++;
   });
   
-  // Добавляем бонус за надчасы
   stats.gross += Math.floor(stats.extraBlocks / 2) * (currentUser.settings?.extraBonus || 25);
   stats.gross -= lunchCost;
   
-  // Считаем налоги
   let net = stats.gross;
   if (stats.gross > 0) {
     const social = stats.gross * SOCIAL_RATE;
@@ -1699,7 +1697,6 @@ function buildYearChart() {
   const canvas = document.getElementById('yearChart');
   if (!canvas || !currentUser) return;
   
-  // Устанавливаем размеры canvas
   const container = canvas.parentElement;
   if (container) {
     canvas.style.width = '100%';
@@ -1708,7 +1705,6 @@ function buildYearChart() {
     canvas.height = 300;
   }
   
-  // Собираем доход ПО МЕСЯЦАМ за ТЕКУЩИЙ год
   const months = new Array(12).fill(0);
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -1852,7 +1848,7 @@ function buildPieChart(net, tax, lunch, savings) {
   });
 }
 
-// ===== СТАТИСТИКА С КНОПКОЙ РАССЧИТАТЬ =====
+// ===== СТАТИСТИКА =====
 window.calculateYearStats = function() {
   if (!currentUser) return;
   
@@ -1861,7 +1857,6 @@ window.calculateYearStats = function() {
   today.setHours(0,0,0,0);
   const rate = currentUser.settings?.hourlyRate || BASE_RATE;
   
-  // Фильтруем записи ТОЛЬКО за выбранный год
   let yearRecords = (currentUser.records || []).filter(r => {
     const d = new Date(r.date);
     d.setHours(0,0,0,0);
@@ -2323,5 +2318,3 @@ window.importFromPDF = function(input) {
     showNotification(translations[currentLanguage]?.importPDF || 'Данные импортированы');
   }, 1500);
 };
-
-
