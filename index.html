@@ -28,8 +28,8 @@
             </div>
             
             <div class="auth-tabs">
-                <button class="auth-tab active" onclick="showLoginForm()">Вход</button>
-                <button class="auth-tab" onclick="showRegisterForm()">Регистрация</button>
+                <button class="auth-tab active" onclick="window.showLoginForm()">Вход</button>
+                <button class="auth-tab" onclick="window.showRegisterForm()">Регистрация</button>
             </div>
             
             <!-- Форма входа -->
@@ -42,7 +42,7 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" id="loginPass" placeholder="Пароль">
                 </div>
-                <button class="btn-primary" onclick="login()">
+                <button class="btn-primary" onclick="window.login()">
                     <i class="fas fa-sign-in-alt"></i> Войти
                 </button>
             </div>
@@ -61,7 +61,7 @@
                     <i class="fas fa-check-circle"></i>
                     <input type="password" id="regConfirm" placeholder="Подтвердите пароль">
                 </div>
-                <button class="btn-primary" onclick="register()">
+                <button class="btn-primary" onclick="window.register()">
                     <i class="fas fa-user-plus"></i> Зарегистрироваться
                 </button>
             </div>
@@ -81,10 +81,10 @@
                 
                 <!-- Выбор языка -->
                 <div class="language-selector">
-                    <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
-                    <button class="lang-btn" data-lang="sk" onclick="setLanguage('sk')">SK</button>
-                    <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
-                    <button class="lang-btn" data-lang="uk" onclick="setLanguage('uk')">UA</button>
+                    <button class="lang-btn" data-lang="ru" onclick="window.setLanguage('ru')">RU</button>
+                    <button class="lang-btn" data-lang="sk" onclick="window.setLanguage('sk')">SK</button>
+                    <button class="lang-btn" data-lang="en" onclick="window.setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="uk" onclick="window.setLanguage('uk')">UA</button>
                 </div>
             </div>
             
@@ -93,7 +93,7 @@
                     <img id="avatarPreview" src="" alt="avatar">
                     <span id="userName">Гость</span>
                 </div>
-                <button class="logout-btn" onclick="logout()">
+                <button class="logout-btn" onclick="window.logout()">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
@@ -101,23 +101,23 @@
 
         <!-- Навигация -->
         <nav>
-            <button class="nav-btn active" data-view="dashboard" onclick="setView('dashboard')">
+            <button class="nav-btn active" data-view="dashboard" onclick="window.setView('dashboard')">
                 <i class="fas fa-chart-pie"></i>
                 <span data-lang="dashboard">Дашборд</span>
             </button>
-            <button class="nav-btn" data-view="calendar" onclick="setView('calendar')">
+            <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')">
                 <i class="fas fa-calendar-alt"></i>
                 <span data-lang="calendar">Календарь</span>
             </button>
-            <button class="nav-btn" data-view="stats" onclick="setView('stats')">
+            <button class="nav-btn" data-view="stats" onclick="window.setView('stats')">
                 <i class="fas fa-chart-line"></i>
                 <span data-lang="stats">Статистика</span>
             </button>
-            <button class="nav-btn" data-view="profile" onclick="setView('profile')">
+            <button class="nav-btn" data-view="profile" onclick="window.setView('profile')">
                 <i class="fas fa-user-cog"></i>
                 <span data-lang="profile">Профиль</span>
             </button>
-            <button class="nav-btn" data-view="finance" onclick="setView('finance')">
+            <button class="nav-btn" data-view="finance" onclick="window.setView('finance')">
                 <i class="fas fa-coins"></i>
                 <span data-lang="finance">Финансы</span>
             </button>
@@ -128,9 +128,9 @@
             <!-- ДАШБОРД -->
             <section id="dashboard" class="view active">
                 <div class="month-selector">
-                    <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="window.changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
                     <h2 id="currentMonth"></h2>
-                    <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    <button onclick="window.changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
                 </div>
 
                 <div class="kpi-grid">
@@ -244,9 +244,9 @@
             <!-- КАЛЕНДАРЬ -->
             <section id="calendar" class="view">
                 <div class="month-selector">
-                    <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="window.changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
                     <h2 id="calendarMonth"></h2>
-                    <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    <button onclick="window.changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
                 </div>
                 
                 <div class="calendar-weekdays">
@@ -273,7 +273,7 @@
             <section id="stats" class="view">
                 <div class="stats-header">
                     <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Общая статистика</span></h2>
-                    <select id="yearSelectStats" onchange="loadYearStats()">
+                    <select id="yearSelectStats" onchange="window.loadYearStats()">
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
                         <option value="2026" selected>2026</option>
@@ -327,7 +327,7 @@
                             <label for="avatarUpload" class="avatar-upload">
                                 <i class="fas fa-camera"></i>
                             </label>
-                            <input type="file" id="avatarUpload" accept="image/*" hidden onchange="previewAvatar(this)">
+                            <input type="file" id="avatarUpload" accept="image/*" hidden onchange="window.previewAvatar(this)">
                         </div>
                         <div class="profile-title">
                             <h2 id="profileName"></h2>
@@ -366,8 +366,8 @@
                     </div>
                     
                     <div class="profile-actions">
-                        <button class="btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> <span data-lang="saveChanges">Сохранить изменения</span></button>
-                        <button class="btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> <span data-lang="export">Экспорт данных</span></button>
+                        <button class="btn-primary" onclick="window.saveProfile()"><i class="fas fa-save"></i> <span data-lang="saveChanges">Сохранить изменения</span></button>
+                        <button class="btn-secondary" onclick="window.exportData()"><i class="fas fa-download"></i> <span data-lang="export">Экспорт данных</span></button>
                     </div>
                 </div>
             </section>
@@ -401,7 +401,7 @@
                         <div class="goal-inputs">
                             <div class="input-group"><label data-lang="goalName">Название цели</label><input type="text" id="goalName" placeholder="Подушка безопасности"></div>
                             <div class="input-group"><label data-lang="goalAmount">Сумма цели (€)</label><input type="number" id="goalAmount" min="0" step="100"></div>
-                            <button class="btn-primary" onclick="saveGoal()"><i class="fas fa-save"></i> <span data-lang="saveGoal">Сохранить цель</span></button>
+                            <button class="btn-primary" onclick="window.saveGoal()"><i class="fas fa-save"></i> <span data-lang="saveGoal">Сохранить цель</span></button>
                         </div>
                         
                         <div class="goal-progress" id="goalProgress" style="display:none">
@@ -415,8 +415,8 @@
                             <div class="progress-percent" id="goalPercent">0%</div>
                             
                             <div class="goal-actions" id="goalActions" style="display:none">
-                                <button class="btn-success" onclick="addToGoal()"><i class="fas fa-plus-circle"></i> <span data-lang="add">Добавить</span></button>
-                                <button class="btn-warning" onclick="withdrawFromGoal()"><i class="fas fa-minus-circle"></i> <span data-lang="withdraw">Снять</span></button>
+                                <button class="btn-success" onclick="window.addToGoal()"><i class="fas fa-plus-circle"></i> <span data-lang="add">Добавить</span></button>
+                                <button class="btn-warning" onclick="window.withdrawFromGoal()"><i class="fas fa-minus-circle"></i> <span data-lang="withdraw">Снять</span></button>
                             </div>
                             
                             <div class="goal-history">
@@ -424,7 +424,7 @@
                                 <div id="goalHistory" class="history-list"></div>
                             </div>
                             
-                            <button class="btn-danger btn-small" onclick="clearGoal()"><i class="fas fa-times"></i> <span data-lang="deleteGoal">Удалить цель</span></button>
+                            <button class="btn-danger btn-small" onclick="window.clearGoal()"><i class="fas fa-times"></i> <span data-lang="deleteGoal">Удалить цель</span></button>
                         </div>
                     </div>
                     
@@ -445,22 +445,23 @@
             </div>
             
             <div class="day-types">
-                <button class="day-type work" onclick="addRecord('work')"><i class="fas fa-briefcase"></i><span data-lang="work">Смена</span><small>7.5ч</small></button>
-                <button class="day-type night" onclick="addRecord('night')"><i class="fas fa-moon"></i><span data-lang="nightShift">Ночная смена</span><small>+20%</small></button>
-                <button class="day-type overtime" onclick="addRecord('overtime')"><i class="fas fa-clock"></i><span data-lang="overtime">Переработка</span><small>×1.5</small></button>
-                <button class="day-type saturday" onclick="addRecord('sat')"><i class="fas fa-calendar-day"></i><span data-lang="saturday">Суббота</span><small>×1.5 + €25</small></button>
-                <button class="day-type sunday" onclick="addRecord('sun')"><i class="fas fa-sun"></i><span data-lang="sunday">Воскресенье</span><small>×2.0</small></button>
-                <button class="day-type extra" onclick="addRecord('extra')"><i class="fas fa-plus-circle"></i><span data-lang="extraBlocks">Надчас</span><small>+3.75ч ×1.36</small></button>
-                <button class="day-type sick" onclick="addRecord('sick')"><i class="fas fa-hospital"></i><span data-lang="sick">Больничный</span><small>60%</small></button>
-                <button class="day-type vacation" onclick="addRecord('vacation')"><i class="fas fa-umbrella-beach"></i><span data-lang="vacation">Отпуск</span><small>100%</small></button>
-                <button class="day-type doctor" onclick="addRecord('doctor')"><i class="fas fa-stethoscope"></i><span data-lang="doctor">Перепустка</span><small>100%</small></button>
-                <button class="day-type off" onclick="addRecord('off')"><i class="fas fa-times"></i><span data-lang="dayOff">Выходной</span><small>0 €</small></button>
+                <button class="day-type work" onclick="window.addRecord('work')"><i class="fas fa-briefcase"></i><span data-lang="work">Смена</span><small>7.5ч</small></button>
+                <button class="day-type night" onclick="window.addRecord('night')"><i class="fas fa-moon"></i><span data-lang="nightShift">Ночная смена</span><small>+20%</small></button>
+                <button class="day-type overtime" onclick="window.addRecord('overtime')"><i class="fas fa-clock"></i><span data-lang="overtime">Переработка</span><small>×1.5</small></button>
+                <button class="day-type saturday" onclick="window.addRecord('sat')"><i class="fas fa-calendar-day"></i><span data-lang="saturday">Суббота</span><small>×1.5 + €25</small></button>
+                <button class="day-type sunday" onclick="window.addRecord('sun')"><i class="fas fa-sun"></i><span data-lang="sunday">Воскресенье</span><small>×2.0</small></button>
+                <button class="day-type extra" onclick="window.addRecord('extra')"><i class="fas fa-plus-circle"></i><span data-lang="extraBlocks">Надчас</span><small>+3.75ч ×1.36</small></button>
+                <button class="day-type sick" onclick="window.addRecord('sick')"><i class="fas fa-hospital"></i><span data-lang="sick">Больничный</span><small>60%</small></button>
+                <button class="day-type vacation" onclick="window.addRecord('vacation')"><i class="fas fa-umbrella-beach"></i><span data-lang="vacation">Отпуск</span><small>100%</small></button>
+                <button class="day-type doctor" onclick="window.addRecord('doctor')"><i class="fas fa-stethoscope"></i><span data-lang="doctor">Перепустка</span><small>100%</small></button>
+                <button class="day-type off" onclick="window.addRecord('off')"><i class="fas fa-times"></i><span data-lang="dayOff">Выходной</span><small>0 €</small></button>
             </div>
             
-            <button class="btn-secondary cancel-btn" onclick="closeModal()"><span data-lang="cancel">Отмена</span></button>
+            <button class="btn-secondary cancel-btn" onclick="window.closeModal()"><span data-lang="cancel">Отмена</span></button>
         </div>
     </div>
 
+    <!-- Скрипты -->
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="app.js"></script>
 </body>
