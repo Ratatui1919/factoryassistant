@@ -27,7 +27,8 @@ let notificationTimeout = null;
 let updateInterval = null;
 let weatherParticles = null;
 let weatherAnimation = null;
-let exchangeRate = 0; // Курс евро к гривне
+let exchangeRate = 42.5; // Курс евро к гривне по умолчанию
+let lastRateUpdate = null;
 
 const BASE_RATE = 6.10;
 const LUNCH_COST_REAL = 1.31;
@@ -138,7 +139,11 @@ const translations = {
     exportToExcel: 'Экспорт в Excel',
     exportToPDF: 'Экспорт в PDF',
     exchangeRate: 'Курс евро',
-    toUAH: 'до гривни'
+    toUAH: 'к гривне',
+    calculate: 'Рассчитать',
+    update: 'Обновить курс',
+    lastUpdate: 'Последнее обновление',
+    inUAH: 'в гривнах'
   },
   uk: {
     dashboard: 'Панель',
@@ -225,7 +230,11 @@ const translations = {
     exportToExcel: 'Експорт в Excel',
     exportToPDF: 'Експорт в PDF',
     exchangeRate: 'Курс євро',
-    toUAH: 'до гривні'
+    toUAH: 'до гривні',
+    calculate: 'Розрахувати',
+    update: 'Оновити курс',
+    lastUpdate: 'Останнє оновлення',
+    inUAH: 'у гривнях'
   }
 };
 
@@ -433,7 +442,7 @@ window.setTheme = function(theme) {
       buildYearChart();
     }
     if (document.getElementById('stats').classList.contains('active')) {
-      loadYearStats();
+      // Не перерисовываем автоматически, ждем нажатия кнопки
     }
     if (document.getElementById('finance').classList.contains('active')) {
       updateFinanceStats();
@@ -452,28 +461,147 @@ function applyTheme(themeName) {
 // ===== КУРС ВАЛЮТ =====
 async function updateExchangeRate() {
   const rateEl = document.getElementById('exchangeRate');
-  if (!rateEl) return;
+  const lastUpdateEl = document.getElementById('lastRateUpdate');
   
   try {
+    // Показываем загрузку
+    if (rateEl) rateEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+    
     // Используем бесплатное API для курса валют
     const response = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
     const data = await response.json();
     exchangeRate = data.rates.UAH;
+    lastRateUpdate = new Date();
+    
     updateExchangeRateDisplay();
+    showNotification('Курс валют обновлен', 2000);
   } catch (error) {
     console.error('Ошибка получения курса валют:', error);
     // Если не удалось получить курс, используем приблизительный
-    exchangeRate = 42.5; // Примерный курс
+    exchangeRate = 42.5;
+    lastRateUpdate = new Date();
     updateExchangeRateDisplay();
+    showNotification('Используется курс по умолчанию', 2000);
   }
 }
 
 function updateExchangeRateDisplay() {
   const rateEl = document.getElementById('exchangeRate');
+  const lastUpdateEl = document.getElementById('lastRateUpdate');
   const toUahEl = document.getElementById('toUAH');
-  if (rateEl && toUahEl) {
-    rateEl.innerHTML = `<i class="fas fa-euro-sign"></i> € → <i class="fas fa-hryvnia"></i> ₴ ${exchangeRate.toFixed(2)}`;
-    toUahEl.textContent = translations[currentLanguage]?.toUAH || 'до гривни';
+  
+  if (rateEl) {
+    rateEl.innerHTML = `
+      <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.2rem;"></i>
+          <span style="font-weight: 600;">1 EUR</span>
+        </span>
+        <i class="fas fa-arrow-right" style="color: var(--text-muted);"></i>
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.2rem;"></i>
+          <span style="font-weight: 700; font-size: 1.3rem; color: var(--primary);">${exchangeRate.toFixed(2)}</span>
+          <span style="color: var(--text-muted);">UAH</span>
+        </span>
+      </div>
+    `;
+  }
+  
+  if (lastUpdateEl && lastRateUpdate) {
+    lastUpdateEl.innerHTML = `
+      <i class="fas fa-clock" style="margin-right: 5px;"></i>
+      ${translations[currentLanguage]?.lastUpdate || 'Последнее обновление'}: 
+      ${lastRateUpdate.toLocaleTimeString()}
+    `;
+  }
+  
+  if (toUahEl) {
+    toUahEl.textContent = translations[currentLanguage]?.toUAH || 'к гривне';
+  }
+  
+  // Обновляем все значения в гривнах
+  updateAllUAHValues();
+}
+
+function updateAllUAHValues() {
+  if (!exchangeRate) return;
+  
+  // Дашборд
+  const netEl = document.getElementById('net');
+  const grossEl = document.getElementById('gross');
+  const lunchEl = document.getElementById('lunchCost');
+  
+  if (netEl) {
+    const netValue = parseFloat(netEl.innerText) || 0;
+    const netUahEl = document.getElementById('netUAH');
+    if (netUahEl) netUahEl.innerHTML = `<i class="fas fa-hryvnia" style="font-size: 0.8rem;"></i> ${(netValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (grossEl) {
+    const grossValue = parseFloat(grossEl.innerText) || 0;
+    const grossUahEl = document.getElementById('grossUAH');
+    if (grossUahEl) grossUahEl.innerHTML = `<i class="fas fa-hryvnia" style="font-size: 0.8rem;"></i> ${(grossValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (lunchEl) {
+    const lunchValue = parseFloat(lunchEl.innerText) || 0;
+    const lunchUahEl = document.getElementById('lunchUAH');
+    if (lunchUahEl) lunchUahEl.innerHTML = `<i class="fas fa-hryvnia" style="font-size: 0.8rem;"></i> ${(lunchValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  // Статистика
+  const totalEarnedEl = document.getElementById('totalEarned');
+  const totalLunchEl = document.getElementById('totalLunch');
+  
+  if (totalEarnedEl) {
+    const earnedValue = parseFloat(totalEarnedEl.innerText) || 0;
+    const earnedUahEl = document.getElementById('totalEarnedUAH');
+    if (earnedUahEl) earnedUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(earnedValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (totalLunchEl) {
+    const lunchValue = parseFloat(totalLunchEl.innerText) || 0;
+    const lunchUahEl = document.getElementById('totalLunchUAH');
+    if (lunchUahEl) lunchUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(lunchValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  // Финансы
+  const financeNetEl = document.getElementById('financeNet');
+  const financeGrossEl = document.getElementById('financeGross');
+  
+  if (financeNetEl) {
+    const netValue = parseFloat(financeNetEl.innerText) || 0;
+    const netUahEl = document.getElementById('financeNetUAH');
+    if (netUahEl) netUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(netValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (financeGrossEl) {
+    const grossValue = parseFloat(financeGrossEl.innerText) || 0;
+    const grossUahEl = document.getElementById('financeGrossUAH');
+    if (grossUahEl) grossUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(grossValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  // Цели
+  const goalSavedEl = document.getElementById('goalSaved');
+  const goalTargetEl = document.getElementById('goalTarget');
+  const goalRemainingEl = document.getElementById('goalRemaining');
+  
+  if (goalSavedEl) {
+    const savedValue = parseFloat(goalSavedEl.innerText) || 0;
+    const savedUahEl = document.getElementById('goalSavedUAH');
+    if (savedUahEl) savedUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(savedValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (goalTargetEl) {
+    const targetValue = parseFloat(goalTargetEl.innerText) || 0;
+    const targetUahEl = document.getElementById('goalTargetUAH');
+    if (targetUahEl) targetUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(targetValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (goalRemainingEl) {
+    const remainingValue = parseFloat(goalRemainingEl.innerText) || 0;
+    const remainingUahEl = document.getElementById('goalRemainingUAH');
+    if (remainingUahEl) remainingUahEl.innerHTML = `<i class="fas fa-hryvnia"></i> ${(remainingValue * exchangeRate).toFixed(0)}`;
   }
 }
 
@@ -837,10 +965,16 @@ window.setView = function(view) {
   document.getElementById('mainNav')?.classList.remove('active');
   
   if (view === 'calendar') buildCalendar();
-  if (view === 'stats') loadYearStats();
+  if (view === 'stats') {
+    // Не загружаем автоматически, ждем нажатия кнопки
+    // Но показываем последний выбранный год
+    const yearSelect = document.getElementById('yearSelectStats');
+    if (yearSelect) {
+      // Ничего не делаем
+    }
+  }
   if (view === 'finance') updateFinanceStats();
   if (view === 'dashboard') {
-    // Перестраиваем график при возвращении на дашборд
     setTimeout(() => buildYearChart(), 100);
   }
 };
@@ -969,7 +1103,7 @@ window.changeMonth = function(delta) {
   
   updateMonthDisplay();
   buildCalendar();
-  calculateAllStats(); // Это обновит дашборд и перестроит график
+  calculateAllStats();
 };
 
 // ===== КАЛЕНДАРЬ =====
@@ -1053,7 +1187,7 @@ window.addRecord = async function(type) {
   await updateDoc(doc(db, "users", currentUser.uid), { records: currentUser.records, settings: currentUser.settings });
   hideModal('dayModal');
   buildCalendar();
-  calculateAllStats(); // ОБЯЗАТЕЛЬНО: пересчитываем всё после изменения записи
+  calculateAllStats();
   showNotification('Запись добавлена');
 };
 
@@ -1088,11 +1222,10 @@ function calculateDashboardStats() {
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear && d <= today;
   });
   
-  // Считаем рабочие дни для обедов (обычные смены, не выходные, не больничные, не отпуска)
+  // Считаем рабочие дни для обедов
   const workDays = monthly.filter(r => {
     const d = new Date(r.date);
     const dayOfWeek = d.getDay();
-    // Выходные дни (суббота, воскресенье) - обеды не считаем
     return dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'off' && r.type !== 'sick' && r.type !== 'vacation' && r.type !== 'doctor';
   }).length;
   
@@ -1123,7 +1256,7 @@ function calculateDashboardStats() {
     if (r.type === 'doctor') stats.doctorDays++;
   });
   
-  // Добавляем бонус за надчасы (каждые 2 надчаса = +25 евро)
+  // Добавляем бонус за надчасы
   stats.gross += Math.floor(stats.extraBlocks / 2) * (currentUser.settings?.extraBonus || 25);
   stats.gross -= lunchCost;
   
@@ -1146,34 +1279,8 @@ function calculateDashboardStats() {
   document.getElementById('doctorCount').innerText = stats.doctorDays;
   document.getElementById('lunchCost').innerText = lunchCost.toFixed(2) + ' €';
   
-  // Обновляем отображение в гривнах если есть курс
-  updateUAHValues();
-}
-
-function updateUAHValues() {
-  if (!exchangeRate) return;
-  
-  const grossEl = document.getElementById('gross');
-  const netEl = document.getElementById('net');
-  const lunchEl = document.getElementById('lunchCost');
-  
-  if (grossEl) {
-    const grossValue = parseFloat(grossEl.innerText) || 0;
-    const grossUahEl = document.getElementById('grossUAH');
-    if (grossUahEl) grossUahEl.innerHTML = `₴ ${(grossValue * exchangeRate).toFixed(0)}`;
-  }
-  
-  if (netEl) {
-    const netValue = parseFloat(netEl.innerText) || 0;
-    const netUahEl = document.getElementById('netUAH');
-    if (netUahEl) netUahEl.innerHTML = `₴ ${(netValue * exchangeRate).toFixed(0)}`;
-  }
-  
-  if (lunchEl) {
-    const lunchValue = parseFloat(lunchEl.innerText) || 0;
-    const lunchUahEl = document.getElementById('lunchUAH');
-    if (lunchUahEl) lunchUahEl.innerHTML = `₴ ${(lunchValue * exchangeRate).toFixed(0)}`;
-  }
+  // Обновляем отображение в гривнах
+  updateAllUAHValues();
 }
 
 // ===== ГРАФИК НА ДАШБОРДЕ =====
@@ -1190,7 +1297,7 @@ function buildYearChart() {
     canvas.height = 300;
   }
   
-  // Собираем доход ПО МЕСЯЦАМ за ТЕКУЩИЙ год (currentYear)
+  // Собираем доход ПО МЕСЯЦАМ за ТЕКУЩИЙ год
   const months = new Array(12).fill(0);
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -1200,7 +1307,6 @@ function buildYearChart() {
     if (r.type === 'off') return;
     const d = new Date(r.date);
     d.setHours(0,0,0,0);
-    // Проверяем, что запись за текущий год и не в будущем
     if (d.getFullYear() === currentYear && d <= today) {
       const amount = calculateDayEarnings(r, rate, currentUser.settings);
       months[d.getMonth()] += amount;
@@ -1275,13 +1381,8 @@ function updateFinanceStats() {
   document.getElementById('financeSavings').innerText = savings.toFixed(2) + ' €';
   document.getElementById('pieTotal').innerText = dashboardNet.toFixed(2) + ' €';
   
-  // Обновляем значения в гривнах для финансов
-  if (exchangeRate) {
-    const financeNetUah = document.getElementById('financeNetUAH');
-    const financeGrossUah = document.getElementById('financeGrossUAH');
-    if (financeNetUah) financeNetUah.innerHTML = `₴ ${(dashboardNet * exchangeRate).toFixed(0)}`;
-    if (financeGrossUah) financeGrossUah.innerHTML = `₴ ${(dashboardGross * exchangeRate).toFixed(0)}`;
-  }
+  // Обновляем значения в гривнах
+  updateAllUAHValues();
   
   buildPieChart(
     Math.max(dashboardNet, 0.01),
@@ -1295,7 +1396,6 @@ function buildPieChart(net, tax, lunch, savings) {
   const canvas = document.getElementById('pieChart');
   if (!canvas) return;
   
-  // Устанавливаем размеры canvas
   canvas.style.width = '100%';
   canvas.style.height = '100%';
   canvas.width = canvas.parentElement.clientWidth || 300;
@@ -1330,8 +1430,8 @@ function buildPieChart(net, tax, lunch, savings) {
   });
 }
 
-// ===== СТАТИСТИКА =====
-function loadYearStats() {
+// ===== СТАТИСТИКА С КНОПКОЙ РАССЧИТАТЬ =====
+window.calculateYearStats = function() {
   if (!currentUser) return;
   
   const year = parseInt(document.getElementById('yearSelectStats').value);
@@ -1358,7 +1458,6 @@ function loadYearStats() {
     totalGross += amount;
     monthTotals[d.getMonth()] += amount;
     
-    // Считаем обеды: за каждый рабочий день (не выходной, не больничный, не отпуск)
     const dayOfWeek = d.getDay();
     if (dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'sick' && r.type !== 'vacation' && r.type !== 'doctor') {
       totalLunch += currentUser.settings?.lunchCost || LUNCH_COST_REAL;
@@ -1366,7 +1465,6 @@ function loadYearStats() {
     if (r.type === 'extra') extraBlocksCount++;
   });
   
-  // Добавляем бонус за надчасы (каждые 2 надчаса = +25 евро)
   totalGross += Math.floor(extraBlocksCount / 2) * (currentUser.settings?.extraBonus || 25);
   totalGross -= totalLunch;
   
@@ -1386,13 +1484,8 @@ function loadYearStats() {
   document.getElementById('totalHours').innerText = totalHours;
   document.getElementById('totalLunch').innerText = totalLunch.toFixed(2) + ' €';
   
-  // Добавляем значения в гривнах для статистики
-  if (exchangeRate) {
-    const totalEarnedUah = document.getElementById('totalEarnedUAH');
-    const totalLunchUah = document.getElementById('totalLunchUAH');
-    if (totalEarnedUah) totalEarnedUah.innerHTML = `₴ ${(totalGross * exchangeRate).toFixed(0)}`;
-    if (totalLunchUah) totalLunchUah.innerHTML = `₴ ${(totalLunch * exchangeRate).toFixed(0)}`;
-  }
+  // Обновляем значения в гривнах
+  updateAllUAHValues();
   
   if (bestMonthIndex !== -1) {
     document.getElementById('bestMonth').innerText = bestMonth.name + ' ' + bestMonth.value.toFixed(0) + '€';
@@ -1401,13 +1494,14 @@ function loadYearStats() {
   }
   
   buildStatsChart(monthTotals);
+  
+  showNotification(`Статистика за ${year} год рассчитана`, 2000);
 }
 
 function buildStatsChart(monthTotals) {
   const canvas = document.getElementById('statsChart');
   if (!canvas) return;
   
-  // Устанавливаем размеры canvas
   const container = canvas.parentElement;
   if (container) {
     canvas.style.width = '100%';
@@ -1500,7 +1594,7 @@ window.saveProfile = async function() {
   updateUserDisplay();
   updateWeekendStats();
   toggleWeatherEffect();
-  calculateAllStats(); // Пересчитываем всё после изменения настроек
+  calculateAllStats();
   showNotification('Профиль сохранён!');
 };
 
@@ -1520,7 +1614,7 @@ window.clearAllData = async function() {
     });
     
     buildCalendar();
-    calculateAllStats(); // Пересчитываем после очистки
+    calculateAllStats();
     loadFinancialGoal();
     showNotification('Все данные очищены');
   }
@@ -1564,7 +1658,6 @@ window.previewAvatar = function(input) {
 function calculateAllStats() {
   calculateDashboardStats();
   updateWeekendStats();
-  // Добавляем небольшую задержку для правильного рендеринга графиков
   setTimeout(() => {
     buildYearChart();
     updateFinanceStats();
@@ -1577,7 +1670,6 @@ function updateWeekendStats() {
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   let weekendsThisMonth = 0;
   
-  // Считаем ВСЕ субботы и воскресенья в месяце
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(currentYear, currentMonth, d);
     if (date.getDay() === 0 || date.getDay() === 6) {
@@ -1636,16 +1728,7 @@ function updateGoalDisplay() {
   document.getElementById('goalPercent').innerText = percent.toFixed(1) + '%';
   document.getElementById('goalProgressBar').style.width = percent + '%';
   
-  // Добавляем значение в гривнах для цели
-  if (exchangeRate) {
-    const goalSavedUah = document.getElementById('goalSavedUAH');
-    const goalTargetUah = document.getElementById('goalTargetUAH');
-    const goalRemainingUah = document.getElementById('goalRemainingUAH');
-    if (goalSavedUah) goalSavedUah.innerHTML = `₴ ${((goal.saved || 0) * exchangeRate).toFixed(0)}`;
-    if (goalTargetUah) goalTargetUah.innerHTML = `₴ ${(goal.amount * exchangeRate).toFixed(0)}`;
-    if (goalRemainingUah) goalRemainingUah.innerHTML = `₴ ${(Math.max(goal.amount - (goal.saved || 0), 0) * exchangeRate).toFixed(0)}`;
-  }
-  
+  updateAllUAHValues();
   updateHistoryList();
 }
 
@@ -1768,7 +1851,6 @@ window.importFromPDF = function(input) {
   const statusEl = document.getElementById('pdfStatus');
   statusEl.textContent = translations[currentLanguage]?.processing || 'Обработка...';
   
-  // Имитация обработки PDF
   setTimeout(async () => {
     const months = [
       { month: (currentMonth - 3 + 12) % 12, year: currentMonth - 3 < 0 ? currentYear - 1 : currentYear, gross: 2150, net: 1750 },
