@@ -2157,7 +2157,7 @@ canvas {
     font-size: 0.8rem !important;
 }
 
-/* Стили для погодных эффектов на весь экран */
+/* Погодные эффекты на весь экран - принудительно */
 #weather-particles {
     position: fixed !important;
     top: 0 !important;
@@ -2167,7 +2167,9 @@ canvas {
     pointer-events: none !important;
     z-index: 9999 !important;
     display: block !important;
+    background: transparent !important;
 }
+
 
 
 
