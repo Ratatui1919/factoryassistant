@@ -1,7 +1,96 @@
-// modules/important-dates.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// modules/important-dates.js - С ПОДДЕРЖКОЙ ПЕРЕВОДА
 
 (function() {
     console.log('🔥 Модуль важных дат запущен');
+
+    // ПЕРЕВОДЫ ДЛЯ ВАЖНЫХ ДАТ
+    const translations = {
+        ru: {
+            salary: 'День зарплаты',
+            holidays: {
+                'День образования Словацкой Республики': 'День образования Словацкой Республики',
+                'Богоявление': 'Богоявление',
+                'Страстная пятница': 'Страстная пятница',
+                'Пасхальный понедельник': 'Пасхальный понедельник',
+                'День труда': 'День труда',
+                'День Кирилла и Мефодия': 'День Кирилла и Мефодия',
+                'День Словацкого восстания': 'День Словацкого восстания',
+                'День всех святых': 'День всех святых',
+                'Сочельник': 'Сочельник',
+                'Рождество': 'Рождество'
+            },
+            legend: 'Важные даты',
+            past: 'прошло',
+            today: 'сегодня',
+            tomorrow: 'завтра',
+            days: 'дн.'
+        },
+        sk: {
+            salary: 'Deň výplaty',
+            holidays: {
+                'День образования Словацкой Республики': 'Deň vzniku Slovenskej republiky',
+                'Богоявление': 'Zjavenie Pána',
+                'Страстная пятница': 'Veľký piatok',
+                'Пасхальный понедельник': 'Veľkonočný pondelok',
+                'День труда': 'Sviatok práce',
+                'День Кирилла и Мефодия': 'Sviatok svätých Cyrila a Metoda',
+                'День Словацкого восстания': 'Výročie SNP',
+                'День всех святых': 'Sviatok všetkých svätých',
+                'Сочельник': 'Štedrý deň',
+                'Рождество': 'Vianoce'
+            },
+            legend: 'Dôležité dátumy',
+            past: 'prešlo',
+            today: 'dnes',
+            tomorrow: 'zajtra',
+            days: 'dní'
+        },
+        en: {
+            salary: 'Payday',
+            holidays: {
+                'День образования Словацкой Республики': 'Day of the Establishment of the Slovak Republic',
+                'Богоявление': 'Epiphany',
+                'Страстная пятница': 'Good Friday',
+                'Пасхальный понедельник': 'Easter Monday',
+                'День труда': 'Labour Day',
+                'День Кирилла и Мефодия': 'Saints Cyril and Methodius Day',
+                'День Словацкого восстания': 'Slovak National Uprising Day',
+                'День всех святых': 'All Saints\' Day',
+                'Сочельник': 'Christmas Eve',
+                'Рождество': 'Christmas'
+            },
+            legend: 'Important Dates',
+            past: 'past',
+            today: 'today',
+            tomorrow: 'tomorrow',
+            days: 'days'
+        },
+        uk: {
+            salary: 'День зарплати',
+            holidays: {
+                'День образования Словацкой Республики': 'День утворення Словацької Республіки',
+                'Богоявление': 'Богоявлення',
+                'Страстная пятница': 'Страсна п\'ятниця',
+                'Пасхальный понедельник': 'Великодній понеділок',
+                'День труда': 'День праці',
+                'День Кирилла и Мефодия': 'День Кирила і Мефодія',
+                'День Словацкого восстания': 'День Словацького повстання',
+                'День всех святых': 'День усіх святих',
+                'Сочельник': 'Святвечір',
+                'Рождество': 'Різдво'
+            },
+            legend: 'Важливі дати',
+            past: 'минуло',
+            today: 'сьогодні',
+            tomorrow: 'завтра',
+            days: 'дн.'
+        }
+    };
+
+    // ПОЛУЧАЕМ ТЕКУЩИЙ ЯЗЫК
+    function getCurrentLanguage() {
+        return document.documentElement.lang || 'ru';
+    }
 
     // ВСЕ ПРАЗДНИКИ 2026 ПО МЕСЯЦАМ
     const holidays = {
@@ -89,7 +178,7 @@
         return new Date().getMonth();
     }
 
-    // ПОЛУЧАЕМ ТЕКУЩУЮ ДАТУ (ВСЕГДА ОТ СЕГОДНЯ!)
+    // ПОЛУЧАЕМ ТЕКУЩУЮ ДАТУ
     function getCurrentDate() {
         const today = new Date();
         return {
@@ -99,7 +188,7 @@
         };
     }
 
-    // ВЫЧИСЛЯЕМ РАЗНИЦУ В ДНЯХ МЕЖДУ ДВУМЯ ДАТАМИ
+    // ВЫЧИСЛЯЕМ РАЗНИЦУ В ДНЯХ
     function daysBetween(date1, date2) {
         const d1 = new Date(date1.year, date1.month, date1.day);
         const d2 = new Date(date2.year, date2.month, date2.day);
@@ -119,6 +208,15 @@
     // ПОЛУЧАЕМ ЦВЕТ ДЛЯ ТИПА ДАТЫ
     function getDateColor(type) {
         return type === 'salary' ? '#00b060' : '#f59e0b';
+    }
+
+    // ПОЛУЧАЕМ ПЕРЕВОД
+    function getTranslation(key, holidayName = null) {
+        const lang = getCurrentLanguage();
+        if (holidayName && translations[lang]?.holidays?.[holidayName]) {
+            return translations[lang].holidays[holidayName];
+        }
+        return translations[lang]?.[key] || translations.ru[key] || key;
     }
 
     // ОБНОВЛЕНИЕ КАЛЕНДАРЯ
@@ -158,7 +256,7 @@
                         const icon = document.createElement('span');
                         icon.className = 'day-icon-important';
                         icon.textContent = '💰';
-                        icon.title = 'Зарплата';
+                        icon.title = getTranslation('salary');
                         container.appendChild(icon);
                     }
                     
@@ -167,7 +265,7 @@
                         const icon = document.createElement('span');
                         icon.className = 'day-icon-important';
                         icon.textContent = holiday.icon;
-                        icon.title = holiday.name;
+                        icon.title = getTranslation('holidays', holiday.name);
                         container.appendChild(icon);
                     }
                 }
@@ -175,16 +273,98 @@
         }, 100);
     }
 
+    // ОБЪЕДИНЯЕМ ВСЕ ЭЛЕМЕНТЫ ЛЕГЕНДЫ В ОДНОМ СТИЛЕ
+    function createUnifiedLegend() {
+        const legendContainer = document.querySelector('.calendar-legend');
+        if (!legendContainer) return;
+
+        // Очищаем контейнер от старых элементов
+        const existingLegend = document.getElementById('unified-legend');
+        if (existingLegend) existingLegend.remove();
+
+        // Собираем все типы дней из основной легенды
+        const dayTypes = [
+            { color: '#f39c12', icon: '💼', name: 'Смена' },
+            { color: '#2c3e50', icon: '🌙', name: 'Ночная' },
+            { color: '#e74c3c', icon: '⏰', name: 'Переработки' },
+            { color: '#8e44ad', icon: '📆', name: 'Суббота' },
+            { color: '#f39c12', icon: '☀️', name: 'Воскресенье' },
+            { color: '#27ae60', icon: '➕', name: 'Надчасы' },
+            { color: '#7f8c8d', icon: '🤒', name: 'Больничный' },
+            { color: '#f1c40f', icon: '🏖️', name: 'Отпуск' },
+            { color: '#9b59b6', icon: '🩺', name: 'Перепустка' },
+            { color: '#2c3e50', icon: '❌', name: 'Выходной' }
+        ];
+
+        // Собираем все уникальные праздники
+        const allHolidays = [];
+        const seen = new Set();
+        
+        Object.values(holidays).flat().forEach(h => {
+            if (!seen.has(h.icon)) {
+                seen.add(h.icon);
+                allHolidays.push(h);
+            }
+        });
+
+        allHolidays.sort((a, b) => {
+            const aDay = a.day + (a.month * 100);
+            const bDay = b.day + (b.month * 100);
+            return aDay - bDay;
+        });
+
+        const lang = getCurrentLanguage();
+
+        const unifiedLegendHTML = `
+            <div id="unified-legend" class="unified-legend">
+                <div class="legend-section">
+                    <div class="legend-title">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>Типы дней</span>
+                    </div>
+                    <div class="legend-items">
+                        ${dayTypes.map(d => `
+                            <div class="legend-item" title="${d.name}">
+                                <span class="legend-color" style="background: ${d.color};"></span>
+                                <span class="legend-icon">${d.icon}</span>
+                                <span class="legend-text" data-lang="${d.name.toLowerCase()}">${d.name}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">
+                        <i class="fas fa-star" style="color: var(--primary);"></i>
+                        <span data-lang="importantDates">Важные даты</span>
+                    </div>
+                    <div class="legend-items">
+                        <div class="legend-item" title="${getTranslation('salary')}">
+                            <span class="legend-color" style="background: #00b060;"></span>
+                            <span class="legend-icon">💰</span>
+                            <span class="legend-text">${getTranslation('salary')}</span>
+                        </div>
+                        ${allHolidays.map(h => `
+                            <div class="legend-item" title="${h.name}">
+                                <span class="legend-color" style="background: #f59e0b;"></span>
+                                <span class="legend-icon">${h.icon}</span>
+                                <span class="legend-text">${getTranslation('holidays', h.name) || h.shortName}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        legendContainer.innerHTML = unifiedLegendHTML;
+    }
+
     // СОЗДАЕМ КРАСИВЫЙ ВИДЖЕТ
     function createBeautifulWidget() {
         const currentDate = getCurrentDate();
         const selectedMonth = getCurrentMonth();
         const year = 2026;
-        
-        console.log('Создание виджета:', { 
-            today: currentDate,
-            selectedMonth: selectedMonth
-        });
+        const lang = getCurrentLanguage();
         
         const oldWidget = document.getElementById('importantDatesWidget');
         if (oldWidget) oldWidget.remove();
@@ -197,9 +377,9 @@
             day: salaryDay,
             month: selectedMonth,
             type: 'salary',
-            name: 'Зарплата',
+            name: getTranslation('salary'),
             icon: '💰',
-            fullName: 'Зарплата'
+            fullName: getTranslation('salary')
         });
         
         // Добавляем праздники
@@ -208,7 +388,7 @@
                 day: h.day,
                 month: selectedMonth,
                 type: 'holiday',
-                name: h.shortName,
+                name: getTranslation('holidays', h.name) || h.shortName,
                 fullName: h.name,
                 icon: h.icon
             });
@@ -227,29 +407,23 @@
         let itemsHTML = '';
         
         allDates.forEach(d => {
-            // Вычисляем разницу дней от сегодня до даты события
-            const eventDate = {
-                day: d.day,
-                month: d.month,
-                year: year
-            };
-            
+            const eventDate = { day: d.day, month: d.month, year: year };
             const diff = daysBetween(currentDate, eventDate);
             
             let badge = '';
             let badgeClass = '';
             
             if (diff < 0) {
-                badge = 'прошло';
+                badge = getTranslation('past');
                 badgeClass = 'past';
             } else if (diff === 0) {
-                badge = 'сегодня';
+                badge = getTranslation('today');
                 badgeClass = 'today';
             } else if (diff === 1) {
-                badge = 'завтра';
+                badge = getTranslation('tomorrow');
                 badgeClass = 'tomorrow';
             } else {
-                badge = `через ${diff} дн.`;
+                badge = `${diff} ${getTranslation('days')}`;
                 badgeClass = 'future';
             }
             
@@ -257,7 +431,7 @@
             const color = getDateColor(d.type);
             
             itemsHTML += `
-                <div class="widget-item ${d.type}" title="${d.fullName || d.name}">
+                <div class="widget-item ${d.type}" title="${d.fullName}">
                     <div class="item-icon" style="background: ${color}20; color: ${color};">${d.icon}</div>
                     <div class="item-content">
                         <div class="item-title">${d.name}</div>
@@ -271,7 +445,7 @@
         widget.innerHTML = `
             <div class="widget-header">
                 <i class="fas fa-calendar-alt" style="color: var(--primary);"></i>
-                <h3>Ближайшие даты</h3>
+                <h3 data-lang="importantDates">Ближайшие даты</h3>
             </div>
             <div class="widget-items">
                 ${itemsHTML}
@@ -281,58 +455,7 @@
         insertPoint.parentNode.insertBefore(widget, insertPoint.nextSibling);
     }
 
-    // СОЗДАЕМ КРАСИВУЮ ЛЕГЕНДУ
-    function createBeautifulLegend() {
-        const legendContainer = document.querySelector('.calendar-legend');
-        if (!legendContainer || document.getElementById('beautiful-legend')) return;
-
-        // Собираем все уникальные праздники
-        const allHolidays = [];
-        const seen = new Set();
-        
-        Object.values(holidays).flat().forEach(h => {
-            if (!seen.has(h.icon)) {
-                seen.add(h.icon);
-                allHolidays.push(h);
-            }
-        });
-
-        // Сортируем праздники по дню в году
-        allHolidays.sort((a, b) => {
-            const aDay = a.day + (a.month * 100);
-            const bDay = b.day + (b.month * 100);
-            return aDay - bDay;
-        });
-
-        const legendHTML = `
-            <div id="beautiful-legend" class="beautiful-legend">
-                <div class="legend-section">
-                    <div class="legend-title">
-                        <i class="fas fa-star" style="color: var(--primary);"></i>
-                        <span>Важные даты</span>
-                    </div>
-                    <div class="legend-items">
-                        <div class="legend-item" title="3-й рабочий день месяца">
-                            <div class="legend-color" style="background: #00b060;"></div>
-                            <div class="legend-icon">💰</div>
-                            <div class="legend-text">День зарплаты</div>
-                        </div>
-                        ${allHolidays.map(h => `
-                            <div class="legend-item" title="${h.name}">
-                                <div class="legend-color" style="background: #f59e0b;"></div>
-                                <div class="legend-icon">${h.icon}</div>
-                                <div class="legend-text">${h.shortName}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-
-        legendContainer.insertAdjacentHTML('beforeend', legendHTML);
-    }
-
-    // ДОБАВЛЯЕМ КРАСИВЫЕ СТИЛИ
+    // ДОБАВЛЯЕМ СТИЛИ
     const style = document.createElement('style');
     style.textContent = `
         /* Стили для иконок в календаре */
@@ -365,18 +488,20 @@
             border-color: #00b060 #f59e0b #00b060 #f59e0b !important;
         }
 
-        /* Красивая легенда */
-        .beautiful-legend {
+        /* Единая легенда */
+        .unified-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             width: 100%;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border);
+            padding: 15px;
+            background: var(--dark-light);
+            border-radius: 16px;
+            border: 1px solid var(--border);
         }
         
         .legend-section {
-            background: var(--dark-light);
-            border-radius: 16px;
-            padding: 15px;
+            width: 100%;
         }
         
         .legend-title {
@@ -386,6 +511,7 @@
             margin-bottom: 12px;
             font-weight: 600;
             color: var(--primary);
+            font-size: 1rem;
         }
         
         .legend-items {
@@ -405,6 +531,7 @@
             border: 1px solid var(--border);
             cursor: help;
             transition: all 0.2s ease;
+            color: var(--text);
         }
         
         .legend-item:hover {
@@ -417,15 +544,17 @@
             width: 8px;
             height: 8px;
             border-radius: 2px;
+            flex-shrink: 0;
         }
         
         .legend-icon {
             font-size: 1rem;
-            margin-right: 2px;
+            flex-shrink: 0;
         }
         
         .legend-text {
             color: var(--text);
+            white-space: nowrap;
         }
 
         /* Красивый виджет */
@@ -490,10 +619,12 @@
             align-items: center;
             justify-content: center;
             font-size: 1.4rem;
+            flex-shrink: 0;
         }
         
         .item-content {
             flex: 1;
+            min-width: 0;
         }
         
         .item-title {
@@ -501,6 +632,9 @@
             color: var(--text);
             font-size: 0.95rem;
             margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .item-date {
@@ -514,6 +648,7 @@
             font-size: 0.8rem;
             font-weight: 500;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .item-badge.past {
@@ -538,6 +673,15 @@
         }
 
         @media (max-width: 768px) {
+            .legend-items {
+                gap: 5px;
+            }
+            
+            .legend-item {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+            
             .widget-item {
                 flex-wrap: wrap;
             }
@@ -547,24 +691,31 @@
                 text-align: center;
                 margin-top: 5px;
             }
-            
-            .legend-items {
-                gap: 5px;
-            }
-            
-            .legend-item {
-                padding: 4px 8px;
-                font-size: 0.8rem;
-            }
         }
     `;
     document.head.appendChild(style);
+
+    // Следим за сменой языка
+    function watchLanguageChanges() {
+        const observer = new MutationObserver(() => {
+            createUnifiedLegend();
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                createBeautifulWidget();
+            }
+        });
+        
+        observer.observe(document.documentElement, { 
+            attributes: true, 
+            attributeFilter: ['lang'] 
+        });
+    }
 
     // ЗАПУСК
     setTimeout(() => {
         updateCalendar();
         createBeautifulWidget();
-        createBeautifulLegend();
+        createUnifiedLegend();
+        watchLanguageChanges();
     }, 1000);
 
     // ПЕРЕХВАТ СМЕНЫ МЕСЯЦА
@@ -587,7 +738,7 @@
             if (view === 'calendar') {
                 setTimeout(() => {
                     updateCalendar();
-                    createBeautifulLegend();
+                    createUnifiedLegend();
                 }, 300);
             }
             if (view === 'dashboard') {
