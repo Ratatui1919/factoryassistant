@@ -15,6 +15,27 @@ import {
   getDocs
 } from './firebase-config.js';
 
+// Скрываем прелоадер после полной загрузки
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.classList.add('hidden');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 300);
+        }
+    }, 500); // Небольшая задержка для плавности
+});
+
+// Показываем прелоадер пока проверяется авторизация
+document.addEventListener('DOMContentLoaded', function() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'flex';
+    }
+});
+
 let currentUser = null;
 let currentUserData = null;
 let currentMonth = new Date().getMonth();
@@ -2302,4 +2323,5 @@ window.importFromPDF = function(input) {
     showNotification(translations[currentLanguage]?.importPDF || 'Данные импортированы');
   }, 1500);
 };
+
 
