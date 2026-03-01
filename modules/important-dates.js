@@ -1,4 +1,4 @@
-// modules/important-dates.js - РАБОЧАЯ ВЕРСИЯ СО ВСЕМИ ПРАЗДНИКАМИ
+// modules/important-dates.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
 
 (function() {
     console.log('🔥 Модуль важных дат запущен');
@@ -93,6 +93,27 @@
         return new Date().getMonth();
     }
 
+    // ПОЛУЧАЕМ ТЕКУЩИЙ ДЕНЬ (С УЧЕТОМ ВЫБРАННОГО МЕСЯЦА!)
+    function getCurrentDay(selectedMonth) {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        
+        // Если выбран текущий месяц - возвращаем сегодняшнее число
+        if (selectedMonth === currentMonth) {
+            return today.getDate();
+        }
+        
+        // Если выбран будущий месяц - возвращаем 1 число (все дни впереди)
+        if (selectedMonth > currentMonth) {
+            return 0; // 0 значит что все дни в будущем
+        }
+        
+        // Если выбран прошлый месяц - возвращаем последний день месяца
+        // (все дни уже прошли)
+        const lastDay = new Date(2026, selectedMonth + 1, 0).getDate();
+        return lastDay + 1; // +1 значит что все дни прошли
+    }
+
     // ОБНОВЛЕНИЕ КАЛЕНДАРЯ
     function updateCalendar() {
         const month = getCurrentMonth();
@@ -162,7 +183,9 @@
     function updateWidget() {
         const month = getCurrentMonth();
         const year = 2026;
-        const today = new Date().getDate();
+        const currentDay = getCurrentDay(month);
+        
+        console.log('Обновляем виджет для месяца:', month + 1, 'текущий день:', currentDay);
         
         // Удаляем старый виджет
         const oldWidget = document.getElementById('importantDatesWidget');
@@ -212,12 +235,19 @@
         `;
         
         allDates.forEach(d => {
-            const diff = d.day - today;
+            // Вычисляем разницу дней с учетом выбранного месяца
+            let diff = d.day - currentDay;
             let countdown = '';
-            if (diff === 0) countdown = 'сегодня';
-            else if (diff === 1) countdown = 'завтра';
-            else if (diff > 1) countdown = `через ${diff} дн.`;
-            else countdown = 'прошло';
+            
+            if (diff < 0) {
+                countdown = 'прошло';
+            } else if (diff === 0) {
+                countdown = 'сегодня';
+            } else if (diff === 1) {
+                countdown = 'завтра';
+            } else {
+                countdown = `через ${diff} дн.`;
+            }
             
             const monthName = d.date.toLocaleDateString('ru-RU', { month: 'long' });
             
@@ -239,6 +269,75 @@
         insertPoint.parentNode.insertBefore(widget, insertPoint.nextSibling);
     }
 
+    // ДОБАВЛЯЕМ ЛЕГЕНДУ В КАЛЕНДАРЬ
+    function addLegendToCalendar() {
+        const legendContainer = document.querySelector('.calendar-legend');
+        if (!legendContainer) return;
+        
+        // Проверяем, не добавлена ли уже наша легенда
+        if (document.getElementById('important-dates-legend')) return;
+        
+        // Создаем разделитель
+        const divider = document.createElement('div');
+        divider.style.width = '100%';
+        divider.style.height = '1px';
+        divider.style.background = 'var(--border)';
+        divider.style.margin = '10px 0';
+        legendContainer.appendChild(divider);
+        
+        // Создаем заголовок
+        const title = document.createElement('div');
+        title.style.width = '100%';
+        title.style.fontWeight = '600';
+        title.style.color = 'var(--primary)';
+        title.style.marginBottom = '10px';
+        title.style.paddingLeft = '5px';
+        title.innerHTML = '📅 Важные даты:';
+        legendContainer.appendChild(title);
+        
+        // Создаем контейнер для иконок важных дат
+        const importantLegend = document.createElement('div');
+        importantLegend.id = 'important-dates-legend';
+        importantLegend.style.display = 'flex';
+        importantLegend.style.flexWrap = 'wrap';
+        importantLegend.style.gap = '10px';
+        importantLegend.style.justifyContent = 'center';
+        
+        // Добавляем зарплату
+        const salaryItem = document.createElement('div');
+        salaryItem.className = 'legend-item';
+        salaryItem.innerHTML = `
+            <span class="legend-color" style="background:#00b060;"></span>
+            <span class="legend-icon">💰</span>
+            <span class="legend-text">День зарплаты</span>
+        `;
+        importantLegend.appendChild(salaryItem);
+        
+        // Добавляем все праздники (уникальные)
+        const uniqueHolidays = [];
+        const holidayIcons = new Set();
+        
+        Object.values(holidays).flat().forEach(h => {
+            if (!holidayIcons.has(h.icon)) {
+                holidayIcons.add(h.icon);
+                uniqueHolidays.push(h);
+            }
+        });
+        
+        uniqueHolidays.forEach(h => {
+            const item = document.createElement('div');
+            item.className = 'legend-item';
+            item.innerHTML = `
+                <span class="legend-color" style="background:#f59e0b;"></span>
+                <span class="legend-icon">${h.icon}</span>
+                <span class="legend-text">${h.name.split(' ').slice(1).join(' ')}</span>
+            `;
+            importantLegend.appendChild(item);
+        });
+        
+        legendContainer.appendChild(importantLegend);
+    }
+
     // ДОБАВЛЯЕМ СТИЛИ
     const style = document.createElement('style');
     style.textContent = `
@@ -247,9 +346,11 @@
             gap: 2px;
             justify-content: center;
             margin-top: 2px;
+            min-height: 20px;
         }
         .day-icon-important {
             font-size: 1rem;
+            line-height: 1;
         }
         .day.has-salary {
             border: 2px solid #00b060 !important;
@@ -269,6 +370,8 @@
             border-radius: 20px;
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            animation: fadeIn 0.5s ease;
         }
         .widget-header {
             display: flex;
@@ -278,6 +381,7 @@
         }
         .widget-header h3 {
             color: var(--primary);
+            font-size: 1.2rem;
             margin: 0;
         }
         .dates-list {
@@ -293,12 +397,19 @@
             background: var(--dark-light);
             border-radius: 12px;
             border-left: 4px solid;
+            transition: transform 0.2s;
+            cursor: help;
+        }
+        .date-item:hover {
+            transform: translateX(5px);
         }
         .date-item.salary {
             border-left-color: #00b060;
+            background: linear-gradient(90deg, rgba(0,176,96,0.1), transparent);
         }
         .date-item.holiday {
             border-left-color: #f59e0b;
+            background: linear-gradient(90deg, rgba(245,158,11,0.1), transparent);
         }
         .date-icon {
             font-size: 1.5rem;
@@ -307,10 +418,15 @@
         }
         .date-info {
             flex: 1;
+            min-width: 0;
         }
         .date-title {
             font-weight: 600;
             color: var(--text);
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .date-day {
             font-size: 0.8rem;
@@ -318,11 +434,16 @@
         }
         .date-countdown {
             font-size: 0.85rem;
+            font-weight: 500;
             color: var(--primary);
             white-space: nowrap;
             padding: 4px 8px;
             background: var(--dark);
             border-radius: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     `;
     document.head.appendChild(style);
@@ -331,6 +452,7 @@
     setTimeout(() => {
         updateCalendar();
         updateWidget();
+        addLegendToCalendar();
     }, 1000);
 
     // ПЕРЕХВАТ СМЕНЫ МЕСЯЦА
@@ -350,8 +472,15 @@
     if (originalSetView) {
         window.setView = function(view) {
             originalSetView(view);
-            if (view === 'calendar') setTimeout(updateCalendar, 300);
-            if (view === 'dashboard') setTimeout(updateWidget, 300);
+            if (view === 'calendar') {
+                setTimeout(() => {
+                    updateCalendar();
+                    addLegendToCalendar();
+                }, 300);
+            }
+            if (view === 'dashboard') {
+                setTimeout(updateWidget, 300);
+            }
         };
     }
 })();
