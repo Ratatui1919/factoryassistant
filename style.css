@@ -2150,7 +2150,14 @@ canvas {
     animation: slideInUp 0.5s ease;
 }
 
-/* Погодные эффекты */
+/* Стили для кнопок языков - всегда заглавные */
+.lang-btn {
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+}
+
+/* Стили для погодных эффектов */
 #weather-particles {
     position: fixed;
     top: 0;
@@ -2160,6 +2167,7 @@ canvas {
     pointer-events: none;
     z-index: 9999;
 }
+
 
 
 
