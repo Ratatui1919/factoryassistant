@@ -142,11 +142,8 @@
         
         const calendarGrid = document.getElementById('calendarGrid');
         if (!calendarGrid) {
-            console.log('❌ Календарь не найден');
             return;
         }
-        
-        console.log('📅 Добавляем важные даты в календарь:', importantDates);
         
         const dayCells = calendarGrid.querySelectorAll('.day:not(.empty)');
         
@@ -176,8 +173,6 @@
                 // Добавляем полное название в title для подсказки
                 const fullName = importantDate[`name_${settings.language}`] || importantDate.name_ru;
                 cell.setAttribute('title', `${fullName} (${importantDate.type === 'salary' ? 'день зарплаты' : 'праздник'})`);
-                
-                console.log(`✅ День ${dayNumber}: ${fullName}`);
             }
         });
     }
@@ -265,210 +260,44 @@
     }
 
     /**
-     * Добавляем стили
+     * Сохраняем оригинальную функцию buildCalendar
      */
-    function addStyles() {
-        // Проверяем, не добавлены ли уже стили
-        if (document.getElementById('important-dates-styles')) return;
+    let originalBuildCalendar = null;
+
+    /**
+     * Новая функция buildCalendar, которая вызывает оригинальную и добавляет важные даты
+     */
+    function enhancedBuildCalendar() {
+        // Вызываем оригинальную функцию, если она существует
+        if (originalBuildCalendar) {
+            originalBuildCalendar();
+        } else if (window.buildCalendar) {
+            originalBuildCalendar = window.buildCalendar;
+            originalBuildCalendar();
+        }
         
-        const style = document.createElement('style');
-        style.id = 'important-dates-styles';
-        style.textContent = `
-            /* Стили для ячеек календаря с важными датами */
-            .day.has-salary {
-                position: relative;
-                background: linear-gradient(145deg, rgba(0,176,96,0.15), rgba(0,176,96,0.05)) !important;
-                border: 2px solid #00b060 !important;
-            }
-            
-            .day.has-holiday {
-                position: relative;
-                background: linear-gradient(145deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)) !important;
-                border: 2px solid #f59e0b !important;
-            }
-            
-            .day .day-icon {
-                font-size: 1.2rem;
-                margin-top: 2px;
-            }
-            
-            /* Стили для виджета важных дат */
-            .important-dates-widget {
-                margin: 20px 0;
-                padding: 20px;
-                border-radius: 20px;
-                background: var(--glass-bg);
-                backdrop-filter: blur(10px);
-                border: 1px solid var(--border);
-                animation: fadeIn 0.5s ease;
-            }
-            
-            .widget-header {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-            
-            .widget-header h3 {
-                color: var(--primary);
-                font-size: 1.2rem;
-                margin: 0;
-            }
-            
-            .dates-list {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                max-height: 300px;
-                overflow-y: auto;
-                padding-right: 5px;
-            }
-            
-            .dates-list::-webkit-scrollbar {
-                width: 5px;
-            }
-            
-            .dates-list::-webkit-scrollbar-thumb {
-                background: var(--primary);
-                border-radius: 5px;
-            }
-            
-            .date-item {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px;
-                background: var(--dark-light);
-                border-radius: 12px;
-                border-left: 4px solid;
-                transition: transform 0.2s;
-                animation: slideIn 0.3s ease;
-            }
-            
-            .date-item:hover {
-                transform: translateX(5px);
-                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            }
-            
-            .date-item.salary {
-                border-left-color: #00b060;
-                background: linear-gradient(90deg, rgba(0,176,96,0.1), transparent);
-            }
-            
-            .date-item.holiday {
-                border-left-color: #f59e0b;
-                background: linear-gradient(90deg, rgba(245,158,11,0.1), transparent);
-            }
-            
-            .date-icon {
-                font-size: 1.5rem;
-                min-width: 40px;
-                text-align: center;
-            }
-            
-            .date-info {
-                flex: 1;
-            }
-            
-            .date-title {
-                font-weight: 600;
-                color: var(--text);
-                font-size: 0.95rem;
-            }
-            
-            .date-day {
-                font-size: 0.8rem;
-                color: var(--text-muted);
-            }
-            
-            .date-countdown {
-                font-size: 0.85rem;
-                font-weight: 500;
-                color: var(--primary);
-                white-space: nowrap;
-                padding: 4px 8px;
-                background: var(--dark);
-                border-radius: 20px;
-            }
-            
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translateX(-10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-            
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-            
-            @media (max-width: 768px) {
-                .date-item {
-                    flex-wrap: wrap;
-                }
-                .date-countdown {
-                    width: 100%;
-                    text-align: right;
-                    margin-top: 5px;
-                }
-            }
-            
-            @media (max-width: 480px) {
-                .important-dates-widget {
-                    padding: 15px;
-                }
-                
-                .date-icon {
-                    font-size: 1.3rem;
-                    min-width: 30px;
-                }
-                
-                .date-title {
-                    font-size: 0.9rem;
-                }
-                
-                .date-day {
-                    font-size: 0.75rem;
-                }
-                
-                .date-countdown {
-                    font-size: 0.8rem;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        // Добавляем важные даты в календарь
+        setTimeout(() => {
+            addImportantDatesToCalendar();
+        }, 50);
     }
 
     /**
      * Перехватываем функцию buildCalendar после ее загрузки
      */
     function hookIntoCalendar() {
-        console.log('🔍 Ищем функцию buildCalendar...');
         
         // Сохраняем оригинальную функцию
         const originalBuildCalendar = window.buildCalendar;
         
         if (originalBuildCalendar) {
-            console.log('✅ Функция buildCalendar найдена!');
             
             // Переопределяем функцию
             window.buildCalendar = function() {
-                console.log('📅 Вызов оригинальной buildCalendar');
                 // Вызываем оригинальную функцию
                 originalBuildCalendar();
                 // Добавляем важные даты
                 setTimeout(() => {
-                    console.log('✨ Добавляем важные даты');
                     addImportantDatesToCalendar();
                 }, 50);
             };
@@ -477,7 +306,6 @@
             setTimeout(() => {
                 const insertTarget = document.querySelector('.stats-row') || document.querySelector('.kpi-grid');
                 if (insertTarget && !document.getElementById('importantDatesWidget')) {
-                    console.log('📊 Добавляем виджет важных дат');
                     insertTarget.parentNode.insertBefore(createUpcomingDatesWidget(), insertTarget.nextSibling);
                 }
             }, 1000);
@@ -492,16 +320,12 @@
      * Инициализация модуля
      */
     function init() {
-        console.log('🔥 Модуль важных дат загружен');
         
         loadSettings();
         settings.language = getCurrentLanguage();
         
-        addStyles();
-        
         // Пытаемся перехватить функцию сразу
         if (!hookIntoCalendar()) {
-            console.log('⏳ Функция buildCalendar не найдена, ждем...');
             
             // Пробуем снова через интервал
             let attempts = 0;
@@ -509,18 +333,9 @@
             
             const checkInterval = setInterval(() => {
                 attempts++;
-                console.log(`⏳ Попытка ${attempts}/${maxAttempts}...`);
                 
                 if (hookIntoCalendar() || attempts >= maxAttempts) {
                     clearInterval(checkInterval);
-                    
-                    if (attempts >= maxAttempts) {
-                        console.log('❌ Не удалось найти buildCalendar, пробуем прямой вызов');
-                        // Пробуем прямой вызов добавления дат
-                        setTimeout(() => {
-                            addImportantDatesToCalendar();
-                        }, 2000);
-                    }
                 }
             }, 500);
         }
