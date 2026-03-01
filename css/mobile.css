@@ -1,231 +1,197 @@
-/* mobile-theme-1.css - Material You (Современный, округлый, с мягкими тенями) */
+/* mobile-theme-3.css - Neo Brutalism (Яркий, дерзкий, с толстыми границами) */
 
 @media (max-width: 768px) {
     /* ===== БАЗОВЫЕ НАСТРОЙКИ ===== */
     body {
         font-size: 14px;
-        background: #f8fafc;
+        background: #ffd700;
     }
     
     .theme-dark body {
-        background: #0f172a;
+        background: #2d2d2d;
     }
     
-    /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+    /* ===== ТОЛСТЫЕ ГРАНИЦЫ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ ===== */
+    .kpi-card,
+    .stat-box,
+    .exchange-rate-card,
+    .important-widget,
+    .profile-card,
+    .finance-goals,
+    .chart-container,
+    .day,
+    .nav-btn {
+        border: 3px solid black !important;
+        box-shadow: 5px 5px 0px 0px black !important;
+    }
+    
+    /* ===== ВЕРХНЯЯ НАВИГАЦИЯ (ОСТАВЛЯЕМ СВЕРХУ) ===== */
     nav {
-        position: fixed;
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
-        height: 70px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 40px;
-        border: 1px solid rgba(0, 176, 96, 0.2);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
         display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 0 10px;
-        z-index: 1000;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 10px;
+        background: white;
+        border-bottom: 3px solid black;
     }
     
     .theme-dark nav {
-        background: rgba(18, 22, 32, 0.9);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: #1a1a1a;
     }
     
     .nav-btn {
-        flex: 1;
-        padding: 8px 0;
-        border-radius: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        transition: all 0.3s;
-    }
-    
-    .nav-btn i {
-        font-size: 1.3rem;
+        flex: 1 1 auto;
+        padding: 12px 8px;
+        background: var(--primary);
+        color: black;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        border-radius: 0;
     }
     
     .nav-btn.active {
+        background: black;
         color: var(--primary);
-        background: rgba(0, 176, 96, 0.1);
     }
     
     /* ===== ХЕДЕР ===== */
     header {
-        padding: 12px 16px;
-        background: transparent;
-        border-bottom: none;
+        padding: 16px;
+        background: white;
+        border-bottom: 3px solid black;
     }
     
-    .header-left {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-    
-    .logo h1 {
-        font-size: 1.3rem;
-        background: linear-gradient(135deg, var(--primary), #00ff9d);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    .theme-dark header {
+        background: #1a1a1a;
     }
     
     .header-badge {
-        display: none;
+        background: black;
+        color: var(--primary);
+        border: 2px solid var(--primary);
     }
     
     .header-widget {
-        background: var(--dark-light);
-        border-radius: 40px;
-        padding: 6px 16px;
-        min-width: auto;
-        width: 100%;
+        background: white;
+        border: 3px solid black;
+        border-radius: 0;
+        padding: 8px 16px;
     }
     
-    .user-info {
-        padding: 3px 10px 3px 3px;
-    }
-    
-    .user-info img {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .logout-btn {
-        width: 40px;
-        height: 40px;
+    .theme-dark .header-widget {
+        background: #1a1a1a;
     }
     
     /* ===== KPI КАРТОЧКИ ===== */
     .kpi-grid {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        gap: 12px;
-        padding: 0 16px 16px;
-        margin: 0 -16px 16px;
-        scrollbar-width: none;
-    }
-    
-    .kpi-grid::-webkit-scrollbar {
-        display: none;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        padding: 16px;
     }
     
     .kpi-card {
-        flex: 0 0 160px;
-        scroll-snap-align: start;
-        background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
-        border: none;
-        border-radius: 24px;
-        padding: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        background: var(--primary);
+        border-radius: 0;
+        padding: 20px;
     }
     
     .kpi-icon {
-        width: 45px;
-        height: 45px;
-        border-radius: 20px;
+        background: black;
+        color: var(--primary);
+        border-radius: 0;
     }
     
     .kpi-value {
-        font-size: 1.3rem;
+        color: black;
+        font-weight: 800;
     }
     
     /* ===== КУРС ВАЛЮТ ===== */
     .exchange-rate-card {
         margin: 16px;
+        background: #ff6b6b;
+        border-radius: 0;
         padding: 20px;
-        border-radius: 32px;
-        background: linear-gradient(135deg, #00b060, #009048);
-    }
-    
-    .exchange-rate-card .btn-primary {
-        background: white;
-        color: var(--primary);
-        border-radius: 40px;
-        padding: 8px 20px;
     }
     
     .currency-display {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 60px;
-        padding: 12px;
+        background: white;
+        border: 3px solid black;
+        border-radius: 0;
+        padding: 15px;
     }
     
     .currency-value {
-        color: white;
+        color: black;
         font-size: 2rem;
+        font-weight: 800;
     }
     
-    /* ===== СТАТИСТИКА ===== */
-    .stats-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        padding: 0 16px;
-    }
-    
-    .stat-box {
-        flex: 1 1 calc(50% - 6px);
-        background: var(--dark-card);
+    .update-btn {
+        background: black;
+        color: white;
         border: none;
-        border-radius: 20px;
-        padding: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stat-box i {
-        font-size: 1.5rem;
+        border-radius: 0;
     }
     
     /* ===== КАЛЕНДАРЬ ===== */
     .calendar-weekdays span {
-        padding: 10px 0;
-        background: transparent;
+        background: black;
+        color: white;
         border: none;
-        font-size: 0.8rem;
+        border-radius: 0;
+        padding: 12px 0;
     }
     
     .calendar-grid {
-        gap: 6px;
-        padding: 0 16px;
+        gap: 8px;
+        padding: 16px;
     }
     
     .day {
-        background: var(--dark-card);
-        border: none;
-        border-radius: 16px;
-        padding: 8px 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: white;
+        border-radius: 0;
+        padding: 12px 0;
+    }
+    
+    .theme-dark .day {
+        background: #1a1a1a;
     }
     
     /* ===== ВАЖНЫЕ ДАТЫ ===== */
     .important-widget {
-        margin: 20px 16px;
+        margin: 16px;
+        background: #4ecdc4;
+        border-radius: 0;
         padding: 20px;
-        border-radius: 32px;
-        background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
-        border: none;
     }
     
     .widget-item {
-        background: var(--dark);
-        border: none;
-        border-radius: 20px;
-        margin-bottom: 8px;
+        background: white;
+        border: 3px solid black;
+        border-radius: 0;
+        padding: 15px;
+        margin-bottom: 10px;
     }
     
     .item-badge {
-        background: rgba(0, 176, 96, 0.15);
-        border-radius: 40px;
+        background: black;
+        color: white;
+        border-radius: 0;
+        padding: 5px 15px;
+        font-weight: 700;
+    }
+    
+    /* ===== КНОПКИ ===== */
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        border-radius: 0 !important;
+        border: 3px solid black !important;
+        font-weight: 700;
+        text-transform: uppercase;
     }
 }
