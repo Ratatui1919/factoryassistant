@@ -1,0 +1,85 @@
+/* css/desktop.css - СТИЛИ ДЛЯ ПК */
+
+@media (min-width: 1024px) {
+    /* Основные настройки */
+    main {
+        padding: 2rem;
+    }
+    
+    /* KPI карточки */
+    .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    
+    .kpi-card {
+        padding: 25px;
+    }
+    
+    .kpi-value {
+        font-size: 1.6rem;
+    }
+    
+    /* Статистика */
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    
+    /* Календарь */
+    .calendar-grid {
+        gap: 10px;
+    }
+    
+    .day {
+        min-height: 80px;
+        padding: 15px 5px;
+    }
+    
+    .day-number {
+        font-size: 1.2rem;
+    }
+    
+    .day-icon {
+        font-size: 1.4rem;
+    }
+    
+    /* Легенда */
+    .legend-grid {
+        flex-direction: row;
+        gap: 30px;
+    }
+    
+    .legend-section {
+        flex: 1;
+    }
+    
+    /* Виджет */
+    .important-widget {
+        padding: 25px;
+    }
+    
+    /* Курс валют */
+    .exchange-rate-card {
+        padding: 25px;
+    }
+    
+    .currency-value {
+        font-size: 2rem;
+    }
+    
+    /* Профиль */
+    .profile-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+    
+    /* Модальные окна */
+    .modal-content {
+        max-width: 500px;
+    }
+    
+    .day-types {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
