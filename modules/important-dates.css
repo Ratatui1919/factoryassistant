@@ -3,22 +3,19 @@
 /* Стили для ячеек календаря с важными датами */
 .day.has-salary {
     position: relative;
-    background: linear-gradient(145deg, rgba(0,176,96,0.2), rgba(0,176,96,0.05)) !important;
+    background: linear-gradient(145deg, rgba(0,176,96,0.15), rgba(0,176,96,0.05)) !important;
     border: 2px solid #00b060 !important;
 }
 
 .day.has-holiday {
     position: relative;
-    background: linear-gradient(145deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05)) !important;
+    background: linear-gradient(145deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)) !important;
     border: 2px solid #f59e0b !important;
 }
 
-.day-indicator {
-    position: absolute;
-    top: 2px;
-    right: 4px;
-    font-size: 0.7rem;
-    z-index: 2;
+.day .day-icon {
+    font-size: 1.2rem;
+    margin-top: 2px;
 }
 
 /* Стили для виджета важных дат */
@@ -35,37 +32,14 @@
 .widget-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
     margin-bottom: 15px;
 }
 
 .widget-header h3 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     color: var(--primary);
     font-size: 1.2rem;
-}
-
-.widget-settings-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.3s;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.widget-settings-btn:hover {
-    transform: rotate(90deg);
-    color: var(--primary);
-    background: var(--dark-light);
+    margin: 0;
 }
 
 .dates-list {
@@ -89,12 +63,12 @@
 .date-item {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     padding: 12px;
     background: var(--dark-light);
     border-radius: 12px;
     border-left: 4px solid;
-    transition: all 0.3s;
+    transition: all 0.2s;
     animation: slideIn 0.3s ease;
 }
 
@@ -114,7 +88,7 @@
 }
 
 .date-icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     min-width: 40px;
     text-align: center;
 }
@@ -125,92 +99,23 @@
 
 .date-title {
     font-weight: 600;
-    margin-bottom: 4px;
     color: var(--text);
+    font-size: 0.95rem;
 }
 
 .date-day {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
 .date-countdown {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--primary);
     white-space: nowrap;
     padding: 4px 8px;
     background: var(--dark);
     border-radius: 20px;
-}
-
-/* Стили для модалки настроек */
-#datesSettingsModal .modal-content {
-    max-width: 450px;
-}
-
-#datesSettingsModal h3 {
-    color: var(--primary);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.settings-group {
-    margin: 20px 0;
-    padding: 15px;
-    background: var(--dark-light);
-    border-radius: 12px;
-}
-
-.settings-group label {
-    display: block;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 12px 0;
-    cursor: pointer;
-    color: var(--text);
-}
-
-.checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-    cursor: pointer;
-}
-
-#datesSettingsModal select,
-#datesSettingsModal input[type="time"] {
-    width: 100%;
-    padding: 10px;
-    background: var(--dark);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.95rem;
-    margin-top: 5px;
-}
-
-#datesSettingsModal select:focus,
-#datesSettingsModal input[type="time"]:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(0,176,96,0.2);
-}
-
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
 }
 
 /* Анимации */
@@ -238,21 +143,11 @@
 @media (max-width: 768px) {
     .date-item {
         flex-wrap: wrap;
-        padding: 10px;
     }
-    
     .date-countdown {
         width: 100%;
         text-align: right;
         margin-top: 5px;
-    }
-    
-    .modal-actions {
-        flex-direction: column;
-    }
-    
-    .modal-actions button {
-        width: 100%;
     }
 }
 
@@ -262,7 +157,7 @@
     }
     
     .date-icon {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         min-width: 30px;
     }
     
@@ -271,6 +166,10 @@
     }
     
     .date-day {
+        font-size: 0.75rem;
+    }
+    
+    .date-countdown {
         font-size: 0.8rem;
     }
 }
