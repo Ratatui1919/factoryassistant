@@ -1,26 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Test</title>
 </head>
 <body>
-    <h1>Тест</h1>
-    <p>Если ты это видишь — HTML работает</p>
-    
-    <script type="module">
-        console.log('Скрипт загружен');
-        try {
-            import('./firebase-config.js').then(module => {
-                console.log('Firebase загружен:', module);
-                document.body.innerHTML += '<p style="color:green">✅ Firebase OK</p>';
-            }).catch(err => {
-                console.error('Ошибка загрузки Firebase:', err);
-                document.body.innerHTML += '<p style="color:red">❌ Ошибка Firebase: ' + err.message + '</p>';
-            });
-        } catch(e) {
-            console.error('Критическая ошибка:', e);
-        }
-    </script>
+    <h1>Привет!</h1>
+    <p>Если ты это видишь — сайт работает</p>
 </body>
 </html>
