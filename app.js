@@ -25,6 +25,9 @@ let currentTheme = localStorage.getItem('vaillant_theme') || 'dark';
 let yearChart = null, statsChart = null, pieChart = null;
 let notificationTimeout = null;
 let updateInterval = null;
+let weatherEffectInterval = null;
+let weatherParticles = null;
+let telegramBotToken = 'YOUR_BOT_TOKEN'; // Замени на свой токен
 
 const BASE_RATE = 6.10;
 const LUNCH_COST_REAL = 1.31;
@@ -35,7 +38,10 @@ const HEALTH_RATE = 0.10;
 const TAX_RATE = 0.19;
 const NON_TAXABLE = 410;
 
-// 30+ финансовых советов (меняются каждый день)
+// Курсы валют (обновляются каждый час)
+let eurToUah = 42.5; // По умолчанию
+
+// 50+ финансовых советов
 const FINANCIAL_TIPS = [
   "Откладывай минимум 10% от зарплаты — это основа финансовой безопасности",
   "Используй надчасы для дополнительного дохода, но не забывай про отдых",
@@ -191,7 +197,14 @@ const translations = {
     goodAfternoon: 'Добрый день',
     goodEvening: 'Добрый вечер',
     exportToExcel: 'Экспорт в Excel',
-    exportToPDF: 'Экспорт в PDF'
+    exportToPDF: 'Экспорт в PDF',
+    fatigueLow: 'Низкая',
+    fatigueMedium: 'Средняя',
+    fatigueHigh: 'Высокая',
+    fatigueCritical: 'Критическая',
+    telegramReport: 'Telegram-отчёт',
+    weatherEffects: 'Погодные эффекты',
+    currency: 'Курс валют'
   },
   sk: {
     dashboard: 'Nástenka',
@@ -294,7 +307,14 @@ const translations = {
     goodAfternoon: 'Dobrý deň',
     goodEvening: 'Dobrý večer',
     exportToExcel: 'Export do Excel',
-    exportToPDF: 'Export do PDF'
+    exportToPDF: 'Export do PDF',
+    fatigueLow: 'Nízka',
+    fatigueMedium: 'Stredná',
+    fatigueHigh: 'Vysoká',
+    fatigueCritical: 'Kritická',
+    telegramReport: 'Telegram správa',
+    weatherEffects: 'Počasie efekty',
+    currency: 'Kurz meny'
   },
   en: {
     dashboard: 'Dashboard',
@@ -397,7 +417,14 @@ const translations = {
     goodAfternoon: 'Good afternoon',
     goodEvening: 'Good evening',
     exportToExcel: 'Export to Excel',
-    exportToPDF: 'Export to PDF'
+    exportToPDF: 'Export to PDF',
+    fatigueLow: 'Low',
+    fatigueMedium: 'Medium',
+    fatigueHigh: 'High',
+    fatigueCritical: 'Critical',
+    telegramReport: 'Telegram report',
+    weatherEffects: 'Weather effects',
+    currency: 'Exchange rate'
   },
   uk: {
     dashboard: 'Панель',
@@ -500,10 +527,16 @@ const translations = {
     goodAfternoon: 'Доброго дня',
     goodEvening: 'Доброго вечора',
     exportToExcel: 'Експорт в Excel',
-    exportToPDF: 'Експорт в PDF'
+    exportToPDF: 'Експорт в PDF',
+    fatigueLow: 'Низька',
+    fatigueMedium: 'Середня',
+    fatigueHigh: 'Висока',
+    fatigueCritical: 'Критична',
+    telegramReport: 'Telegram звіт',
+    weatherEffects: 'Погодні ефекти',
+    currency: 'Курс валют'
   }
 };
-
 function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 function showMessage(msg, isError = false) { alert(isError ? '❌ ' + msg : '✅ ' + msg); }
@@ -534,6 +567,359 @@ window.toggleMobileMenu = function() {
   nav.classList.toggle('active');
 };
 
+// ===== КУРСЫ ВАЛЮТ =====
+async function updateExchangeRates() {
+  try {
+    // Используем бесплатное API (например, exchangerate-api.com)
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+    const data = await response.json();
+    eurToUah = data.rates.UAH;
+    document.getElementById('eurToUah').textContent = eurToUah.toFixed(2);
+  } catch (error) {
+    console.error('Failed to fetch exchange rates:', error);
+    // Если API не работает, используем примерный курс
+    eurToUah = 42.5;
+    document.getElementById('eurToUah').textContent = eurToUah.toFixed(2);
+  }
+}
+
+// ===== ПОГОДНЫЕ ЭФФЕКТЫ =====
+function createWeatherParticles(type) {
+  // Удаляем старые частицы
+  if (weatherParticles) {
+    document.body.removeChild(weatherParticles);
+    weatherParticles = null;
+  }
+  
+  if (type === 'off') return;
+  
+  const canvas = document.createElement('canvas');
+  canvas.id = 'weather-particles';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '9999';
+  document.body.appendChild(canvas);
+  weatherParticles = canvas;
+  
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const particleCount = type === 'snow' ? 100 : 150;
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: type === 'snow' ? Math.random() * 5 + 2 : Math.random() * 3 + 1,
+      speedY: type === 'snow' ? Math.random() * 2 + 1 : Math.random() * 5 + 3,
+      speedX: type === 'snow' ? Math.random() * 0.5 - 0.25 : Math.random() * 2 - 1,
+      opacity: Math.random() * 0.5 + 0.3
+    });
+  }
+  
+  function animate() {
+    if (!weatherParticles) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(p => {
+      if (type === 'snow') {
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = `rgba(0, 150, 255, ${p.opacity * 0.5})`;
+        ctx.fillRect(p.x, p.y, p.size * 0.5, p.size * 2);
+      }
+      
+      p.y += p.speedY;
+      p.x += p.speedX;
+      
+      if (p.y > canvas.height) {
+        p.y = -10;
+        p.x = Math.random() * canvas.width;
+      }
+      if (p.x > canvas.width) p.x = 0;
+      if (p.x < 0) p.x = canvas.width;
+    });
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+}
+
+window.toggleWeatherEffect = function() {
+  const enabled = document.getElementById('weatherEffectsEnabled')?.checked;
+  const mode = document.getElementById('weatherEffectMode')?.value;
+  
+  if (!enabled || mode === 'off') {
+    if (weatherParticles) {
+      document.body.removeChild(weatherParticles);
+      weatherParticles = null;
+    }
+    return;
+  }
+  
+  // Определяем тип эффекта по погоде
+  if (mode === 'auto') {
+    // Получаем температуру из виджета
+    const temp = parseInt(document.getElementById('weatherTemp').textContent);
+    if (temp < 0) {
+      createWeatherParticles('snow');
+    } else if (temp > 0 && temp < 15) {
+      createWeatherParticles('rain');
+    } else {
+      if (weatherParticles) {
+        document.body.removeChild(weatherParticles);
+        weatherParticles = null;
+      }
+    }
+  } else {
+    createWeatherParticles(mode);
+  }
+};
+
+// ===== ПРОГНОЗ УСТАЛОСТИ =====
+function updateFatigue() {
+  if (!currentUser || !currentUser.records) return;
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  // Сортируем записи по дате
+  const sortedRecords = [...currentUser.records]
+    .filter(r => new Date(r.date) <= today)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  let consecutiveDays = 0;
+  let lastDate = null;
+  
+  for (const record of sortedRecords) {
+    if (record.type === 'off' || record.type === 'vacation' || record.type === 'sick') {
+      break; // Прерываем при выходном
+    }
+    
+    const currentDate = new Date(record.date);
+    if (!lastDate) {
+      consecutiveDays++;
+      lastDate = currentDate;
+      continue;
+    }
+    
+    const diffDays = Math.floor((lastDate - currentDate) / (1000 * 60 * 60 * 24));
+    if (diffDays === 1) {
+      consecutiveDays++;
+      lastDate = currentDate;
+    } else {
+      break;
+    }
+  }
+  
+  const fatigueEl = document.getElementById('fatigueValue');
+  const fatigueBar = document.getElementById('fatigueBar');
+  
+  let fatigueLevel = 'low';
+  let fatigueText = translations[currentLanguage]?.fatigueLow || 'Низкая';
+  let fatiguePercent = 20;
+  
+  if (consecutiveDays >= 5) {
+    fatigueLevel = 'critical';
+    fatigueText = translations[currentLanguage]?.fatigueCritical || 'Критическая';
+    fatiguePercent = 100;
+  } else if (consecutiveDays >= 3) {
+    fatigueLevel = 'high';
+    fatigueText = translations[currentLanguage]?.fatigueHigh || 'Высокая';
+    fatiguePercent = 75;
+  } else if (consecutiveDays >= 2) {
+    fatigueLevel = 'medium';
+    fatigueText = translations[currentLanguage]?.fatigueMedium || 'Средняя';
+    fatiguePercent = 50;
+  }
+  
+  fatigueEl.textContent = fatigueText;
+  fatigueBar.style.width = fatiguePercent + '%';
+  fatigueBar.className = 'fatigue-bar ' + fatigueLevel;
+}
+
+// ===== НАПОМИНАНИЯ =====
+function checkMissedDays() {
+  if (!currentUser) return;
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  let missedDays = [];
+  
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(currentYear, currentMonth, d);
+    date.setHours(0,0,0,0);
+    
+    if (date >= today) continue;
+    
+    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const record = currentUser.records?.find(r => r.date === dateStr);
+    
+    if (!record) {
+      missedDays.push(d);
+    }
+  }
+  
+  const reminderEl = document.getElementById('missedDaysReminder');
+  const missedText = document.getElementById('missedDaysText');
+  
+  if (missedDays.length > 0 && missedDays.length < daysInMonth) {
+    reminderEl.style.display = 'flex';
+    missedText.textContent = `Пропущено ${missedDays.length} дней в этом месяце`;
+  } else {
+    reminderEl.style.display = 'none';
+  }
+}
+
+window.goToMissedDays = function() {
+  setView('calendar');
+};
+
+function checkDoctorLimit() {
+  if (!currentUser) return;
+  
+  const personalTotal = currentUser.settings?.personalDoctorDays || 7;
+  const usedPersonal = currentUser.settings?.usedPersonalDoctor || 0;
+  const personalLeft = personalTotal - usedPersonal;
+  
+  if (personalLeft <= 2 && personalLeft > 0) {
+    showNotification(`Осталось всего ${personalLeft} личных перепусток!`);
+  } else if (personalLeft === 0) {
+    showNotification('Личные перепустки закончились!');
+  }
+  
+  const accompanyTotal = currentUser.settings?.accompanyDoctorDays || 6;
+  const usedAccompany = currentUser.settings?.usedAccompanyDoctor || 0;
+  const accompanyLeft = accompanyTotal - usedAccompany;
+  
+  if (accompanyLeft <= 2 && accompanyLeft > 0) {
+    showNotification(`Осталось всего ${accompanyLeft} перепусток сопровождения!`);
+  } else if (accompanyLeft === 0) {
+    showNotification('Перепустки сопровождения закончились!');
+  }
+}
+
+// ===== ТЕЛЕГРАМ-ОТЧЁТ =====
+async function sendTelegramReport() {
+  if (!currentUser) return;
+  
+  const telegramId = document.getElementById('telegramId')?.value;
+  const enabled = document.getElementById('telegramEnabled')?.checked;
+  
+  if (!telegramId || !enabled) return;
+  
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  
+  const weeklyRecords = currentUser.records?.filter(r => {
+    const d = new Date(r.date);
+    return d >= weekAgo && d <= now && r.type !== 'off';
+  }) || [];
+  
+  let totalGross = 0, totalHours = 0;
+  weeklyRecords.forEach(r => {
+    totalHours += r.hours || 7.5;
+    totalGross += calculateDayEarnings(r, currentUser.settings?.hourlyRate || BASE_RATE, currentUser.settings);
+  });
+  
+  const message = `
+📊 *Недельный отчёт Vaillant Assistant*
+
+💰 Заработано: ${totalGross.toFixed(2)} €
+⏱ Отработано: ${totalHours} часов
+📅 Дней: ${weeklyRecords.length}
+
+📈 Прогресс за месяц: ${document.getElementById('net').textContent}
+
+💡 Совет дня: ${FINANCIAL_TIPS[Math.floor(Math.random() * FINANCIAL_TIPS.length)]}
+  `;
+  
+  try {
+    // Здесь нужно использовать твоего бота
+    const response = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: telegramId,
+        text: message,
+        parse_mode: 'Markdown'
+      })
+    });
+    
+    if (response.ok) {
+      showNotification('Отчёт отправлен в Telegram');
+    } else {
+      showNotification('Ошибка отправки', true);
+    }
+  } catch (error) {
+    console.error('Telegram error:', error);
+  }
+}
+
+window.testTelegram = function() {
+  sendTelegramReport();
+};
+
+// Запускаем еженедельный отчёт
+setInterval(() => {
+  const now = new Date();
+  // Каждое воскресенье в 20:00
+  if (now.getDay() === 0 && now.getHours() === 20) {
+    sendTelegramReport();
+  }
+}, 60 * 60 * 1000); // Проверяем каждый час
+
+// ===== PULL-TO-REFRESH =====
+function initPullToRefresh() {
+  if (window.PullToRefresh) {
+    PullToRefresh.init({
+      mainElement: '#main-content',
+      onRefresh() {
+        window.location.reload();
+      }
+    });
+  }
+}
+
+// ===== СКЕЛЕТОН-ЗАГРУЗКА =====
+function showSkeleton(view) {
+  const skeleton = document.getElementById(view + 'Skeleton');
+  const content = document.querySelector('#' + view + ' .dashboard-content');
+  
+  if (skeleton && content) {
+    skeleton.style.display = 'block';
+    content.classList.add('hidden');
+  }
+}
+
+function hideSkeleton(view) {
+  const skeleton = document.getElementById(view + 'Skeleton');
+  const content = document.querySelector('#' + view + ' .dashboard-content');
+  
+  if (skeleton && content) {
+    skeleton.style.display = 'none';
+    content.classList.remove('hidden');
+  }
+}
+
+// ===== ЯЗЫК =====
 window.setLanguage = function(lang) {
   currentLanguage = lang;
   localStorage.setItem('vaillant_language', lang);
@@ -549,10 +935,10 @@ window.setLanguage = function(lang) {
   
   updateMonthDisplay();
   buildCalendar();
-  updateGreeting();
+  updateFatigue();
 };
 
-// ===== ТЕМЫ (10 тем) =====
+// ===== ТЕМЫ =====
 const themes = {
   dark: {
     '--primary': '#00b060',
@@ -706,22 +1092,7 @@ function applyTheme(themeName) {
   document.body.classList.add(`theme-${themeName}`);
 }
 
-// ===== ВРЕМЯ, ДАТА, ПРИВЕТСТВИЕ, ПОГОДА =====
-function updateGreeting() {
-  const greetingEl = document.getElementById('greeting');
-  if (!greetingEl) return;
-  
-  const hour = new Date().getHours();
-  let greeting = '';
-  
-  if (hour < 12) greeting = translations[currentLanguage]?.goodMorning || 'Доброе утро';
-  else if (hour < 18) greeting = translations[currentLanguage]?.goodAfternoon || 'Добрый день';
-  else greeting = translations[currentLanguage]?.goodEvening || 'Добрый вечер';
-  
-  const name = currentUser?.fullName || currentUser?.name || '';
-  greetingEl.textContent = `${greeting}${name ? ', ' + name : ''}!`;
-}
-
+// ===== ВРЕМЯ, ДАТА, ПОГОДА =====
 function updateDateTime() {
   const timeEl = document.getElementById('time');
   const dateEl = document.getElementById('date');
@@ -739,18 +1110,23 @@ function updateDateTime() {
   );
 }
 
-// Погода для Тренчина (пример, можно заменить на реальное API)
 function updateWeather() {
   const weatherTemp = document.getElementById('weatherTemp');
   if (!weatherTemp) return;
   
-  // Имитация погоды (можно заменить на реальный API)
+  // Имитация погоды для Тренчина
   const temps = [2, 3, 4, 5, 6, 7, 8];
+  const conditions = ['☀️', '⛅', '☁️', '🌧️', '❄️'];
   const randomTemp = temps[Math.floor(Math.random() * temps.length)];
-  weatherTemp.textContent = `${randomTemp}°C`;
+  const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+  
+  weatherTemp.innerHTML = `${randomCondition} ${randomTemp}°C`;
+  
+  // Обновляем погодные эффекты
+  toggleWeatherEffect();
 }
 
-// ===== ФИНАНСОВЫЕ СОВЕТЫ (меняются каждый день) =====
+// ===== ФИНАНСОВЫЕ СОВЕТЫ =====
 function updateFinancialTip() {
   const tipEl = document.getElementById('financeTip');
   const tipDateEl = document.getElementById('tipDate');
@@ -770,7 +1146,6 @@ function updateFinancialTip() {
     );
   }
 }
-
 function getAvatarUrl(email) { 
   let name = email.split('@')[0];
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00b060&color=fff&size=128`; 
@@ -788,7 +1163,6 @@ function updateUserDisplay() {
   const displayName = getDisplayName(currentUser);
   document.getElementById('userName').textContent = displayName;
   document.getElementById('profileName').textContent = displayName;
-  updateGreeting();
 }
 
 window.showLoginForm = function() {
@@ -831,6 +1205,10 @@ window.register = async function() {
       records: [],
       quickSalaries: [],
       financialGoal: null,
+      telegramId: '',
+      telegramEnabled: false,
+      weatherEffectsEnabled: true,
+      weatherEffectMode: 'auto',
       theme: 'dark',
       settings: { 
         hourlyRate: BASE_RATE, 
@@ -901,6 +1279,10 @@ window.login = async function() {
       document.getElementById('employeeId').value = currentUser.employeeId || '';
       document.getElementById('cardId').value = currentUser.cardId || '';
       document.getElementById('email').value = currentUser.email || '';
+      document.getElementById('telegramId').value = currentUser.telegramId || '';
+      document.getElementById('telegramEnabled').checked = currentUser.telegramEnabled || false;
+      document.getElementById('weatherEffectsEnabled').checked = currentUser.weatherEffectsEnabled !== false;
+      document.getElementById('weatherEffectMode').value = currentUser.weatherEffectMode || 'auto';
       
       if (currentUser.settings) {
         document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
@@ -933,6 +1315,9 @@ window.login = async function() {
       buildCalendar();
       calculateAllStats();
       loadFinancialGoal();
+      checkMissedDays();
+      checkDoctorLimit();
+      updateFatigue();
       
       // Запускаем обновление времени
       if (updateInterval) clearInterval(updateInterval);
@@ -943,6 +1328,12 @@ window.login = async function() {
       updateDateTime();
       updateWeather();
       updateFinancialTip();
+      updateExchangeRates();
+      toggleWeatherEffect();
+      initPullToRefresh();
+      
+      // Скрываем скелетон
+      hideSkeleton('dashboard');
       
       showNotification('Welcome!');
     } else {
@@ -967,6 +1358,10 @@ window.logout = async function() {
     showModal('authModal'); 
     window.showLoginForm();
     if (updateInterval) clearInterval(updateInterval);
+    if (weatherParticles) {
+      document.body.removeChild(weatherParticles);
+      weatherParticles = null;
+    }
   }
 };
 
@@ -976,12 +1371,32 @@ window.setView = function(view) {
   document.getElementById(view)?.classList.add('active');
   document.querySelector(`.nav-btn[data-view="${view}"]`)?.classList.add('active');
   
-  // Закрываем мобильное меню, если открыто
+  // Закрываем мобильное меню
   document.getElementById('mainNav').classList.remove('active');
   
-  if (view === 'calendar') buildCalendar();
-  if (view === 'stats') loadYearStats();
-  if (view === 'finance') updateFinanceStats();
+  if (view === 'calendar') {
+    showSkeleton('calendar');
+    buildCalendar();
+    hideSkeleton('calendar');
+    checkMissedDays();
+  }
+  if (view === 'stats') {
+    showSkeleton('stats');
+    loadYearStats();
+    hideSkeleton('stats');
+  }
+  if (view === 'finance') {
+    showSkeleton('finance');
+    updateFinanceStats();
+    hideSkeleton('finance');
+  }
+  if (view === 'profile') {
+    // Загружаем данные профиля
+    document.getElementById('telegramId').value = currentUser.telegramId || '';
+    document.getElementById('telegramEnabled').checked = currentUser.telegramEnabled || false;
+    document.getElementById('weatherEffectsEnabled').checked = currentUser.weatherEffectsEnabled !== false;
+    document.getElementById('weatherEffectMode').value = currentUser.weatherEffectMode || 'auto';
+  }
 };
 
 onAuthStateChanged(auth, async (user) => {
@@ -998,6 +1413,10 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById('employeeId').value = currentUser.employeeId || '';
       document.getElementById('cardId').value = currentUser.cardId || '';
       document.getElementById('email').value = currentUser.email || '';
+      document.getElementById('telegramId').value = currentUser.telegramId || '';
+      document.getElementById('telegramEnabled').checked = currentUser.telegramEnabled || false;
+      document.getElementById('weatherEffectsEnabled').checked = currentUser.weatherEffectsEnabled !== false;
+      document.getElementById('weatherEffectMode').value = currentUser.weatherEffectMode || 'auto';
       
       if (currentUser.settings) {
         document.getElementById('hourlyRate').value = currentUser.settings.hourlyRate || BASE_RATE;
@@ -1030,6 +1449,9 @@ onAuthStateChanged(auth, async (user) => {
       buildCalendar();
       calculateAllStats();
       loadFinancialGoal();
+      checkMissedDays();
+      checkDoctorLimit();
+      updateFatigue();
       
       if (updateInterval) clearInterval(updateInterval);
       updateInterval = setInterval(() => {
@@ -1039,6 +1461,11 @@ onAuthStateChanged(auth, async (user) => {
       updateDateTime();
       updateWeather();
       updateFinancialTip();
+      updateExchangeRates();
+      toggleWeatherEffect();
+      initPullToRefresh();
+      
+      hideSkeleton('dashboard');
     }
   } else {
     currentUser = null;
@@ -1046,6 +1473,10 @@ onAuthStateChanged(auth, async (user) => {
     showModal('authModal');
     window.showLoginForm();
     if (updateInterval) clearInterval(updateInterval);
+    if (weatherParticles) {
+      document.body.removeChild(weatherParticles);
+      weatherParticles = null;
+    }
   }
 });
 
@@ -1062,6 +1493,9 @@ window.onload = function() {
   setLanguage(currentLanguage);
   setTheme(currentTheme);
   
+  // Показываем скелетон при загрузке
+  showSkeleton('dashboard');
+  
   setTimeout(() => {
     let profileActions = document.querySelector('.profile-actions');
     if (profileActions && !document.getElementById('clearAllDataBtn')) {
@@ -1077,7 +1511,6 @@ window.onload = function() {
   showModal('authModal');
   window.showLoginForm();
 };
-
 function updateMonthDisplay() {
   const monthNames = [
     translations[currentLanguage]?.january || 'January',
@@ -1116,6 +1549,7 @@ window.changeMonth = function(delta) {
   updateMonthDisplay();
   buildCalendar();
   calculateAllStats();
+  checkMissedDays();
 };
 
 function buildCalendar() {
@@ -1213,6 +1647,8 @@ window.addRecord = async function(type) {
   hideModal('dayModal');
   buildCalendar();
   calculateAllStats();
+  checkDoctorLimit();
+  updateFatigue();
   showNotification('Record added');
 };
 
@@ -1296,15 +1732,12 @@ function calculateDashboardStats() {
   document.getElementById('doctorCount').innerText = stats.doctorDays;
   document.getElementById('lunchCost').innerText = lunchCost.toFixed(2) + ' €';
   
-  animateAllCounters();
-}
-
-function animateAllCounters() {
-  document.querySelectorAll('.counter').forEach(el => {
-    const id = el.id;
-    const value = parseFloat(el.textContent) || 0;
-    // Анимация уже есть через CSS
-  });
+  // Конвертация в гривны
+  const eurToUahElement = document.getElementById('eurToUah');
+  if (eurToUahElement) {
+    const uahAmount = (stats.gross * eurToUah).toFixed(2);
+    // Можно добавить отображение где-нибудь
+  }
 }
 
 function updateFinanceStats() {
@@ -1347,7 +1780,7 @@ function buildPieChart(net, tax, lunch, savings) {
       ],
       datasets: [{
         data: [net, tax, lunch, savings],
-        backgroundColor: ['#00b060', '#f59e0b', '#ef4444', '#8b5cf6'],
+        backgroundColor: [getComputedStyle(document.body).getPropertyValue('--primary').trim(), '#f59e0b', '#ef4444', '#8b5cf6'],
         borderWidth: 0,
         hoverOffset: 10
       }]
@@ -1407,7 +1840,7 @@ function loadYearStats() {
   totalGross += Math.floor(extraCount / 2) * (currentUser.settings?.extraBonus || 25);
   totalGross -= totalLunch;
   
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
   let bestMonth = { value: 0, name: '' };
   
   monthTotals.forEach((total, index) => {
@@ -1438,7 +1871,7 @@ function buildStatsChart(monthTotals) {
   statsChart = new Chart(canvas, {
     type: 'bar',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
       datasets: [{
         label: translations[currentLanguage]?.monthlyIncome || 'Income €',
         data: monthTotals,
@@ -1480,6 +1913,11 @@ window.saveProfile = async function() {
   currentUser.employeeId = document.getElementById('employeeId').value;
   currentUser.cardId = document.getElementById('cardId').value;
   currentUser.email = document.getElementById('email').value;
+  currentUser.telegramId = document.getElementById('telegramId').value;
+  currentUser.telegramEnabled = document.getElementById('telegramEnabled').checked;
+  currentUser.weatherEffectsEnabled = document.getElementById('weatherEffectsEnabled').checked;
+  currentUser.weatherEffectMode = document.getElementById('weatherEffectMode').value;
+  
   currentUser.settings.hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || BASE_RATE;
   currentUser.settings.lunchCost = parseFloat(document.getElementById('lunchCost').value) || LUNCH_COST_REAL;
   currentUser.settings.nightBonus = parseFloat(document.getElementById('nightBonus').value) || NIGHT_BONUS_PERCENT;
@@ -1498,11 +1936,16 @@ window.saveProfile = async function() {
     employeeId: currentUser.employeeId,
     cardId: currentUser.cardId,
     email: currentUser.email,
+    telegramId: currentUser.telegramId,
+    telegramEnabled: currentUser.telegramEnabled,
+    weatherEffectsEnabled: currentUser.weatherEffectsEnabled,
+    weatherEffectMode: currentUser.weatherEffectMode,
     settings: currentUser.settings
   });
   
   updateUserDisplay();
   updateWeekendStats();
+  toggleWeatherEffect();
   showNotification('Profile saved!');
   calculateAllStats();
 };
@@ -1525,6 +1968,7 @@ window.clearAllData = async function() {
     buildCalendar();
     calculateAllStats();
     loadFinancialGoal();
+    updateFatigue();
     showNotification('All data cleared');
   }
 };
@@ -1569,6 +2013,7 @@ function calculateAllStats() {
   updateWeekendStats();
   buildYearChart();
   updateFinanceStats();
+  updateFatigue();
 }
 
 function updateWeekendStats() {
@@ -1630,7 +2075,7 @@ function buildYearChart() {
   yearChart = new Chart(canvas, {
     type: 'line',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
       datasets: [{
         label: translations[currentLanguage]?.monthlyIncome || 'Income €',
         data: months,
