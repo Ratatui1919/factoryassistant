@@ -68,71 +68,13 @@ function getSalaryDay(month) {
     return day;
 }
 
-// СОЗДАНИЕ ЛЕГЕНДЫ
-export function createLegend() {
-    const legendContainer = document.querySelector('.calendar-legend');
-    if (!legendContainer) return;
-
-    let html = `
-        <div class="legend-grid">
-            <div class="legend-section">
-                <div class="legend-title">${t('dayTypes')}</div>
-                <div class="legend-items">
-    `;
-    
-    dayTypes.forEach(d => {
-        html += `
-            <div class="legend-item" title="${t(d.name)}">
-                <span class="legend-color" style="background: ${d.color};"></span>
-                <span class="legend-icon">${d.icon}</span>
-                <span class="legend-text">${t(d.name)}</span>
-            </div>
-        `;
-    });
-    
-    html += `
-            </div>
-        </div>
-        <div class="legend-section">
-            <div class="legend-title">${t('importantDates')}</div>
-            <div class="legend-items">
-                <div class="legend-item" title="${t('salary')}">
-                    <span class="legend-color" style="background: #00b060;"></span>
-                    <span class="legend-icon">💰</span>
-                    <span class="legend-text">${t('salary')}</span>
-                </div>
-    `;
-    
-    // Уникальные праздники
-    const seen = new Set();
-    Object.values(holidays).flat().forEach(h => {
-        if (!seen.has(h.icon)) {
-            seen.add(h.icon);
-            html += `
-                <div class="legend-item" title="${t(h.name)}">
-                    <span class="legend-color" style="background: #f59e0b;"></span>
-                    <span class="legend-icon">${h.icon}</span>
-                    <span class="legend-text">${t(h.name)}</span>
-                </div>
-            `;
-        }
-    });
-    
-    html += `
-            </div>
-        </div>
-    </div>
-    `;
-    
-    legendContainer.innerHTML = html;
-}
-
 // ОБНОВЛЕНИЕ ИКОНОК В КАЛЕНДАРЕ
 export function updateCalendarIcons() {
     const month = window.currentMonth;
     const salaryDay = getSalaryDay(month);
     const monthHolidays = holidays[month] || [];
     
+    // Удаляем старые иконки
     document.querySelectorAll('.day-icons-container').forEach(el => el.remove());
     document.querySelectorAll('.has-salary, .has-holiday').forEach(el => {
         el.classList.remove('has-salary', 'has-holiday');
@@ -177,6 +119,65 @@ export function updateCalendarIcons() {
     });
 }
 
+// СОЗДАНИЕ ЛЕГЕНДЫ
+export function createLegend() {
+    const legendContainer = document.querySelector('.calendar-legend');
+    if (!legendContainer) return;
+
+    let html = `
+        <div class="legend-grid">
+            <div class="legend-section">
+                <div class="legend-title">${t('dayTypes') || 'Типы дней'}</div>
+                <div class="legend-items">
+    `;
+    
+    dayTypes.forEach(d => {
+        html += `
+            <div class="legend-item" title="${t(d.name)}">
+                <span class="legend-color" style="background: ${d.color};"></span>
+                <span class="legend-icon">${d.icon}</span>
+                <span class="legend-text">${t(d.name)}</span>
+            </div>
+        `;
+    });
+    
+    html += `
+            </div>
+        </div>
+        <div class="legend-section">
+            <div class="legend-title">${t('importantDates') || 'Важные даты'}</div>
+            <div class="legend-items">
+                <div class="legend-item" title="${t('salary')}">
+                    <span class="legend-color" style="background: #00b060;"></span>
+                    <span class="legend-icon">💰</span>
+                    <span class="legend-text">${t('salary')}</span>
+                </div>
+    `;
+    
+    // Уникальные праздники
+    const seen = new Set();
+    Object.values(holidays).flat().forEach(h => {
+        if (!seen.has(h.icon)) {
+            seen.add(h.icon);
+            html += `
+                <div class="legend-item" title="${t(h.name)}">
+                    <span class="legend-color" style="background: #f59e0b;"></span>
+                    <span class="legend-icon">${h.icon}</span>
+                    <span class="legend-text">${t(h.name)}</span>
+                </div>
+            `;
+        }
+    });
+    
+    html += `
+            </div>
+        </div>
+    </div>
+    `;
+    
+    legendContainer.innerHTML = html;
+}
+
 // СОЗДАНИЕ ВИДЖЕТА
 export function createWidget() {
     const oldWidget = document.getElementById('importantDatesWidget');
@@ -215,7 +216,10 @@ export function createWidget() {
     dates.sort((a, b) => a.day - b.day);
     
     const insertPoint = document.querySelector('.stats-row');
-    if (!insertPoint) return;
+    if (!insertPoint) {
+        console.log('stats-row не найден');
+        return;
+    }
     
     let itemsHtml = '';
     
@@ -226,14 +230,15 @@ export function createWidget() {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
         let badge = '';
-        if (diffDays < 0) badge = t('past');
-        else if (diffDays === 0) badge = t('today');
-        else if (diffDays === 1) badge = t('tomorrow');
-        else badge = `${diffDays} ${t('days')}`;
+        if (diffDays < 0) badge = t('past') || 'прошло';
+        else if (diffDays === 0) badge = t('today') || 'сегодня';
+        else if (diffDays === 1) badge = t('tomorrow') || 'завтра';
+        else badge = `${diffDays} ${t('days') || 'дн.'}`;
         
         const months = ['january', 'february', 'march', 'april', 'may', 'june', 
                        'july', 'august', 'september', 'october', 'november', 'december'];
-        const dateStr = `${d.day} ${t(months[d.month])}`;
+        const monthName = t(months[d.month]) || months[d.month];
+        const dateStr = `${d.day} ${monthName}`;
         
         itemsHtml += `
             <div class="widget-item ${d.type}">
@@ -253,7 +258,7 @@ export function createWidget() {
     widget.innerHTML = `
         <div class="widget-header">
             <i class="fas fa-calendar-alt"></i>
-            <h3>${t('upcomingDates')}</h3>
+            <h3>${t('upcomingDates') || 'Ближайшие даты'}</h3>
         </div>
         <div class="widget-items">
             ${itemsHtml}
@@ -261,16 +266,28 @@ export function createWidget() {
     `;
     
     insertPoint.parentNode.insertBefore(widget, insertPoint.nextSibling);
+    console.log('Виджет создан');
 }
 
 // ИНИЦИАЛИЗАЦИЯ
 export function initImportantDates() {
-    createLegend();
-    createWidget();
-    updateCalendarIcons();
+    console.log('Инициализация важных дат');
+    setTimeout(() => {
+        createLegend();
+        createWidget();
+        updateCalendarIcons();
+    }, 500);
 }
 
 // ПЕРЕХВАТ ФУНКЦИЙ
+document.addEventListener('DOMContentLoaded', function() {
+    // Ждем, когда все функции будут доступны
+    setTimeout(() => {
+        initImportantDates();
+    }, 1000);
+});
+
+// Перехватываем changeMonth
 const originalChangeMonth = window.changeMonth;
 if (originalChangeMonth) {
     window.changeMonth = function(delta) {
@@ -282,6 +299,7 @@ if (originalChangeMonth) {
     };
 }
 
+// Перехватываем setView
 const originalSetView = window.setView;
 if (originalSetView) {
     window.setView = function(view) {
