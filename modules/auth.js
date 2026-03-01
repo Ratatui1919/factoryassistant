@@ -8,7 +8,6 @@ let currentUserData = null;
 
 // Получить текущего пользователя
 export function getCurrentUser() {
-    console.log('getCurrentUser вызван, возвращает:', currentUser);
     return currentUser;
 }
 
@@ -25,12 +24,12 @@ export async function updateUserData(newData) {
     await updateDoc(doc(db, "users", currentUser.uid), newData);
 }
 
-// Установить текущего пользователя (для main.js)
+// Установить текущего пользователя
 export function setCurrentUser(user, userData) {
-    console.log('setCurrentUser вызван:', user, userData);
+    console.log('setCurrentUser вызван:', user);
     currentUser = user;
     currentUserData = userData;
-    window.currentUser = user; // Добавляем в глобальную область
+    window.currentUser = user;
     window.currentUserData = userData;
 }
 
@@ -144,8 +143,10 @@ export async function login() {
         hideModal('authModal');
         document.getElementById('app').classList.remove('hidden');
         
-        // Перезагружаем страницу для корректной загрузки всех данных
-        window.location.reload();
+        // Обновляем страницу без перезагрузки
+        if (window.location.reload) {
+            window.location.reload();
+        }
         
     } catch (error) {
         alert('Ошибка входа: ' + error.message);
@@ -202,10 +203,13 @@ export async function saveProfile() {
     
     showNotification('Профиль сохранён!');
     
-    // Перезагружаем страницу для применения всех данных
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000);
+    // Обновляем отображение без перезагрузки
+    const userName = document.getElementById('userName');
+    const profileName = document.getElementById('profileName');
+    const displayName = updates.fullName || currentUser.email?.split('@')[0] || 'User';
+    
+    if (userName) userName.textContent = displayName;
+    if (profileName) profileName.textContent = displayName;
 }
 
 // Предпросмотр аватара
@@ -220,11 +224,6 @@ export function previewAvatar(input) {
             if (currentUser) {
                 await updateDoc(doc(db, "users", currentUser.uid), { avatar: e.target.result });
                 showNotification('Аватар обновлён');
-                
-                // Перезагружаем страницу для применения аватара
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
             }
         };
         reader.readAsDataURL(input.files[0]);
@@ -269,10 +268,10 @@ export async function clearAllData() {
         
         showNotification('Все данные очищены');
         
-        // Перезагружаем страницу
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+        // Обновляем отображение
+        if (window.buildCalendar) window.buildCalendar();
+        if (window.calculateAllStats) window.calculateAllStats();
+        if (window.loadFinancialGoal) window.loadFinancialGoal();
     }
 }
 
