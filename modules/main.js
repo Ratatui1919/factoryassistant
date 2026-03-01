@@ -1,4 +1,4 @@
-// modules/main.js - ИСПРАВЛЕННАЯ ВЕРСИЯ (БЕЗ МНОЖЕСТВЕННЫХ ВЫЗОВОВ)
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ФИНАЛЬНАЯ ВЕРСИЯ)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
@@ -41,6 +41,7 @@ async function loadAllUserData(user) {
         const userData = userDoc.data();
         console.log('Данные пользователя загружены:', userData);
         
+        // Устанавливаем пользователя через функцию из auth.js
         setCurrentUser({ uid: user.uid, ...userData }, userData);
         
         // Загружаем данные в UI
@@ -50,12 +51,18 @@ async function loadAllUserData(user) {
             const employeeIdEl = document.getElementById('employeeId');
             const cardIdEl = document.getElementById('cardId');
             const emailEl = document.getElementById('email');
+            const weatherEnabledEl = document.getElementById('weatherEffectsEnabled');
+            const weatherModeEl = document.getElementById('weatherEffectMode');
             
             if (fullNameEl) fullNameEl.value = userData.fullName || '';
             if (employeeIdEl) employeeIdEl.value = userData.employeeId || '';
             if (cardIdEl) cardIdEl.value = userData.cardId || '';
             if (emailEl) emailEl.value = userData.email || '';
             
+            if (weatherEnabledEl) weatherEnabledEl.checked = userData.weatherEffectsEnabled !== false;
+            if (weatherModeEl) weatherModeEl.value = userData.weatherEffectMode || 'auto';
+            
+            // Настройки зарплаты
             if (userData.settings) {
                 const hourlyRate = document.getElementById('hourlyRate');
                 const lunchCost = document.getElementById('lunchCost');
@@ -84,6 +91,7 @@ async function loadAllUserData(user) {
                 if (accruedWeekendsInput) accruedWeekendsInput.value = userData.settings.accruedWeekends || 0;
             }
             
+            // Аватар
             const avatarPreview = document.getElementById('avatarPreview');
             const profileAvatar = document.getElementById('profileAvatar');
             const avatarUrl = userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.email?.split('@')[0] || 'User')}&background=00b060&color=fff&size=128`;
@@ -91,6 +99,7 @@ async function loadAllUserData(user) {
             if (avatarPreview) avatarPreview.src = avatarUrl;
             if (profileAvatar) profileAvatar.src = avatarUrl;
             
+            // Имя пользователя
             const userName = document.getElementById('userName');
             const profileName = document.getElementById('profileName');
             const displayName = userData.fullName || userData.email?.split('@')[0] || 'User';
@@ -98,20 +107,29 @@ async function loadAllUserData(user) {
             if (userName) userName.textContent = displayName;
             if (profileName) profileName.textContent = displayName;
             
+            // Обновляем отображение
             if (window.updateMonthDisplay) window.updateMonthDisplay();
             if (window.buildCalendar) window.buildCalendar();
             if (window.calculateAllStats) window.calculateAllStats();
             
+            // Запускаем время
             if (window.updateDateTime) window.updateDateTime();
             if (window.updateWeather) window.updateWeather();
             if (window.updateFinancialTip) window.updateFinancialTip();
             if (window.updateExchangeRate) window.updateExchangeRate();
             
-            // Загружаем финансовую цель ОДИН раз
+            // Загружаем финансовую цель
             if (window.loadFinancialGoal) {
                 console.log('Вызов loadFinancialGoal из main');
                 window.loadFinancialGoal();
             }
+            
+            // Инициализируем погодные эффекты
+            if (window.initWeather) {
+                console.log('Инициализация погодных эффектов');
+                window.initWeather();
+            }
+            
         }, 200);
         
         return true;
@@ -133,6 +151,7 @@ onAuthStateChanged(auth, async (user) => {
             hidePreloader();
             document.getElementById('app').classList.remove('hidden');
             
+            // Устанавливаем тему
             if (window.setTheme && window.currentUser?.theme) {
                 window.setTheme(window.currentUser.theme);
             }
@@ -150,15 +169,19 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// Загрузка страницы
 window.addEventListener('load', function() {
     console.log('Страница загружена');
     
+    // Восстанавливаем язык
     const savedLang = localStorage.getItem('vaillant_language') || 'ru';
     setLanguage(savedLang);
     
+    // Восстанавливаем тему
     const savedTheme = localStorage.getItem('vaillant_theme') || 'dark';
     if (window.setTheme) window.setTheme(savedTheme);
     
+    // Заполняем сохраненные данные входа
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     const rememberedPass = localStorage.getItem('rememberedPass');
     if (rememberedEmail) {
@@ -171,7 +194,7 @@ window.addEventListener('load', function() {
     }
 });
 
-// ИСПРАВЛЕННАЯ функция setView - БЕЗ множественных вызовов
+// Переключение вкладок
 window.setView = function(view) {
     console.log('Переключение на вкладку:', view);
     
@@ -187,7 +210,7 @@ window.setView = function(view) {
     const mainNav = document.getElementById('mainNav');
     if (mainNav) mainNav.classList.remove('active');
     
-    // Обновляем данные ТОЛЬКО для текущей вкладки, БЕЗ повторных вызовов
+    // Обновляем данные для текущей вкладки
     if (view === 'calendar' && window.buildCalendar) {
         setTimeout(() => window.buildCalendar(), 50);
     }
@@ -196,19 +219,23 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
-        // НЕ вызываем loadFinancialGoal здесь - она уже загружена при старте
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
     }
 };
 
+// Бургер-меню
 window.toggleMobileMenu = function() {
     const nav = document.getElementById('mainNav');
     if (nav) nav.classList.toggle('active');
 };
 
+// Скрыть уведомление
 window.hideNotification = function() {
     const notification = document.getElementById('notification');
     if (notification) notification.classList.add('hidden');
 };
+
+// Экспортируем функцию инициализации для других модулей
+export { loadAllUserData };
