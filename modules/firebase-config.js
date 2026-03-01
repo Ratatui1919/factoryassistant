@@ -24,7 +24,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBn6fbSjjLTt8dm41ov_uHEYPIDUfFgiio",
   authDomain: "vaillant-assistant.firebaseapp.com",
   projectId: "vaillant-assistant",
-  storageBucket: "vaillant-assistant.appspot.com",
+  storageBucket: "vaillant-assistant.firebasestorage.app", // Исправлено!
   messagingSenderId: "94125964883",
   appId: "1:94125964883:web:3d363c1ef033431a6e10a6"
 };
@@ -33,7 +33,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Делаем db глобальной для доступа из других модулей
+// Делаем глобальными
 window.db = db;
 window.auth = auth;
 
