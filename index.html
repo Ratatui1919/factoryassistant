@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test</title>
+    <title>Vaillant Test</title>
 </head>
 <body>
-    <h1>Привет!</h1>
-    <p>Если ты это видишь — сайт работает</p>
+    <h1>Тест Firebase</h1>
+    <div id="status">Загрузка...</div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        
+        const status = document.getElementById('status');
+        
+        if (auth && db) {
+            status.innerHTML = '✅ Firebase подключен!';
+            status.style.color = 'green';
+        } else {
+            status.innerHTML = '❌ Ошибка Firebase';
+            status.style.color = 'red';
+        }
+        
+        console.log('Auth:', auth);
+        console.log('DB:', db);
+    </script>
 </body>
 </html>
