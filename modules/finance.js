@@ -1,9 +1,10 @@
-// modules/finance.js - ФИНАНСЫ (ИСПРАВЛЕННЫЙ)
+// modules/finance.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
 
 import { getCurrentUser, updateUserData } from './auth.js';
 import { showNotification } from './utils.js';
 
-// Обновление финансовой статистики
+let financialGoalLoaded = false; // Флаг, чтобы не грузить много раз
+
 export function updateFinanceStats() {
     const dashboardNet = parseFloat(document.getElementById('net')?.innerText) || 0;
     const dashboardGross = parseFloat(document.getElementById('gross')?.innerText) || 0;
@@ -33,7 +34,6 @@ export function updateFinanceStats() {
     );
 }
 
-// Построение круговой диаграммы
 function buildPieChart(net, tax, lunch, savings) {
     const canvas = document.getElementById('pieChart');
     if (!canvas) return;
@@ -43,7 +43,6 @@ function buildPieChart(net, tax, lunch, savings) {
     canvas.width = canvas.parentElement?.clientWidth || 300;
     canvas.height = canvas.parentElement?.clientHeight || 300;
     
-    // Безопасное уничтожение графика
     if (window.pieChart) {
         try {
             if (typeof window.pieChart.destroy === 'function') {
@@ -86,19 +85,23 @@ function buildPieChart(net, tax, lunch, savings) {
     }
 }
 
-// Загрузка финансовой цели
 export function loadFinancialGoal() {
     console.log('loadFinancialGoal вызван');
+    
+    if (financialGoalLoaded) {
+        console.log('Финансовая цель уже загружена, пропускаем');
+        return;
+    }
     
     const user = getCurrentUser();
     console.log('getCurrentUser вернул:', user);
     
     if (!user) {
-        console.log('loadFinancialGoal: пользователь не найден, пробуем через 500ms');
-        setTimeout(loadFinancialGoal, 500);
+        console.log('loadFinancialGoal: пользователь не найден');
         return;
     }
     
+    financialGoalLoaded = true;
     console.log('Загрузка финансовой цели пользователя:', user.financialGoal);
     
     const goal = user.financialGoal;
@@ -144,7 +147,6 @@ export function loadFinancialGoal() {
     }
 }
 
-// Обновление отображения цели
 function updateGoalDisplay() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
@@ -166,7 +168,6 @@ function updateGoalDisplay() {
     updateHistoryList();
 }
 
-// Обновление списка истории
 function updateHistoryList() {
     const user = getCurrentUser();
     const historyList = document.getElementById('goalHistory');
@@ -183,7 +184,6 @@ function updateHistoryList() {
     historyList.innerHTML = html || '<div style="color:#94a3b8;">История пуста</div>';
 }
 
-// Сохранение цели
 export async function saveGoal() {
     const user = getCurrentUser();
     if (!user) return;
@@ -199,10 +199,10 @@ export async function saveGoal() {
     await updateUserData({ financialGoal: user.financialGoal });
     
     showNotification('Цель сохранена');
+    financialGoalLoaded = false; // Сбрасываем флаг, чтобы перезагрузить
     loadFinancialGoal();
 }
 
-// Удаление цели
 export async function clearGoal() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
@@ -211,11 +211,11 @@ export async function clearGoal() {
         user.financialGoal = null;
         await updateUserData({ financialGoal: null });
         showNotification('Цель удалена');
+        financialGoalLoaded = false; // Сбрасываем флаг
         loadFinancialGoal();
     }
 }
 
-// Добавление к цели
 export async function addToGoal() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
@@ -237,7 +237,6 @@ export async function addToGoal() {
     showNotification(`Добавлено ${amount} €`);
 }
 
-// Снятие с цели
 export async function withdrawFromGoal() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
@@ -260,7 +259,6 @@ export async function withdrawFromGoal() {
     showNotification(`Снято ${amount} €`);
 }
 
-// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
 window.updateFinanceStats = updateFinanceStats;
 window.loadFinancialGoal = loadFinancialGoal;
 window.saveGoal = saveGoal;
