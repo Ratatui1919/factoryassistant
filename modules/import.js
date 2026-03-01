@@ -1,15 +1,15 @@
-// js/import.js - ИМПОРТ ИЗ PDF
+// modules/import.js - ИМПОРТ ИЗ PDF
 
 import { getCurrentUser, updateUserData } from './auth.js';
 import { showNotification, t } from './utils.js';
 
 // Импорт из PDF
-window.importFromPDF = function(input) {
+export function importFromPDF(input) {
     const user = getCurrentUser();
     if (!input.files?.[0] || !user) return;
     
     const statusEl = document.getElementById('pdfStatus');
-    statusEl.textContent = t('processing') || 'Обработка...';
+    if (statusEl) statusEl.textContent = t('processing') || 'Обработка...';
     
     // Имитация обработки PDF
     setTimeout(async () => {
@@ -61,12 +61,19 @@ window.importFromPDF = function(input) {
         
         await updateUserData({ quickSalaries: user.quickSalaries });
         
-        statusEl.textContent = (t('importSuccess') || 'Данные за {count} месяцев импортированы')
-            .replace('{count}', months.length);
+        if (statusEl) {
+            statusEl.textContent = (t('importSuccess') || 'Данные за {count} месяцев импортированы')
+                .replace('{count}', months.length);
+        }
         
-        setTimeout(() => statusEl.textContent = '', 3000);
+        setTimeout(() => {
+            if (statusEl) statusEl.textContent = '';
+        }, 3000);
         
         if (window.calculateAllStats) window.calculateAllStats();
-        showNotification(t('imported') || 'Данные импортированы');
+        showNotification('Данные импортированы');
     }, 1500);
-};
+}
+
+// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
+window.importFromPDF = importFromPDF;
