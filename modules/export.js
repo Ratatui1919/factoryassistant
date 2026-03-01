@@ -1,20 +1,20 @@
-// js/export.js - ЭКСПОРТ ДАННЫХ
+// modules/export.js - ЭКСПОРТ ДАННЫХ
 
 import { getCurrentUser } from './auth.js';
 import { showNotification, t } from './utils.js';
 import { getExchangeRate } from './exchange.js';
 
 // Экспорт в Excel
-window.exportToExcel = function() {
+export function exportToExcel() {
     const user = getCurrentUser();
     if (!user) return;
     
     const data = [
         [t('totalStats') || 'Показатель', t('value') || 'Значение'],
-        [t('totalEarned') || 'Всего заработано', document.getElementById('totalEarned').textContent],
-        [t('totalHours') || 'Всего часов', document.getElementById('totalHours').textContent],
-        [t('totalLunch') || 'Потрачено на обеды', document.getElementById('totalLunch').textContent],
-        [t('bestMonth') || 'Лучший месяц', document.getElementById('bestMonth').textContent],
+        [t('totalEarned') || 'Всего заработано', document.getElementById('totalEarned')?.textContent || '0 €'],
+        [t('totalHours') || 'Всего часов', document.getElementById('totalHours')?.textContent || '0'],
+        [t('totalLunch') || 'Потрачено на обеды', document.getElementById('totalLunch')?.textContent || '0 €'],
+        [t('bestMonth') || 'Лучший месяц', document.getElementById('bestMonth')?.textContent || '-'],
     ];
     
     const wb = XLSX.utils.book_new();
@@ -22,11 +22,11 @@ window.exportToExcel = function() {
     XLSX.utils.book_append_sheet(wb, ws, t('stats') || 'Статистика');
     XLSX.writeFile(wb, `vaillant_stats_${new Date().toISOString().split('T')[0]}.xlsx`);
     
-    showNotification(t('exported') || 'Excel файл сохранён');
-};
+    showNotification('Excel файл сохранён');
+}
 
 // Экспорт в PDF
-window.exportToPDF = function() {
+export function exportToPDF() {
     const user = getCurrentUser();
     if (!user) return;
     
@@ -48,10 +48,10 @@ window.exportToPDF = function() {
     
     const data = [
         [t('totalStats') || 'Показатель', t('value') || 'Значение'],
-        [t('totalEarned') || 'Всего заработано', document.getElementById('totalEarned').textContent],
-        [t('totalHours') || 'Всего часов', document.getElementById('totalHours').textContent],
-        [t('totalLunch') || 'Потрачено на обеды', document.getElementById('totalLunch').textContent],
-        [t('bestMonth') || 'Лучший месяц', document.getElementById('bestMonth').textContent],
+        [t('totalEarned') || 'Всего заработано', document.getElementById('totalEarned')?.textContent || '0 €'],
+        [t('totalHours') || 'Всего часов', document.getElementById('totalHours')?.textContent || '0'],
+        [t('totalLunch') || 'Потрачено на обеды', document.getElementById('totalLunch')?.textContent || '0 €'],
+        [t('bestMonth') || 'Лучший месяц', document.getElementById('bestMonth')?.textContent || '-'],
     ];
     
     doc.autoTable({ 
@@ -63,5 +63,9 @@ window.exportToPDF = function() {
     });
     
     doc.save(`vaillant_stats_${new Date().toISOString().split('T')[0]}.pdf`);
-    showNotification(t('exportedPDF') || 'PDF файл сохранён');
-};
+    showNotification('PDF файл сохранён');
+}
+
+// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
+window.exportToExcel = exportToExcel;
+window.exportToPDF = exportToPDF;
