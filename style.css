@@ -1,6 +1,6 @@
 /* ======================
-   Vaillant Assistant PRO v19.0
-   УЛУЧШЕННЫЙ ДИЗАЙН - СТЕКЛО, АНИМАЦИИ, ТЕМЫ
+   Vaillant Assistant PRO v20.0
+   ФИНАЛЬНАЯ ВЕРСИЯ - 10 ТЕМ, СТЕКЛО, АНИМАЦИИ
    ====================== */
 
 * {
@@ -30,16 +30,124 @@
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
+/* Синяя тема */
+.theme-blue {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #60a5fa;
+    --dark: #0f172a;
+    --dark-light: #1e293b;
+    --dark-card: #1a2639;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --glass-bg: rgba(26, 38, 57, 0.7);
+}
+
+/* Фиолетовая тема */
+.theme-purple {
+    --primary: #8b5cf6;
+    --primary-dark: #7c3aed;
+    --primary-light: #a78bfa;
+    --dark: #1e1b4b;
+    --dark-light: #2e1a5e;
+    --dark-card: #271d54;
+    --text: #faf5ff;
+    --text-muted: #c4b5fd;
+    --border: #4c1d95;
+    --glass-bg: rgba(39, 29, 84, 0.7);
+}
+
+/* Оранжевая тема */
+.theme-orange {
+    --primary: #f97316;
+    --primary-dark: #ea580c;
+    --primary-light: #fb923c;
+    --dark: #1c1917;
+    --dark-light: #292524;
+    --dark-card: #231f1e;
+    --text: #fff7ed;
+    --text-muted: #fdba74;
+    --border: #7c2d12;
+    --glass-bg: rgba(35, 31, 30, 0.7);
+}
+
+/* Красная тема */
+.theme-red {
+    --primary: #ef4444;
+    --primary-dark: #dc2626;
+    --primary-light: #f87171;
+    --dark: #1f1a1a;
+    --dark-light: #2d2424;
+    --dark-card: #271f1f;
+    --text: #fef2f2;
+    --text-muted: #fca5a5;
+    --border: #991b1b;
+    --glass-bg: rgba(39, 31, 31, 0.7);
+}
+
+/* Зелёная тема */
+.theme-green {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #34d399;
+    --dark: #0c1a14;
+    --dark-light: #1a2e22;
+    --dark-card: #15271d;
+    --text: #ecfdf5;
+    --text-muted: #6ee7b7;
+    --border: #065f46;
+    --glass-bg: rgba(21, 39, 29, 0.7);
+}
+
+/* Розовая тема */
+.theme-pink {
+    --primary: #ec4899;
+    --primary-dark: #db2777;
+    --primary-light: #f472b6;
+    --dark: #24141e;
+    --dark-light: #382130;
+    --dark-card: #2f1b28;
+    --text: #fdf2f8;
+    --text-muted: #f9a8d4;
+    --border: #9d174d;
+    --glass-bg: rgba(47, 27, 40, 0.7);
+}
+
+/* Мятная тема */
+.theme-mint {
+    --primary: #14b8a6;
+    --primary-dark: #0d9488;
+    --primary-light: #2dd4bf;
+    --dark: #0f1a18;
+    --dark-light: #1e2e2a;
+    --dark-card: #182622;
+    --text: #f0fdfa;
+    --text-muted: #5eead4;
+    --border: #115e59;
+    --glass-bg: rgba(24, 38, 34, 0.7);
+}
+
+/* Серая тема */
+.theme-gray {
+    --primary: #6b7280;
+    --primary-dark: #4b5563;
+    --primary-light: #9ca3af;
+    --dark: #111827;
+    --dark-light: #1f2937;
+    --dark-card: #1a232e;
+    --text: #f9fafb;
+    --text-muted: #d1d5db;
+    --border: #374151;
+    --glass-bg: rgba(26, 35, 46, 0.7);
+}
+
 /* Светлая тема */
 .theme-light {
     --primary: #00b060;
     --primary-dark: #009048;
     --primary-light: #00d070;
-    --secondary: #3b82f6;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --dark: #f0f2f5;
+    --dark: #f5f7fa;
     --dark-light: #ffffff;
     --dark-card: #ffffff;
     --text: #1a1e2a;
@@ -52,7 +160,7 @@
 }
 
 .theme-light body {
-    background: #f0f2f5;
+    background: #f5f7fa;
 }
 
 .theme-light .day.future {
@@ -65,7 +173,7 @@ body {
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 /* Стеклянный эффект */
@@ -215,24 +323,68 @@ header {
 .header-right { 
     display: flex; 
     align-items: center; 
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 15px;
     width: 100%;
+    flex-wrap: wrap;
 }
 @media (min-width: 768px) {
     .header-right {
         width: auto;
-        justify-content: flex-end;
+        flex-wrap: nowrap;
     }
 }
-.time-widget {
+
+/* УНИВЕРСАЛЬНЫЙ ВИДЖЕТ (ПК + ТЕЛЕФОН) */
+.header-widget {
+    display: flex;
+    flex-direction: column;
     background: var(--dark-light);
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    color: var(--text);
+    border-radius: 40px;
+    padding: 8px 20px;
     border: 1px solid var(--border);
+    min-width: 250px;
 }
+@media (min-width: 768px) {
+    .header-widget {
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+    }
+}
+.widget-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+.widget-time .greeting {
+    color: var(--primary);
+    font-weight: 600;
+}
+.widget-time .time {
+    font-weight: 500;
+}
+.widget-date-weather {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+.widget-date-weather .weather {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.widget-date-weather .weather i {
+    color: var(--primary);
+}
+.widget-date-weather .weather-location {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
 .user-info {
     display: flex; 
     align-items: center; 
@@ -241,13 +393,7 @@ header {
     padding: 5px 15px 5px 5px; 
     border-radius: 40px;
     min-width: 0;
-    flex: 1;
     border: 1px solid var(--border);
-}
-@media (min-width: 768px) {
-    .user-info {
-        flex: 0 1 auto;
-    }
 }
 .user-info img {
     width: 35px; 
@@ -313,13 +459,9 @@ header {
     border-color: var(--primary); 
 }
 
-/* Бургер-меню для мобильных */
+/* Бургер-меню для телефона */
 .mobile-menu-toggle {
     display: none;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
     background: var(--primary);
     color: white;
     width: 45px;
@@ -346,6 +488,7 @@ nav {
     gap: 8px;
     border-bottom: 1px solid var(--border);
     width: 100%;
+    transition: left 0.3s ease;
 }
 @media (max-width: 768px) {
     nav {
@@ -358,18 +501,20 @@ nav {
         justify-content: flex-start;
         padding: 80px 20px;
         z-index: 99;
-        transition: left 0.3s ease;
         background: var(--dark-card);
     }
     nav.active {
         left: 0;
     }
 }
-@media (min-width: 768px) {
+@media (min-width: 769px) {
     nav {
+        position: relative;
+        left: 0;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
         padding: 1rem 2rem;
-        gap: 10px;
-        flex-wrap: nowrap;
     }
 }
 .nav-btn {
@@ -414,42 +559,6 @@ main {
 }
 .view { display: none; }
 .view.active { display: block; }
-
-/* Приветственная карточка */
-.welcome-card {
-    background: var(--gradient);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    box-shadow: 0 10px 30px rgba(0,176,96,0.3);
-}
-.welcome-content h2 {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-}
-.welcome-content p {
-    opacity: 0.9;
-    font-size: 1rem;
-}
-.gradient-text {
-    background: white;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-.weather-widget {
-    background: rgba(255,255,255,0.2);
-    padding: 12px 20px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.2rem;
-}
 
 /* Навигация по месяцам */
 .month-selector {
@@ -926,7 +1035,7 @@ main {
     }
 }
 .btn-primary { 
-    background: var(--gradient); 
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
     color: white; 
     box-shadow: 0 4px 15px rgba(0,176,96,0.3); 
 }
@@ -1095,7 +1204,7 @@ main {
     color: var(--primary); 
 }
 .finance-tips {
-    background: var(--gradient);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     border-radius: 16px; 
     padding: 20px; 
     color: white; 
@@ -1107,6 +1216,11 @@ main {
     align-items: center; 
     justify-content: center; 
     gap: 8px; 
+}
+.tip-date {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
 
 /* ФИНАНСОВЫЕ ЦЕЛИ */
@@ -1503,21 +1617,26 @@ main {
 
 /* ТЕМЫ - кнопки выбора */
 .theme-selector {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     margin-top: 10px;
 }
+@media (min-width: 768px) {
+    .theme-selector {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
 .theme-btn {
-    padding: 12px;
+    padding: 10px;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--dark-light);
     color: var(--text);
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 0.95rem;
-    text-align: left;
+    font-size: 0.85rem;
+    text-align: center;
 }
 .theme-btn:hover {
     border-color: var(--primary);
@@ -1610,6 +1729,15 @@ main {
     .finance-item { font-size: 0.9rem; }
     .nav-btn { padding: 8px 10px; font-size: 0.8rem; }
     .nav-btn i { font-size: 1rem; }
-    .theme-btn { font-size: 0.85rem; padding: 10px; }
-    .welcome-content h2 { font-size: 1.4rem; }
+    .theme-btn { font-size: 0.8rem; padding: 8px; }
+    .theme-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .header-widget {
+        width: 100%;
+        min-width: auto;
+    }
+    .widget-time, .widget-date-weather {
+        justify-content: center;
+    }
 }
