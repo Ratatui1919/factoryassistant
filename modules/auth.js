@@ -27,8 +27,10 @@ export async function updateUserData(newData) {
 }
 
 // Загрузка данных пользователя в UI
-function loadUserDataToUI() {
+export function loadUserDataToUI() {
     if (!currentUser) return;
+    
+    console.log('Загрузка данных пользователя в UI:', currentUser);
     
     const fullNameEl = document.getElementById('fullName');
     const employeeIdEl = document.getElementById('employeeId');
@@ -83,6 +85,8 @@ function loadUserDataToUI() {
     
     if (userNameEl) userNameEl.textContent = getDisplayName(currentUser);
     if (profileNameEl) profileNameEl.textContent = getDisplayName(currentUser);
+    
+    console.log('Данные загружены в UI');
 }
 
 // Показать форму входа
