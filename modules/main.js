@@ -1,7 +1,8 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ФИНАЛЬНАЯ ВЕРСИЯ)
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ИСПРАВЛЕННЫЙ)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
+import { setCurrentUser } from './auth.js'; // ИМПОРТИРУЕМ setCurrentUser
 
 // Глобальные переменные
 window.currentUser = null;
@@ -40,8 +41,8 @@ async function loadAllUserData(user) {
         const userData = userDoc.data();
         console.log('Данные пользователя загружены:', userData);
         
-        window.currentUser = { uid: user.uid, ...userData };
-        window.currentUserData = userData;
+        // Устанавливаем пользователя через функцию из auth.js
+        setCurrentUser({ uid: user.uid, ...userData }, userData);
         
         // Загружаем данные в UI
         setTimeout(() => {
