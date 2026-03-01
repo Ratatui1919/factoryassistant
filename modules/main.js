@@ -1,8 +1,7 @@
-// js/main.js - ГЛАВНЫЙ ФАЙЛ
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
-import { setLanguage, currentLanguage, showModal, hideModal, translatePage, showNotification } from './utils.js';
-import { getCurrentUser, getUserData } from './auth.js';
+import { setLanguage, showModal, hideModal, showNotification } from './utils.js';
 
 // Глобальные переменные
 window.currentUser = null;
@@ -49,23 +48,31 @@ window.updateLoadingStatus = function(text) {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         window.updateLoadingStatus('Загрузка данных...');
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            window.currentUser = { uid: user.uid, ...userData };
-            window.currentUserData = userData;
-            
+        try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                window.currentUser = { uid: user.uid, ...userData };
+                window.currentUserData = userData;
+                
+                hidePreloader();
+                document.getElementById('app').classList.remove('hidden');
+                
+                // Устанавливаем тему
+                if (window.setTheme) window.setTheme(userData.theme || 'dark');
+                
+                // Инициализируем
+                initApp(window.currentUser, userData);
+            } else {
+                hidePreloader();
+                showModal('authModal');
+                window.showLoginForm();
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки данных:', error);
             hidePreloader();
-            document.getElementById('app').classList.remove('hidden');
-            
-            // Загружаем данные в UI
-            if (window.loadUserDataToUI) window.loadUserDataToUI();
-            
-            // Устанавливаем тему
-            if (window.setTheme) window.setTheme(userData.theme || 'dark');
-            
-            // Инициализируем
-            initApp(window.currentUser, userData);
+            showModal('authModal');
+            window.showLoginForm();
         }
     } else {
         hidePreloader();
@@ -79,7 +86,7 @@ onAuthStateChanged(auth, async (user) => {
 window.addEventListener('load', function() {
     // Восстанавливаем язык
     const savedLang = localStorage.getItem('vaillant_language') || 'ru';
-    setLanguage(savedLang);
+    if (window.setLanguage) window.setLanguage(savedLang);
     
     // Восстанавливаем тему
     const savedTheme = localStorage.getItem('vaillant_theme') || 'dark';
@@ -89,33 +96,27 @@ window.addEventListener('load', function() {
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     const rememberedPass = localStorage.getItem('rememberedPass');
     if (rememberedEmail) {
-        document.getElementById('loginEmail').value = rememberedEmail;
-        document.getElementById('loginPass').value = rememberedPass;
-        document.getElementById('rememberMe').checked = true;
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPass = document.getElementById('loginPass');
+        const rememberMe = document.getElementById('rememberMe');
+        if (loginEmail) loginEmail.value = rememberedEmail;
+        if (loginPass) loginPass.value = rememberedPass;
+        if (rememberMe) rememberMe.checked = true;
     }
-    
-    // Добавляем кнопку очистки данных в профиль
-    setTimeout(() => {
-        const profileActions = document.querySelector('.profile-actions');
-        if (profileActions && !document.getElementById('clearAllDataBtn')) {
-            const clearBtn = document.createElement('button');
-            clearBtn.id = 'clearAllDataBtn';
-            clearBtn.className = 'btn-danger';
-            clearBtn.innerHTML = '<i class="fas fa-trash"></i> ' + (translations?.ru?.clearAllData || 'Очистить все данные');
-            clearBtn.onclick = window.clearAllData;
-            profileActions.appendChild(clearBtn);
-        }
-    }, 1000);
 });
 
 // Переключение вкладок
 window.setView = function(view) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(view)?.classList.add('active');
-    document.querySelector(`.nav-btn[data-view="${view}"]`)?.classList.add('active');
+    const viewElement = document.getElementById(view);
+    if (viewElement) viewElement.classList.add('active');
     
-    document.getElementById('mainNav')?.classList.remove('active');
+    const navBtn = document.querySelector(`.nav-btn[data-view="${view}"]`);
+    if (navBtn) navBtn.classList.add('active');
+    
+    const mainNav = document.getElementById('mainNav');
+    if (mainNav) mainNav.classList.remove('active');
     
     // Обновляем контент вкладки
     if (view === 'calendar' && window.buildCalendar) window.buildCalendar();
@@ -126,10 +127,12 @@ window.setView = function(view) {
 
 // Бургер-меню
 window.toggleMobileMenu = function() {
-    document.getElementById('mainNav').classList.toggle('active');
+    const nav = document.getElementById('mainNav');
+    if (nav) nav.classList.toggle('active');
 };
 
 // Скрыть уведомление
 window.hideNotification = function() {
-    document.getElementById('notification')?.classList.add('hidden');
+    const notification = document.getElementById('notification');
+    if (notification) notification.classList.add('hidden');
 };
