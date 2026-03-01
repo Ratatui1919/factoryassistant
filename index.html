@@ -27,8 +27,9 @@
     
     <!-- Основные стили -->
     <link rel="stylesheet" href="style.css">
+    
     <!-- Мобильные стили -->
-    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="mobile.css">
     
     <!-- Экстренные стили для предотвращения "голого" HTML -->
     <style>
@@ -201,10 +202,15 @@
         <main>
             <!-- ДАШБОРД -->
             <section id="dashboard" class="view active">
+                <!-- ИСПРАВЛЕННЫЙ селектор месяца -->
                 <div class="month-selector glass-effect">
-                    <button onclick="window.changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" onclick="window.safeChangeMonth(-1); return false;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
                     <h2 id="currentMonth"></h2>
-                    <button onclick="window.changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    <button type="button" onclick="window.safeChangeMonth(1); return false;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
 
                 <div class="kpi-grid">
@@ -285,7 +291,6 @@
                         </button>
                     </div>
                     
-                    <!-- Текущий курс -->
                     <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 15px 0; padding: 15px; background: rgba(0,176,96,0.05); border-radius: 50px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.5rem;"></i>
@@ -298,7 +303,6 @@
                         </div>
                     </div>
                     
-                    <!-- Конвертер -->
                     <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
                         <div style="flex: 1; min-width: 200px;">
                             <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="enterEuro">Введите сумму в евро</label>
@@ -364,9 +368,13 @@
             <!-- КАЛЕНДАРЬ -->
             <section id="calendar" class="view">
                 <div class="month-selector glass-effect">
-                    <button onclick="window.changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" onclick="window.safeChangeMonth(-1); return false;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
                     <h2 id="calendarMonth"></h2>
-                    <button onclick="window.changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    <button type="button" onclick="window.safeChangeMonth(1); return false;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
                 
                 <div class="calendar-weekdays">
@@ -548,10 +556,10 @@
                             <div class="profile-field">
                                 <label data-lang="weatherMode">Режим</label>
                                 <select id="weatherEffectMode" onchange="window.toggleWeatherEffect()">
-                                    <option value="auto" data-lang="auto">Авто (по погоде)</option>
-                                    <option value="snow" data-lang="snow">❄️ Только снег</option>
-                                    <option value="rain" data-lang="rain">🌧️ Только дождь</option>
-                                    <option value="off" data-lang="off">Выключено</option>
+                                    <option value="auto" data-lang="auto">авто (по погоде)</option>
+                                    <option value="snow" data-lang="snow">❄️ только снег</option>
+                                    <option value="rain" data-lang="rain">🌧️ только дождь</option>
+                                    <option value="off" data-lang="off">выключено</option>
                                 </select>
                             </div>
                         </div>
@@ -781,5 +789,3 @@
     <script type="module" src="modules/pull-to-refresh.js"></script>
 </body>
 </html>
-
-
