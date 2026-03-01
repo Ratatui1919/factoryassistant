@@ -38,34 +38,34 @@
             box-shadow: 0 12px 40px rgba(0,176,96,0.2);
             border-color: var(--primary);
         }
-        .exchange-rate-display {
+        .currency-display {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
             flex-wrap: wrap;
             padding: 15px;
             background: rgba(0,176,96,0.05);
-            border-radius: 20px;
+            border-radius: 50px;
             margin: 15px 0;
         }
         .currency-block {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 10px 20px;
+            gap: 10px;
+            padding: 8px 20px;
             background: var(--dark);
-            border-radius: 50px;
+            border-radius: 40px;
             border: 1px solid var(--border);
         }
         .currency-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
         .currency-icon.eur {
             background: rgba(0,176,96,0.2);
@@ -80,17 +80,63 @@
             font-size: 1.8rem;
             color: var(--primary);
         }
-        .rate-arrow {
-            font-size: 2rem;
-            color: var(--text-muted);
+        .converter-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .converter-input {
+            flex: 1;
+            min-width: 200px;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 5px 5px 5px 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .converter-input:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,176,96,0.2);
+        }
+        .converter-input input {
+            background: transparent;
+            border: none;
+            padding: 12px;
+            color: var(--text);
+            font-size: 1.1rem;
+            width: 100%;
+            outline: none;
+        }
+        .converter-input input[type="number"]::-webkit-inner-spin-button,
+        .converter-input input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.5;
+        }
+        .converter-result {
+            flex: 1;
+            min-width: 200px;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .result-number {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
         }
         .update-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            padding: 10px 25px;
+            border-radius: 40px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
@@ -103,14 +149,18 @@
             transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(0,176,96,0.4);
         }
-        .update-btn i {
-            font-size: 0.9rem;
+        .update-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
         .last-update {
             text-align: center;
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-top: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
         }
     </style>
 </head>
@@ -241,7 +291,6 @@
                         <div class="kpi-content">
                             <span class="kpi-label" data-lang="netSalary">Чистая зарплата</span>
                             <span class="kpi-value" id="net">0 €</span>
-                            <span class="kpi-value-small" id="netUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     
@@ -250,7 +299,6 @@
                         <div class="kpi-content">
                             <span class="kpi-label" data-lang="grossSalary">Грязная</span>
                             <span class="kpi-value" id="gross">0 €</span>
-                            <span class="kpi-value-small" id="grossUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     
@@ -267,7 +315,6 @@
                         <div class="kpi-content">
                             <span class="kpi-label" data-lang="lunches">Обеды</span>
                             <span class="kpi-value" id="lunchCost">0 €</span>
-                            <span class="kpi-value-small" id="lunchUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     
@@ -304,56 +351,53 @@
                     </div>
                 </div>
 
-               <!-- Курс валют - красивый блок с конвертером -->
-<div class="exchange-rate-card glass-effect" style="margin: 20px 0; padding: 20px; border-radius: 24px; background: linear-gradient(135deg, var(--dark-card), var(--dark-light));">
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
-            <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
-        </div>
-        <button class="btn-primary" onclick="window.updateExchangeRate()" style="padding: 8px 20px; font-size: 0.9rem;" id="updateRateBtn">
-            <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
-        </button>
-    </div>
-    
-    <!-- Текущий курс -->
-    <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 25px; padding: 15px; background: rgba(0,176,96,0.05); border-radius: 50px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.5rem;"></i>
-            <span style="font-weight: 700; font-size: 1.8rem; color: var(--primary);">1</span>
-        </div>
-        <i class="fas fa-equals" style="color: var(--text-muted); font-size: 1.2rem;"></i>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.5rem;"></i>
-            <span class="currency-value" style="font-weight: 700; font-size: 1.8rem; color: var(--primary);" id="currentRate">42.50</span>
-        </div>
-    </div>
-    
-    <!-- Конвертер -->
-    <div style="display: flex; flex-direction: column; gap: 15px;">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 200px;">
-                <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="enterEuro">Введите сумму в евро</label>
-                <div style="display: flex; align-items: center; background: var(--dark); border-radius: 12px; border: 1px solid var(--border); padding: 5px;">
-                    <i class="fas fa-euro-sign" style="color: var(--text-muted); margin-left: 10px;"></i>
-                    <input type="number" id="euroInput" value="100" min="0" step="1" style="flex: 1; background: transparent; border: none; padding: 12px; color: var(--text); font-size: 1rem; outline: none;">
+                <!-- Курс валют - красивый блок с конвертером -->
+                <div class="exchange-rate-card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
+                            <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
+                        </div>
+                        <button class="update-btn" onclick="window.updateExchangeRate()" id="updateRateBtn">
+                            <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Текущий курс -->
+                    <div class="currency-display">
+                        <div class="currency-block">
+                            <div class="currency-icon eur">
+                                <i class="fas fa-euro-sign"></i>
+                            </div>
+                            <span style="font-weight: 600; font-size: 1.2rem;">1</span>
+                        </div>
+                        <i class="fas fa-equals" style="color: var(--text-muted); font-size: 1.5rem;"></i>
+                        <div class="currency-block">
+                            <div class="currency-icon uah">
+                                <i class="fas fa-hryvnia"></i>
+                            </div>
+                            <span class="currency-value" id="currentRate">42.50</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Конвертер -->
+                    <div class="converter-box">
+                        <div class="converter-input">
+                            <i class="fas fa-euro-sign" style="color: var(--text-muted); margin-right: 5px;"></i>
+                            <input type="number" id="euroInput" value="100" min="0" step="1" placeholder="100">
+                        </div>
+                        <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 1.5rem;"></i>
+                        <div class="converter-result">
+                            <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.2rem;"></i>
+                            <span class="result-number" id="uahResult">4250</span>
+                        </div>
+                    </div>
+                    
+                    <div class="last-update">
+                        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: <span id="lastUpdateTime">--:--</span>
+                    </div>
                 </div>
-            </div>
-            <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 1.5rem;"></i>
-            <div style="flex: 1; min-width: 200px;">
-                <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="resultUAH">Результат в гривнах</label>
-                <div style="display: flex; align-items: center; background: var(--dark); border-radius: 12px; border: 1px solid var(--border); padding: 5px;">
-                    <i class="fas fa-hryvnia" style="color: #ffd700; margin-left: 10px;"></i>
-                    <span id="uahResult" style="flex: 1; padding: 12px; color: var(--primary); font-size: 1.2rem; font-weight: 600;">4250</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="last-update" style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
-        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: <span id="lastUpdateTime">--:--</span>
-    </div>
-</div>
+
                 <div class="stats-row">
                     <div class="stat-box glass-effect">
                         <i class="fas fa-calendar-week"></i>
@@ -450,7 +494,6 @@
                         <div>
                             <span class="stats-label" data-lang="totalEarned">Всего заработано</span>
                             <span class="stats-value" id="totalEarned">0 €</span>
-                            <span class="stats-value-small" id="totalEarnedUAH" style="font-size: 0.9rem; color: var(--text-muted); display: block;"></span>
                         </div>
                     </div>
                     <div class="stats-card glass-effect">
@@ -465,7 +508,6 @@
                         <div>
                             <span class="stats-label" data-lang="totalLunch">Потрачено на обеды</span>
                             <span class="stats-value" id="totalLunch">0 €</span>
-                            <span class="stats-value-small" id="totalLunchUAH" style="font-size: 0.9rem; color: var(--text-muted); display: block;"></span>
                         </div>
                     </div>
                     <div class="stats-card glass-effect">
@@ -643,14 +685,11 @@
                         <div class="pie-total" id="pieTotal">0 €</div>
                     </div>
                     
+                    <!-- ФИНАНСОВЫЕ ДЕТАЛИ (только евро) -->
                     <div class="finance-details glass-effect">
                         <div class="finance-item">
                             <span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">Чистый доход</span></span>
                             <span class="finance-value positive" id="financeNet">0 €</span>
-                        </div>
-                        <div class="finance-item">
-                            <span class="finance-label"><i class="fas fa-hryvnia" style="color:#ffd700;"></i> <span data-lang="netIncome">Чистый доход</span> <span data-lang="inUAH">в гривнах</span></span>
-                            <span class="finance-value positive" id="financeNetUAH">0 ₴</span>
                         </div>
                         <div class="finance-item">
                             <span class="finance-label"><i class="fas fa-percent" style="color:#f59e0b;"></i> <span data-lang="taxes">Налоги</span></span>
@@ -668,23 +707,20 @@
                             <span class="finance-label" data-lang="gross">Брутто</span>
                             <span class="finance-value" id="financeGross">0 €</span>
                         </div>
-                        <div class="finance-item">
-                            <span class="finance-label"><i class="fas fa-hryvnia" style="color:#ffd700;"></i> <span data-lang="gross">Брутто</span> <span data-lang="inUAH">в гривнах</span></span>
-                            <span class="finance-value" id="financeGrossUAH">0 ₴</span>
-                        </div>
                     </div>
                     
+                    <!-- ФИНАНСОВЫЕ ЦЕЛИ (исправлено, без гривен) -->
                     <div class="finance-goals glass-effect">
                         <h3><i class="fas fa-bullseye"></i> <span data-lang="goal">Моя финансовая цель</span></h3>
                         
                         <div class="goal-inputs">
                             <div class="input-group">
                                 <label data-lang="goalName">Название цели</label>
-                                <input type="text" id="goalName" placeholder="e.g., Emergency Fund">
+                                <input type="text" id="goalName" placeholder="Подушка безопасности">
                             </div>
                             <div class="input-group">
                                 <label data-lang="goalAmount">Сумма цели (€)</label>
-                                <input type="number" id="goalAmount" min="0" step="100">
+                                <input type="number" id="goalAmount" min="0" step="100" value="3000">
                             </div>
                             <button class="btn-primary" onclick="window.saveGoal()">
                                 <i class="fas fa-save"></i> <span data-lang="saveGoal">Сохранить цель</span>
@@ -692,35 +728,50 @@
                         </div>
                         
                         <div class="goal-progress" id="goalProgress" style="display:none">
-                            <h4 id="goalNameDisplay"></h4>
-                            <div class="progress-stats">
-                                <div><span data-lang="goalSaved">Накоплено</span>: <strong id="goalSaved">0 €</strong></div>
-                                <div><span data-lang="goalSaved">в гривнах</span>: <strong id="goalSavedUAH">0 ₴</strong></div>
-                                <div><span data-lang="goalTarget">Цель</span>: <strong id="goalTarget">0 €</strong></div>
-                                <div><span data-lang="goalTarget">в гривнах</span>: <strong id="goalTargetUAH">0 ₴</strong></div>
-                                <div><span data-lang="goalRemaining">Осталось</span>: <strong id="goalRemaining">0 €</strong></div>
-                                <div><span data-lang="goalRemaining">в гривнах</span>: <strong id="goalRemainingUAH">0 ₴</strong></div>
-                            </div>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" id="goalProgressBar" style="width:0%"></div>
-                            </div>
-                            <div class="progress-percent" id="goalPercent">0%</div>
+                            <h4 id="goalNameDisplay">Подушка безопасности</h4>
                             
-                            <div class="goal-actions" id="goalActions" style="display:none">
-                                <button class="btn-success" onclick="window.addToGoal()">
+                            <!-- Прогресс бар -->
+                            <div style="margin: 20px 0;">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="goalProgressBar" style="width:0%"></div>
+                                </div>
+                                <div class="progress-percent" id="goalPercent">0%</div>
+                            </div>
+                            
+                            <!-- Статистика цели (ТОЛЬКО В ЕВРО) -->
+                            <div style="display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; background: var(--dark); border-radius: 12px;">
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalSaved">Накоплено</div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--primary);" id="goalSaved">0 €</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalTarget">Цель</div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--text);" id="goalTarget">0 €</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalRemaining">Осталось</div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: #f59e0b;" id="goalRemaining">0 €</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Кнопки действий -->
+                            <div class="goal-actions" id="goalActions" style="display: none; gap: 10px; margin: 20px 0;">
+                                <button class="btn-success" onclick="window.addToGoal()" style="flex: 1;">
                                     <i class="fas fa-plus-circle"></i> <span data-lang="add">Добавить</span>
                                 </button>
-                                <button class="btn-warning" onclick="window.withdrawFromGoal()">
+                                <button class="btn-warning" onclick="window.withdrawFromGoal()" style="flex: 1;">
                                     <i class="fas fa-minus-circle"></i> <span data-lang="withdraw">Снять</span>
                                 </button>
                             </div>
                             
+                            <!-- История операций -->
                             <div class="goal-history">
                                 <h5><i class="fas fa-history"></i> <span data-lang="history">Последние операции</span></h5>
                                 <div id="goalHistory"></div>
                             </div>
                             
-                            <button class="btn-danger btn-small" onclick="window.clearGoal()">
+                            <!-- Кнопка удаления -->
+                            <button class="btn-danger btn-small" onclick="window.clearGoal()" style="width: 100%; margin-top: 15px;">
                                 <i class="fas fa-times"></i> <span data-lang="deleteGoal">Удалить цель</span>
                             </button>
                         </div>
@@ -804,4 +855,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-
