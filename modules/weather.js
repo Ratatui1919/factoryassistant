@@ -125,17 +125,29 @@ function createWeatherEffect(type) {
     
     weatherParticles = canvas;
     
-    // Устанавливаем размеры на весь экран
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        canvasWidth = window.innerWidth;
-        canvasHeight = window.innerHeight;
+    // Функция обновления размеров canvas
+    function updateCanvasSize() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
+        canvasWidth = width;
+        canvasHeight = height;
+        
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
     }
     
-    resizeCanvas();
+    // Устанавливаем начальные размеры
+    updateCanvasSize();
     
-    window.addEventListener('resize', resizeCanvas);
+    // Создаем наблюдатель за изменением размера окна
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(updateCanvasSize, 100);
+    });
     
     const ctx = canvas.getContext('2d');
     
@@ -158,7 +170,7 @@ function createWeatherEffect(type) {
     function animate() {
         if (!weatherParticles || !ctx) return;
         
-        // Проверяем размеры canvas
+        // Проверяем и обновляем размеры canvas при необходимости
         if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -211,6 +223,7 @@ function createWeatherEffect(type) {
 
 // Инициализация при загрузке страницы
 export function initWeather() {
+    console.log('Инициализация погодных эффектов');
     // Ждем загрузки пользователя
     setTimeout(() => {
         restoreWeatherEffect();
