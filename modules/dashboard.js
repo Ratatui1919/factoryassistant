@@ -1,4 +1,4 @@
-// js/dashboard.js - ДАШБОРД
+// modules/dashboard.js - ДАШБОРД
 
 import { getCurrentUser } from './auth.js';
 import { calculateMonthlySalary } from './salary.js';
@@ -16,14 +16,24 @@ window.calculateDashboardStats = function() {
         user.settings
     );
     
-    document.getElementById('gross').innerText = stats.gross.toFixed(2) + ' €';
-    document.getElementById('net').innerText = stats.net.toFixed(2) + ' €';
-    document.getElementById('hoursWorked').innerText = stats.hours;
-    document.getElementById('overtimeHours').innerText = stats.overtimeHours;
-    document.getElementById('extraCount').innerText = stats.extraBlocks;
-    document.getElementById('satCount').innerText = stats.saturdays + stats.sundays;
-    document.getElementById('doctorCount').innerText = stats.doctorDays;
-    document.getElementById('lunchCost').innerText = stats.lunchCost.toFixed(2) + ' €';
+    // Проверяем существование элементов перед обновлением
+    const grossEl = document.getElementById('gross');
+    const netEl = document.getElementById('net');
+    const hoursEl = document.getElementById('hoursWorked');
+    const overtimeEl = document.getElementById('overtimeHours');
+    const extraEl = document.getElementById('extraCount');
+    const satEl = document.getElementById('satCount');
+    const doctorEl = document.getElementById('doctorCount');
+    const lunchEl = document.getElementById('lunchCost');
+    
+    if (grossEl) grossEl.innerText = stats.gross.toFixed(2) + ' €';
+    if (netEl) netEl.innerText = stats.net.toFixed(2) + ' €';
+    if (hoursEl) hoursEl.innerText = stats.hours;
+    if (overtimeEl) overtimeEl.innerText = stats.overtimeHours;
+    if (extraEl) extraEl.innerText = stats.extraBlocks;
+    if (satEl) satEl.innerText = stats.saturdays + stats.sundays;
+    if (doctorEl) doctorEl.innerText = stats.doctorDays;
+    if (lunchEl) lunchEl.innerText = stats.lunchCost.toFixed(2) + ' €';
     
     updateWeekendStats();
 };
@@ -43,19 +53,25 @@ function updateWeekendStats() {
         }
     }
     
-    document.getElementById('weekendsThisMonth').innerText = weekendsThisMonth;
+    const weekendsEl = document.getElementById('weekendsThisMonth');
+    const accruedEl = document.getElementById('accruedWeekends');
+    const accruedInput = document.getElementById('accruedWeekendsInput');
+    const doctorLeftEl = document.getElementById('doctorLeft');
+    const accompanyLeftEl = document.getElementById('accompanyLeft');
+    
+    if (weekendsEl) weekendsEl.innerText = weekendsThisMonth;
     
     const accruedWeekends = user.settings?.accruedWeekends || 0;
-    document.getElementById('accruedWeekends').innerText = accruedWeekends;
-    document.getElementById('accruedWeekendsInput').value = accruedWeekends;
+    if (accruedEl) accruedEl.innerText = accruedWeekends;
+    if (accruedInput) accruedInput.value = accruedWeekends;
     
     const personalTotal = user.settings?.personalDoctorDays || 7;
     const usedPersonal = user.settings?.usedPersonalDoctor || 0;
     const accompanyTotal = user.settings?.accompanyDoctorDays || 6;
     const usedAccompany = user.settings?.usedAccompanyDoctor || 0;
     
-    document.getElementById('doctorLeft').innerHTML = `${personalTotal - usedPersonal}/${personalTotal}`;
-    document.getElementById('accompanyLeft').innerHTML = `${accompanyTotal - usedAccompany}/${accompanyTotal}`;
+    if (doctorLeftEl) doctorLeftEl.innerHTML = `${personalTotal - usedPersonal}/${personalTotal}`;
+    if (accompanyLeftEl) accompanyLeftEl.innerHTML = `${accompanyTotal - usedAccompany}/${accompanyTotal}`;
 }
 
 // Построение графика за год
@@ -97,60 +113,66 @@ window.buildYearChart = function() {
         }
     });
     
-    // Уничтожаем старый график
-    if (window.yearChart) window.yearChart.destroy();
+    // Уничтожаем старый график ТОЛЬКО если он существует
+    if (window.yearChart && typeof window.yearChart.destroy === 'function') {
+        window.yearChart.destroy();
+    }
     
     const ctx = canvas.getContext('2d');
     const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#ffffff';
     const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#334155';
     
-    window.yearChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-            datasets: [{
-                label: t('monthlyIncome') || 'Доход €',
-                data: months,
-                borderColor: '#00b060',
-                backgroundColor: 'rgba(0,176,96,0.15)',
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#00b060',
-                pointBorderColor: '#fff',
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { labels: { color: textColor } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.label + ': ' + context.raw.toFixed(2) + ' €';
+    try {
+        window.yearChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                datasets: [{
+                    label: t('monthlyIncome') || 'Доход €',
+                    data: months,
+                    borderColor: '#00b060',
+                    backgroundColor: 'rgba(0,176,96,0.15)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#00b060',
+                    pointBorderColor: '#fff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { labels: { color: textColor } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw.toFixed(2) + ' €';
+                            }
                         }
                     }
-                }
-            },
-            scales: {
-                y: { 
-                    grid: { color: gridColor }, 
-                    ticks: { color: textColor },
-                    beginAtZero: true
                 },
-                x: { ticks: { color: textColor } }
+                scales: {
+                    y: { 
+                        grid: { color: gridColor }, 
+                        ticks: { color: textColor },
+                        beginAtZero: true
+                    },
+                    x: { ticks: { color: textColor } }
+                }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error('Ошибка создания графика:', error);
+    }
 };
 
 // Расчет всей статистики
 window.calculateAllStats = function() {
     window.calculateDashboardStats();
     setTimeout(() => {
-        window.buildYearChart();
+        if (window.buildYearChart) window.buildYearChart();
         if (window.updateFinanceStats) window.updateFinanceStats();
-    }, 50);
+    }, 100);
 };
