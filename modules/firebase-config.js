@@ -33,6 +33,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Делаем db глобальной для доступа из других модулей
+window.db = db;
+window.auth = auth;
+
 export { 
   auth, 
   db,
