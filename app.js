@@ -1077,7 +1077,7 @@ window.changeMonth = function(delta) {
   calculateAllStats();
 };
 
-// ===== КАЛЕНДАРЬ (ИСПРАВЛЕН) =====
+// ===== КАЛЕНДАРЬ =====
 function buildCalendar() {
   const grid = document.getElementById('calendarGrid');
   if (!grid) return;
@@ -1109,7 +1109,6 @@ function buildCalendar() {
     else if (currentYear === todayYear && currentMonth < todayMonth) isPast = true;
     else if (currentYear === todayYear && currentMonth === todayMonth && d < todayDate) isPast = true;
     
-    // Только строго будущие дни блокируем
     if (!isPast && !(currentYear === todayYear && currentMonth === todayMonth && d === todayDate)) {
       cell.classList.add('future');
     }
@@ -1129,7 +1128,6 @@ function buildCalendar() {
       }
     }
     
-    // Кликабельно для прошлых дней и сегодня
     if (isPast || (currentYear === todayYear && currentMonth === todayMonth && d === todayDate)) {
       cell.onclick = () => { selectedDay = d; showModal('dayModal'); };
     }
@@ -1179,7 +1177,7 @@ function calculateDayEarnings(record, rate, settings) {
   }
 }
 
-// ===== ДАШБОРД (ПОЛНОСТЬЮ ИСПРАВЛЕНО) =====
+// ===== ДАШБОРД (ИСПРАВЛЕНО) =====
 function calculateDashboardStats() {
   if (!currentUser) return;
   
@@ -1193,9 +1191,6 @@ function calculateDashboardStats() {
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear && d <= today;
   });
   
-  console.log(`Записей за ${currentMonth+1}.${currentYear}:`, monthly.length); // для отладки
-  
-  // Считаем рабочие дни для обедов
   const workDays = monthly.filter(r => {
     const d = new Date(r.date);
     const dayOfWeek = d.getDay();
@@ -1207,7 +1202,6 @@ function calculateDashboardStats() {
   
   let stats = { gross: 0, hours: 0, overtimeHours: 0, saturdays: 0, sundays: 0, extraBlocks: 0, doctorDays: 0 };
   
-  // Считаем доход
   monthly.forEach(r => {
     if (r.type === 'off') return;
     const hours = r.hours || 7.5;
@@ -1222,7 +1216,6 @@ function calculateDashboardStats() {
     if (r.type === 'doctor') stats.doctorDays++;
   });
   
-  // Добавляем бонусы за надчасы
   stats.gross += Math.floor(stats.extraBlocks / 2) * (currentUser.settings?.extraBonus || 25);
   stats.gross -= lunchCost;
   
@@ -1236,7 +1229,6 @@ function calculateDashboardStats() {
     net = stats.gross - social - health - tax;
   }
   
-  // Обновляем карточки дашборда
   document.getElementById('gross').innerText = stats.gross.toFixed(2) + ' €';
   document.getElementById('net').innerText = net.toFixed(2) + ' €';
   document.getElementById('hoursWorked').innerText = stats.hours;
@@ -1245,6 +1237,64 @@ function calculateDashboardStats() {
   document.getElementById('satCount').innerText = stats.saturdays + stats.sundays;
   document.getElementById('doctorCount').innerText = stats.doctorDays;
   document.getElementById('lunchCost').innerText = lunchCost.toFixed(2) + ' €';
+}
+
+// ===== ГРАФИК НА ДАШБОРДЕ (ИСПРАВЛЕНО) =====
+function buildYearChart() {
+  const canvas = document.getElementById('yearChart');
+  if (!canvas || !currentUser) return;
+  
+  // Собираем доход ПО МЕСЯЦАМ за всё время
+  const months = new Array(12).fill(0);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const rate = currentUser.settings?.hourlyRate || BASE_RATE;
+  
+  (currentUser.records || []).forEach(r => {
+    if (r.type === 'off') return;
+    const d = new Date(r.date);
+    d.setHours(0,0,0,0);
+    if (d > today) return;
+    
+    const amount = calculateDayEarnings(r, rate, currentUser.settings);
+    months[d.getMonth()] += amount;
+  });
+  
+  if (yearChart) yearChart.destroy();
+  
+  yearChart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+      datasets: [{
+        label: 'Доход €',
+        data: months,
+        borderColor: '#00b060',
+        backgroundColor: 'rgba(0,176,96,0.15)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#00b060',
+        pointBorderColor: '#fff',
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#fff' } }
+      },
+      scales: {
+        y: { 
+          grid: { color: '#334155' }, 
+          ticks: { color: '#94a3b8' } 
+        },
+        x: { 
+          ticks: { color: '#94a3b8' } 
+        }
+      }
+    }
+  });
 }
 
 function updateFinanceStats() {
@@ -1286,7 +1336,16 @@ function buildPieChart(net, tax, lunch, savings) {
         borderWidth: 0
       }]
     },
-    options: { responsive: true, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
+    options: { 
+      responsive: true, 
+      cutout: '70%', 
+      plugins: { 
+        legend: { 
+          position: 'bottom', 
+          labels: { color: '#fff' } 
+        } 
+      } 
+    }
   });
 }
 
@@ -1299,8 +1358,6 @@ function loadYearStats() {
   today.setHours(0,0,0,0);
   const rate = currentUser.settings?.hourlyRate || BASE_RATE;
   
-  console.log(`Загрузка статистики за ${year} год`); // для отладки
-  
   // Фильтруем записи ТОЛЬКО за выбранный год
   let yearRecords = (currentUser.records || []).filter(r => {
     const d = new Date(r.date);
@@ -1308,12 +1365,9 @@ function loadYearStats() {
     return d.getFullYear() === year && d <= today && r.type !== 'off';
   });
   
-  console.log(`Найдено записей за ${year}:`, yearRecords.length);
-  
   let totalGross = 0, totalHours = 0, totalLunch = 0;
   const monthTotals = new Array(12).fill(0);
   
-  // Считаем доход по месяцам
   yearRecords.forEach(r => {
     const d = new Date(r.date);
     const hours = r.hours || 7.5;
@@ -1322,19 +1376,16 @@ function loadYearStats() {
     totalGross += amount;
     monthTotals[d.getMonth()] += amount;
     
-    // Считаем обеды (только будни)
     const dayOfWeek = d.getDay();
     if (dayOfWeek !== 0 && dayOfWeek !== 6 && r.type !== 'sick' && r.type !== 'vacation') {
       totalLunch += currentUser.settings?.lunchCost || LUNCH_COST_REAL;
     }
   });
   
-  // Добавляем бонусы за надчасы
   const extraCount = yearRecords.filter(r => r.type === 'extra').length;
   totalGross += Math.floor(extraCount / 2) * (currentUser.settings?.extraBonus || 25);
   totalGross -= totalLunch;
   
-  // Находим лучший месяц
   const monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
   let bestMonth = { value: 0, name: '' };
   let bestMonthIndex = -1;
@@ -1347,22 +1398,6 @@ function loadYearStats() {
     }
   });
   
-  // Обновляем карточки статистики
-  document.getElementById('totalEarned').innerText = totalGross.toFixed(2) + ' €';
-  document.getElementById('totalHours').innerText = totalHours;
-  document.getElementById('totalLunch').innerText = totalLunch.toFixed(2) + ' €';
-  
-  if (bestMonthIndex !== -1) {
-    document.getElementById('bestMonth').innerText = bestMonth.name + ' ' + bestMonth.value.toFixed(0) + '€';
-  } else {
-    document.getElementById('bestMonth').innerText = '-';
-  }
-  
-  // Строим график
-  buildStatsChart(monthTotals);
-}
-  
-  // Обновляем карточки статистики
   document.getElementById('totalEarned').innerText = totalGross.toFixed(2) + ' €';
   document.getElementById('totalHours').innerText = totalHours;
   document.getElementById('totalLunch').innerText = totalLunch.toFixed(2) + ' €';
@@ -1380,8 +1415,6 @@ function buildStatsChart(monthTotals) {
   const canvas = document.getElementById('statsChart');
   if (!canvas) return;
   if (statsChart) statsChart.destroy();
-  
-  console.log('Данные для графика статистики:', monthTotals); // для отладки
   
   statsChart = new Chart(canvas.getContext('2d'), {
     type: 'bar',
@@ -1512,10 +1545,10 @@ window.previewAvatar = function(input) {
 };
 
 function calculateAllStats() {
-  calculateDashboardStats();  // обновляем карточки дашборда
-  updateWeekendStats();       // обновляем статистику выходных
-  buildYearChart();           // обновляем график на дашборде
-  updateFinanceStats();       // обновляем финансы
+  calculateDashboardStats();
+  updateWeekendStats();
+  buildYearChart();
+  updateFinanceStats();
 }
 
 function updateWeekendStats() {
@@ -1545,67 +1578,6 @@ function updateWeekendStats() {
   
   document.getElementById('doctorLeft').innerHTML = `${personalTotal - usedPersonal}/${personalTotal}`;
   document.getElementById('accompanyLeft').innerHTML = `${accompanyTotal - usedAccompany}/${accompanyTotal}`;
-}
-
-// ===== ГРАФИК НА ДАШБОРДЕ (ИСПРАВЛЕНО) =====
-function buildYearChart() {
-  const canvas = document.getElementById('yearChart');
-  if (!canvas || !currentUser) return;
-  
-  // Собираем доход ПО МЕСЯЦАМ за всё время
-  const months = new Array(12).fill(0);
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const rate = currentUser.settings?.hourlyRate || BASE_RATE;
-  
-  // Проходим по всем записям и суммируем доход по месяцам
-  (currentUser.records || []).forEach(r => {
-    if (r.type === 'off') return;
-    const d = new Date(r.date);
-    d.setHours(0,0,0,0);
-    if (d > today) return;
-    
-    const amount = calculateDayEarnings(r, rate, currentUser.settings);
-    months[d.getMonth()] += amount;
-  });
-  
-  console.log('Доход по месяцам:', months); // для отладки
-  
-  if (yearChart) yearChart.destroy();
-  
-  yearChart = new Chart(canvas.getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
-      datasets: [{
-        label: 'Доход €',
-        data: months,
-        borderColor: '#00b060',
-        backgroundColor: 'rgba(0,176,96,0.15)',
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: '#00b060',
-        pointBorderColor: '#fff',
-        pointRadius: 4,
-        pointHoverRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: '#fff' } }
-      },
-      scales: {
-        y: { 
-          grid: { color: '#334155' }, 
-          ticks: { color: '#94a3b8' } 
-        },
-        x: { 
-          ticks: { color: '#94a3b8' } 
-        }
-      }
-    }
-  });
 }
 
 function loadFinancialGoal() {
@@ -1786,5 +1758,3 @@ window.importFromPDF = function(input) {
     showNotification('Данные импортированы');
   }, 1500);
 };
-
-
