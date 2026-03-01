@@ -32,12 +32,141 @@
 
     <!-- Модалка авторизации -->
     <div class="modal" id="authModal">
-        <!-- ... содержимое модалки ... -->
+        <div class="modal-content auth-card">
+            <div class="auth-logo">
+                <img src="assets/vaillant-logo.png" alt="Vaillant">
+                <h2>Vaillant<span>Assistant</span></h2>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="window.showLoginForm()"><span data-lang="login">Вход</span></button>
+                <button class="auth-tab" onclick="window.showRegisterForm()"><span data-lang="register">Регистрация</span></button>
+            </div>
+            
+            <div id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" data-lang-placeholder="email" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPass" data-lang-placeholder="password" placeholder="Пароль">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe" data-lang="rememberMe">Запомнить меня</label>
+                </div>
+                <button class="btn-primary" onclick="window.login()"><span data-lang="loginBtn">Войти</span></button>
+            </div>
+            
+            <div id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" data-lang-placeholder="email" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPass" data-lang-placeholder="password" placeholder="Пароль">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-check-circle"></i>
+                    <input type="password" id="regConfirm" data-lang-placeholder="confirmPassword" placeholder="Подтвердите пароль">
+                </div>
+                <button class="btn-primary" onclick="window.register()"><span data-lang="registerBtn">Зарегистрироваться</span></button>
+            </div>
+        </div>
     </div>
 
     <!-- Основное приложение -->
     <div id="app" class="hidden">
-        <!-- ... содержимое приложения ... -->
+        <header>
+            <div class="header-left">
+                <div class="logo">
+                    <img src="assets/vaillant-logo.png" alt="Vaillant">
+                    <h1>Assistant</h1>
+                </div>
+                <div class="header-badge pulse"><span data-lang="factoryPro">FACTORY PRO</span></div>
+                <div class="language-selector">
+                    <button class="lang-btn" data-lang="ru" onclick="window.setLanguage('ru')">RU</button>
+                    <button class="lang-btn" data-lang="sk" onclick="window.setLanguage('sk')">SK</button>
+                    <button class="lang-btn" data-lang="en" onclick="window.setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="uk" onclick="window.setLanguage('uk')">UA</button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-widget">
+                    <div class="widget-time">
+                        <span class="time" id="time"></span>
+                    </div>
+                    <div class="widget-date-weather">
+                        <span class="date" id="date"></span>
+                        <span class="weather">
+                            <i class="fas fa-cloud-sun"></i>
+                            <span id="weatherTemp">--°C</span>
+                            <span class="weather-location">Trenčín</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <img id="avatarPreview" src="" alt="avatar">
+                    <span id="userName">Guest</span>
+                </div>
+                <button class="logout-btn" onclick="window.logout()" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+                
+                <div class="mobile-menu-toggle" onclick="window.toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Навигация -->
+        <nav id="mainNav">
+            <button class="nav-btn" data-view="dashboard" onclick="window.setView('dashboard')">
+                <i class="fas fa-chart-pie"></i><span data-lang="dashboard">Дашборд</span>
+            </button>
+            <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')">
+                <i class="fas fa-calendar-alt"></i><span data-lang="calendar">Календарь</span>
+            </button>
+            <button class="nav-btn" data-view="stats" onclick="window.setView('stats')">
+                <i class="fas fa-chart-line"></i><span data-lang="stats">Статистика</span>
+            </button>
+            <button class="nav-btn" data-view="profile" onclick="window.setView('profile')">
+                <i class="fas fa-user-cog"></i><span data-lang="profile">Профиль</span>
+            </button>
+            <button class="nav-btn" data-view="finance" onclick="window.setView('finance')">
+                <i class="fas fa-coins"></i><span data-lang="finance">Финансы</span>
+            </button>
+        </nav>
+
+        <main>
+            <!-- ДАШБОРД -->
+            <section id="dashboard" class="view active">
+                <!-- ... содержимое дашборда ... -->
+            </section>
+
+            <!-- КАЛЕНДАРЬ -->
+            <section id="calendar" class="view">
+                <!-- ... содержимое календаря ... -->
+            </section>
+
+            <!-- СТАТИСТИКА -->
+            <section id="stats" class="view">
+                <!-- ... содержимое статистики ... -->
+            </section>
+
+            <!-- ПРОФИЛЬ -->
+            <section id="profile" class="view">
+                <!-- ... содержимое профиля ... -->
+            </section>
+
+            <!-- ФИНАНСЫ -->
+            <section id="finance" class="view">
+                <!-- ... содержимое финансов ... -->
+            </section>
+        </main>
     </div>
 
     <!-- Модалка выбора типа дня -->
@@ -59,13 +188,19 @@
     <script type="module" src="js/utils.js"></script>
     <script type="module" src="js/salary.js"></script>
     <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/theme.js"></script>
+    <script type="module" src="js/time.js"></script>
+    <script type="module" src="js/weather.js"></script>
     <script type="module" src="js/calendar.js"></script>
     <script type="module" src="js/dashboard.js"></script>
     <script type="module" src="js/stats.js"></script>
-    <script type="module" src="js/profile.js"></script>
     <script type="module" src="js/finance.js"></script>
     <script type="module" src="js/exchange.js"></script>
     <script type="module" src="js/important-dates.js"></script>
+    <script type="module" src="js/export.js"></script>
+    <script type="module" src="js/import.js"></script>
+    <script type="module" src="js/financial-tip.js"></script>
+    <script type="module" src="js/notifications.js"></script>
     <script type="module" src="js/main.js"></script>
     
     <!-- Модули -->
