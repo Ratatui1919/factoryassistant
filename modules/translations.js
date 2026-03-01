@@ -70,10 +70,10 @@ export const translations = {
         weatherEffects: 'Погодные эффекты',
         enableWeatherEffects: 'Включить снег/дождь на фоне',
         weatherMode: 'Режим',
-        auto: 'Авто (по погоде)',
-        snow: '❄️ Только снег',
-        rain: '🌧️ Только дождь',
-        off: 'Выключено',
+        auto: 'авто (по погоде)',
+        snow: '❄️ только снег',
+        rain: '🌧️ только дождь',
+        off: 'выключено',
         theme: 'Тема оформления',
         dark: '🌑 Тёмная',
         light: '☀️ Светлая',
@@ -208,7 +208,7 @@ export const translations = {
         added: 'Добавлено',
         withdrawn: 'Снято',
         
-        // Ошибки и сообщения
+        // Ошибки
         fillAllFields: 'Заполните все поля!',
         validEmail: 'Введите корректный email!',
         passwordsNotMatch: 'Пароли не совпадают!',
@@ -225,7 +225,13 @@ export const translations = {
         howMuchWithdraw: 'Сколько снять?',
         enterAmount: 'Введите сумму',
         insufficientFunds: 'Недостаточно средств',
-        calculated: 'Рассчитано'
+        calculated: 'Рассчитано',
+        
+        // Названия языков (для кнопок)
+        language_ru: 'RU',
+        language_sk: 'SK',
+        language_en: 'EN',
+        language_uk: 'UA'
     },
     
     sk: {
@@ -297,10 +303,10 @@ export const translations = {
         weatherEffects: 'Počasie efekty',
         enableWeatherEffects: 'Zapnúť sneh/dážď na pozadí',
         weatherMode: 'Režim',
-        auto: 'Auto (podľa počasia)',
-        snow: '❄️ Len sneh',
-        rain: '🌧️ Len dážď',
-        off: 'Vypnuté',
+        auto: 'auto (podľa počasia)',
+        snow: '❄️ len sneh',
+        rain: '🌧️ len dážď',
+        off: 'vypnuté',
         theme: 'Téma',
         dark: '🌑 Tmavá',
         light: '☀️ Svetlá',
@@ -452,7 +458,13 @@ export const translations = {
         howMuchWithdraw: 'Koľko vybrať?',
         enterAmount: 'Zadajte sumu',
         insufficientFunds: 'Nedostatok prostriedkov',
-        calculated: 'Vypočítané'
+        calculated: 'Vypočítané',
+        
+        // Language names
+        language_ru: 'RU',
+        language_sk: 'SK',
+        language_en: 'EN',
+        language_uk: 'UA'
     },
     
     en: {
@@ -524,10 +536,10 @@ export const translations = {
         weatherEffects: 'Weather effects',
         enableWeatherEffects: 'Enable snow/rain on background',
         weatherMode: 'Mode',
-        auto: 'Auto (by weather)',
-        snow: '❄️ Snow only',
-        rain: '🌧️ Rain only',
-        off: 'Off',
+        auto: 'auto (by weather)',
+        snow: '❄️ snow only',
+        rain: '🌧️ rain only',
+        off: 'off',
         theme: 'Theme',
         dark: '🌑 Dark',
         light: '☀️ Light',
@@ -679,7 +691,13 @@ export const translations = {
         howMuchWithdraw: 'How much to withdraw?',
         enterAmount: 'Enter amount',
         insufficientFunds: 'Insufficient funds',
-        calculated: 'Calculated'
+        calculated: 'Calculated',
+        
+        // Language names
+        language_ru: 'RU',
+        language_sk: 'SK',
+        language_en: 'EN',
+        language_uk: 'UA'
     },
     
     uk: {
@@ -751,10 +769,10 @@ export const translations = {
         weatherEffects: 'Погодні ефекти',
         enableWeatherEffects: 'Ввімкнути сніг/дощ на фоні',
         weatherMode: 'Режим',
-        auto: 'Авто (по погоді)',
-        snow: '❄️ Тільки сніг',
-        rain: '🌧️ Тільки дощ',
-        off: 'Вимкнено',
+        auto: 'авто (по погоді)',
+        snow: '❄️ тільки сніг',
+        rain: '🌧️ тільки дощ',
+        off: 'вимкнено',
         theme: 'Тема оформлення',
         dark: '🌑 Темна',
         light: '☀️ Світла',
@@ -906,6 +924,12 @@ export const translations = {
         howMuchWithdraw: 'Скільки зняти?',
         enterAmount: 'Введіть суму',
         insufficientFunds: 'Недостатньо коштів',
-        calculated: 'Розраховано'
+        calculated: 'Розраховано',
+        
+        // Language names
+        language_ru: 'RU',
+        language_sk: 'SK',
+        language_en: 'EN',
+        language_uk: 'UA'
     }
 };
