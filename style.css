@@ -1,6 +1,6 @@
 /* ======================
    Vaillant Assistant PRO v20.0
-   ФИНАЛЬНАЯ ВЕРСИЯ - 10 ТЕМ, СТЕКЛО, АНИМАЦИИ
+   ОПТИМИЗИРОВАННАЯ ВЕРСИЯ
    ====================== */
 
 * {
@@ -24,7 +24,6 @@
     --text: #ffffff;
     --text-muted: #a0a8b8;
     --border: #2a303c;
-    --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
     --glass-bg: rgba(18, 22, 32, 0.7);
     --glass-border: rgba(255, 255, 255, 0.1);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -153,18 +152,9 @@
     --text: #1a1e2a;
     --text-muted: #64748b;
     --border: #e2e8f0;
-    --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(0, 0, 0, 0.1);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.theme-light body {
-    background: #f5f7fa;
-}
-
-.theme-light .day.future {
-    opacity: 0.3;
 }
 
 body {
@@ -173,7 +163,7 @@ body {
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Стеклянный эффект */
@@ -185,6 +175,7 @@ body {
     box-shadow: var(--shadow);
 }
 
+/* Скроллбар */
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -316,7 +307,6 @@ header {
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
-    white-space: nowrap;
     color: white;
     animation: pulse 2s infinite;
 }
@@ -335,7 +325,6 @@ header {
     }
 }
 
-/* УНИВЕРСАЛЬНЫЙ ВИДЖЕТ (ПК + ТЕЛЕФОН) */
 .header-widget {
     display: flex;
     flex-direction: column;
@@ -357,10 +346,6 @@ header {
     align-items: center;
     gap: 8px;
     font-size: 0.95rem;
-}
-.widget-time .greeting {
-    color: var(--primary);
-    font-weight: 600;
 }
 .widget-time .time {
     font-weight: 500;
@@ -392,7 +377,6 @@ header {
     background: var(--dark-light); 
     padding: 5px 15px 5px 5px; 
     border-radius: 40px;
-    min-width: 0;
     border: 1px solid var(--border);
 }
 .user-info img {
@@ -431,7 +415,6 @@ header {
     transform: rotate(180deg); 
 }
 
-/* Языковой переключатель */
 .language-selector { 
     display: flex; 
     gap: 5px; 
@@ -459,7 +442,6 @@ header {
     border-color: var(--primary); 
 }
 
-/* Бургер-меню для телефона */
 .mobile-menu-toggle {
     display: none;
     background: var(--primary);
@@ -530,7 +512,6 @@ nav {
     gap: 8px; 
     font-size: 0.9rem;
     white-space: nowrap;
-    flex: 0 1 auto;
 }
 .nav-btn:hover { 
     background: var(--dark-light); 
@@ -655,26 +636,16 @@ main {
 .kpi-card:hover::before {
     opacity: 0.1;
 }
-.kpi-card.primary { 
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
-    border: none; 
-}
-.kpi-card.primary .kpi-label,
-.kpi-card.primary .kpi-value {
-    color: white;
-}
 .kpi-card.warning { 
     background: linear-gradient(135deg, #f59e0b, #d97706); 
     border: none; 
-}
-.kpi-card.warning .kpi-label,
-.kpi-card.warning .kpi-value {
-    color: white;
 }
 .kpi-card.success { 
     background: linear-gradient(135deg, #10b981, #059669); 
     border: none; 
 }
+.kpi-card.warning .kpi-label,
+.kpi-card.warning .kpi-value,
 .kpi-card.success .kpi-label,
 .kpi-card.success .kpi-value {
     color: white;
@@ -690,7 +661,6 @@ main {
     font-size: 1.5rem;
     color: var(--primary);
 }
-.kpi-card.primary .kpi-icon,
 .kpi-card.warning .kpi-icon,
 .kpi-card.success .kpi-icon {
     color: white;
@@ -774,7 +744,12 @@ main {
     opacity: 0.5; 
     cursor: not-allowed; 
     pointer-events: none; 
-    filter: grayscale(0.8); 
+    filter: grayscale(0.6); 
+    border-color: var(--border) !important;
+    background: var(--dark-light) !important;
+}
+.day.future .day-icon {
+    opacity: 0.5;
 }
 .day-number { 
     font-size: 1rem; 
@@ -830,9 +805,6 @@ main {
 .legend-icon { 
     font-size: 1.1rem; 
 }
-.legend-text { 
-    font-weight: 500; 
-}
 
 /* Статистика в ряд */
 .stats-row {
@@ -858,12 +830,12 @@ main {
     font-size: 1.8rem; 
     color: var(--primary); 
 }
-.stat-box .stat-label { 
+.stat-label { 
     font-size: 0.75rem; 
     color: var(--text-muted); 
     display: block; 
 }
-.stat-box .stat-value { 
+.stat-value { 
     font-size: 1.1rem; 
     font-weight: 600; 
     color: var(--text); 
@@ -981,7 +953,8 @@ main {
     color: var(--text-muted); 
     margin-bottom: 5px; 
 }
-.profile-field input {
+.profile-field input,
+.profile-field select {
     width: 100%; 
     padding: 12px; 
     background: var(--dark-light); 
@@ -991,7 +964,8 @@ main {
     font-size: 0.95rem; 
     transition: all 0.3s;
 }
-.profile-field input:focus { 
+.profile-field input:focus,
+.profile-field select:focus { 
     outline: none; 
     border-color: var(--primary); 
     box-shadow: 0 0 0 3px rgba(0,176,96,0.2); 
@@ -1082,6 +1056,7 @@ main {
     font-size: 0.85rem;
 }
 
+/* Input группы */
 .input-group { 
     position: relative; 
     margin-bottom: 15px; 
@@ -1116,7 +1091,7 @@ main {
     font-size: 0.85rem; 
 }
 
-/* ЧЕКБОКС */
+/* Чекбоксы */
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -1146,10 +1121,6 @@ main {
 .finance-month-info h3 {
     color: var(--primary);
     font-size: 1.2rem;
-}
-.finance-month-info span {
-    color: var(--text);
-    font-weight: 700;
 }
 .pie-chart-container { 
     position: relative; 
@@ -1526,18 +1497,6 @@ main {
     gap: 8px; 
     color: var(--text);
 }
-.chart-legend { 
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-.chart-legend span { 
-    color: var(--text-muted); 
-    font-size: 0.9rem; 
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
 
 /* МОДАЛКА ДНЯ */
 .day-modal {
@@ -1717,6 +1676,17 @@ main {
     animation: slideInUp 0.5s ease;
 }
 
+/* Погодные эффекты */
+#weather-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
 /* Адаптация для мобильных */
 @media (max-width: 480px) {
     .kpi-value { font-size: 1.1rem; }
@@ -1730,9 +1700,6 @@ main {
     .nav-btn { padding: 8px 10px; font-size: 0.8rem; }
     .nav-btn i { font-size: 1rem; }
     .theme-btn { font-size: 0.8rem; padding: 8px; }
-    .theme-selector {
-        grid-template-columns: repeat(2, 1fr);
-    }
     .header-widget {
         width: 100%;
         min-width: auto;
@@ -1741,39 +1708,3 @@ main {
         justify-content: center;
     }
 }
-/* Погодные эффекты */
-#weather-particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-}
-
-/* Чекбоксы и селекты */
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 10px 0;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-.checkbox-group input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-}
-.profile-field select {
-    width: 100%;
-    padding: 12px;
-    background: var(--dark-light);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.95rem;
-}
-
-
