@@ -1,4 +1,4 @@
-// modules/important-dates.js - С ПОДДЕРЖКОЙ ПЕРЕВОДА
+// modules/important-dates.js - С РАБОЧИМ ПЕРЕВОДОМ
 
 (function() {
     console.log('🔥 Модуль важных дат запущен');
@@ -19,11 +19,24 @@
                 'Сочельник': 'Сочельник',
                 'Рождество': 'Рождество'
             },
+            dayTypes: {
+                'Смена': 'Смена',
+                'Ночная': 'Ночная',
+                'Переработки': 'Переработки',
+                'Суббота': 'Суббота',
+                'Воскресенье': 'Воскресенье',
+                'Надчасы': 'Надчасы',
+                'Больничный': 'Больничный',
+                'Отпуск': 'Отпуск',
+                'Перепустка': 'Перепустка',
+                'Выходной': 'Выходной'
+            },
             legend: 'Важные даты',
             past: 'прошло',
             today: 'сегодня',
             tomorrow: 'завтра',
-            days: 'дн.'
+            days: 'дн.',
+            upcoming: 'Ближайшие даты'
         },
         sk: {
             salary: 'Deň výplaty',
@@ -39,11 +52,24 @@
                 'Сочельник': 'Štedrý deň',
                 'Рождество': 'Vianoce'
             },
+            dayTypes: {
+                'Смена': 'Zmena',
+                'Ночная': 'Nočná',
+                'Переработки': 'Nadčasy',
+                'Суббота': 'Sobota',
+                'Воскресенье': 'Nedeľa',
+                'Надчасы': 'Nadčasy',
+                'Больничный': 'PN',
+                'Отпуск': 'Dovolenka',
+                'Перепустка': 'Lekár',
+                'Выходной': 'Voľno'
+            },
             legend: 'Dôležité dátumy',
             past: 'prešlo',
             today: 'dnes',
             tomorrow: 'zajtra',
-            days: 'dní'
+            days: 'dní',
+            upcoming: 'Najbližšie dátumy'
         },
         en: {
             salary: 'Payday',
@@ -59,11 +85,24 @@
                 'Сочельник': 'Christmas Eve',
                 'Рождество': 'Christmas'
             },
+            dayTypes: {
+                'Смена': 'Shift',
+                'Ночная': 'Night',
+                'Переработки': 'Overtime',
+                'Суббота': 'Saturday',
+                'Воскресенье': 'Sunday',
+                'Надчасы': 'Extra',
+                'Больничный': 'Sick',
+                'Отпуск': 'Vacation',
+                'Перепустка': 'Doctor',
+                'Выходной': 'Day off'
+            },
             legend: 'Important Dates',
             past: 'past',
             today: 'today',
             tomorrow: 'tomorrow',
-            days: 'days'
+            days: 'days',
+            upcoming: 'Upcoming Dates'
         },
         uk: {
             salary: 'День зарплати',
@@ -79,17 +118,58 @@
                 'Сочельник': 'Святвечір',
                 'Рождество': 'Різдво'
             },
+            dayTypes: {
+                'Смена': 'Зміна',
+                'Ночная': 'Нічна',
+                'Переработки': 'Понаднормові',
+                'Суббота': 'Субота',
+                'Воскресенье': 'Неділя',
+                'Надчасы': 'Надгодини',
+                'Больничный': 'Лікарняний',
+                'Отпуск': 'Відпустка',
+                'Перепустка': 'Перепустка',
+                'Выходной': 'Вихідний'
+            },
             legend: 'Важливі дати',
             past: 'минуло',
             today: 'сьогодні',
             tomorrow: 'завтра',
-            days: 'дн.'
+            days: 'дн.',
+            upcoming: 'Найближчі дати'
         }
     };
 
     // ПОЛУЧАЕМ ТЕКУЩИЙ ЯЗЫК
     function getCurrentLanguage() {
         return document.documentElement.lang || 'ru';
+    }
+
+    // ПОЛУЧАЕМ ПЕРЕВОД
+    function t(key, category = null, subKey = null) {
+        const lang = getCurrentLanguage();
+        
+        if (category && subKey && translations[lang]?.[category]?.[subKey]) {
+            return translations[lang][category][subKey];
+        }
+        
+        if (category && translations[lang]?.[category]?.[key]) {
+            return translations[lang][category][key];
+        }
+        
+        if (translations[lang]?.[key]) {
+            return translations[lang][key];
+        }
+        
+        // Fallback to Russian
+        if (category && subKey && translations.ru?.[category]?.[subKey]) {
+            return translations.ru[category][subKey];
+        }
+        
+        if (category && translations.ru?.[category]?.[key]) {
+            return translations.ru[category][key];
+        }
+        
+        return translations.ru?.[key] || key;
     }
 
     // ВСЕ ПРАЗДНИКИ 2026 ПО МЕСЯЦАМ
@@ -135,6 +215,20 @@
             { day: 26, name: 'Рождество', icon: '🎁', shortName: 'Рождество' }
         ]
     };
+
+    // ТИПЫ ДНЕЙ ДЛЯ ЛЕГЕНДЫ
+    const dayTypes = [
+        { color: '#f39c12', icon: '💼', name: 'Смена' },
+        { color: '#2c3e50', icon: '🌙', name: 'Ночная' },
+        { color: '#e74c3c', icon: '⏰', name: 'Переработки' },
+        { color: '#8e44ad', icon: '📆', name: 'Суббота' },
+        { color: '#f39c12', icon: '☀️', name: 'Воскресенье' },
+        { color: '#27ae60', icon: '➕', name: 'Надчасы' },
+        { color: '#7f8c8d', icon: '🤒', name: 'Больничный' },
+        { color: '#f1c40f', icon: '🏖️', name: 'Отпуск' },
+        { color: '#9b59b6', icon: '🩺', name: 'Перепустка' },
+        { color: '#2c3e50', icon: '❌', name: 'Выходной' }
+    ];
 
     // ПОЛУЧАЕМ 3-Й РАБОЧИЙ ДЕНЬ
     function getSalaryDay(month, year = 2026) {
@@ -210,15 +304,6 @@
         return type === 'salary' ? '#00b060' : '#f59e0b';
     }
 
-    // ПОЛУЧАЕМ ПЕРЕВОД
-    function getTranslation(key, holidayName = null) {
-        const lang = getCurrentLanguage();
-        if (holidayName && translations[lang]?.holidays?.[holidayName]) {
-            return translations[lang].holidays[holidayName];
-        }
-        return translations[lang]?.[key] || translations.ru[key] || key;
-    }
-
     // ОБНОВЛЕНИЕ КАЛЕНДАРЯ
     function updateCalendar() {
         const month = getCurrentMonth();
@@ -256,7 +341,7 @@
                         const icon = document.createElement('span');
                         icon.className = 'day-icon-important';
                         icon.textContent = '💰';
-                        icon.title = getTranslation('salary');
+                        icon.title = t('salary');
                         container.appendChild(icon);
                     }
                     
@@ -265,7 +350,7 @@
                         const icon = document.createElement('span');
                         icon.className = 'day-icon-important';
                         icon.textContent = holiday.icon;
-                        icon.title = getTranslation('holidays', holiday.name);
+                        icon.title = t(holiday.name, 'holidays');
                         container.appendChild(icon);
                     }
                 }
@@ -278,23 +363,9 @@
         const legendContainer = document.querySelector('.calendar-legend');
         if (!legendContainer) return;
 
-        // Очищаем контейнер от старых элементов
+        // Очищаем контейнер
         const existingLegend = document.getElementById('unified-legend');
         if (existingLegend) existingLegend.remove();
-
-        // Собираем все типы дней из основной легенды
-        const dayTypes = [
-            { color: '#f39c12', icon: '💼', name: 'Смена' },
-            { color: '#2c3e50', icon: '🌙', name: 'Ночная' },
-            { color: '#e74c3c', icon: '⏰', name: 'Переработки' },
-            { color: '#8e44ad', icon: '📆', name: 'Суббота' },
-            { color: '#f39c12', icon: '☀️', name: 'Воскресенье' },
-            { color: '#27ae60', icon: '➕', name: 'Надчасы' },
-            { color: '#7f8c8d', icon: '🤒', name: 'Больничный' },
-            { color: '#f1c40f', icon: '🏖️', name: 'Отпуск' },
-            { color: '#9b59b6', icon: '🩺', name: 'Перепустка' },
-            { color: '#2c3e50', icon: '❌', name: 'Выходной' }
-        ];
 
         // Собираем все уникальные праздники
         const allHolidays = [];
@@ -313,44 +384,48 @@
             return aDay - bDay;
         });
 
-        const lang = getCurrentLanguage();
-
         const unifiedLegendHTML = `
             <div id="unified-legend" class="unified-legend">
                 <div class="legend-section">
                     <div class="legend-title">
                         <i class="fas fa-calendar-day"></i>
-                        <span>Типы дней</span>
+                        <span>${t('dayTypesTitle', null, null) || 'Типы дней'}</span>
                     </div>
                     <div class="legend-items">
-                        ${dayTypes.map(d => `
-                            <div class="legend-item" title="${d.name}">
-                                <span class="legend-color" style="background: ${d.color};"></span>
-                                <span class="legend-icon">${d.icon}</span>
-                                <span class="legend-text" data-lang="${d.name.toLowerCase()}">${d.name}</span>
-                            </div>
-                        `).join('')}
+                        ${dayTypes.map(d => {
+                            const translatedName = t(d.name, 'dayTypes');
+                            return `
+                                <div class="legend-item" title="${translatedName}">
+                                    <span class="legend-color" style="background: ${d.color};"></span>
+                                    <span class="legend-icon">${d.icon}</span>
+                                    <span class="legend-text">${translatedName}</span>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                 </div>
                 
                 <div class="legend-section">
                     <div class="legend-title">
                         <i class="fas fa-star" style="color: var(--primary);"></i>
-                        <span data-lang="importantDates">Важные даты</span>
+                        <span>${t('legend')}</span>
                     </div>
                     <div class="legend-items">
-                        <div class="legend-item" title="${getTranslation('salary')}">
+                        <div class="legend-item" title="${t('salary')}">
                             <span class="legend-color" style="background: #00b060;"></span>
                             <span class="legend-icon">💰</span>
-                            <span class="legend-text">${getTranslation('salary')}</span>
+                            <span class="legend-text">${t('salary')}</span>
                         </div>
-                        ${allHolidays.map(h => `
-                            <div class="legend-item" title="${h.name}">
-                                <span class="legend-color" style="background: #f59e0b;"></span>
-                                <span class="legend-icon">${h.icon}</span>
-                                <span class="legend-text">${getTranslation('holidays', h.name) || h.shortName}</span>
-                            </div>
-                        `).join('')}
+                        ${allHolidays.map(h => {
+                            const translatedName = t(h.name, 'holidays');
+                            return `
+                                <div class="legend-item" title="${translatedName}">
+                                    <span class="legend-color" style="background: #f59e0b;"></span>
+                                    <span class="legend-icon">${h.icon}</span>
+                                    <span class="legend-text">${translatedName}</span>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             </div>
@@ -364,7 +439,6 @@
         const currentDate = getCurrentDate();
         const selectedMonth = getCurrentMonth();
         const year = 2026;
-        const lang = getCurrentLanguage();
         
         const oldWidget = document.getElementById('importantDatesWidget');
         if (oldWidget) oldWidget.remove();
@@ -377,9 +451,9 @@
             day: salaryDay,
             month: selectedMonth,
             type: 'salary',
-            name: getTranslation('salary'),
+            name: t('salary'),
             icon: '💰',
-            fullName: getTranslation('salary')
+            fullName: t('salary')
         });
         
         // Добавляем праздники
@@ -388,7 +462,7 @@
                 day: h.day,
                 month: selectedMonth,
                 type: 'holiday',
-                name: getTranslation('holidays', h.name) || h.shortName,
+                name: t(h.name, 'holidays'),
                 fullName: h.name,
                 icon: h.icon
             });
@@ -414,16 +488,16 @@
             let badgeClass = '';
             
             if (diff < 0) {
-                badge = getTranslation('past');
+                badge = t('past');
                 badgeClass = 'past';
             } else if (diff === 0) {
-                badge = getTranslation('today');
+                badge = t('today');
                 badgeClass = 'today';
             } else if (diff === 1) {
-                badge = getTranslation('tomorrow');
+                badge = t('tomorrow');
                 badgeClass = 'tomorrow';
             } else {
-                badge = `${diff} ${getTranslation('days')}`;
+                badge = `${diff} ${t('days')}`;
                 badgeClass = 'future';
             }
             
@@ -445,7 +519,7 @@
         widget.innerHTML = `
             <div class="widget-header">
                 <i class="fas fa-calendar-alt" style="color: var(--primary);"></i>
-                <h3 data-lang="importantDates">Ближайшие даты</h3>
+                <h3>${t('upcoming')}</h3>
             </div>
             <div class="widget-items">
                 ${itemsHTML}
@@ -698,9 +772,13 @@
     // Следим за сменой языка
     function watchLanguageChanges() {
         const observer = new MutationObserver(() => {
+            console.log('🔄 Язык изменен, обновляем интерфейс');
             createUnifiedLegend();
             if (document.getElementById('dashboard').classList.contains('active')) {
                 createBeautifulWidget();
+            }
+            if (document.getElementById('calendar').classList.contains('active')) {
+                updateCalendar();
             }
         });
         
