@@ -4,7 +4,7 @@ import { getCurrentUser, updateUserData } from './auth.js';
 import { showNotification, t } from './utils.js';
 
 // Обновление финансовой статистики
-window.updateFinanceStats = function() {
+export function updateFinanceStats() {
     const dashboardNet = parseFloat(document.getElementById('net')?.innerText) || 0;
     const dashboardGross = parseFloat(document.getElementById('gross')?.innerText) || 0;
     const dashboardLunch = parseFloat(document.getElementById('lunchCost')?.innerText) || 0;
@@ -31,7 +31,7 @@ window.updateFinanceStats = function() {
         Math.max(dashboardLunch, 0.01),
         Math.max(savings, 0.01)
     );
-};
+}
 
 // Построение круговой диаграммы
 function buildPieChart(net, tax, lunch, savings) {
@@ -87,7 +87,7 @@ function buildPieChart(net, tax, lunch, savings) {
 }
 
 // Загрузка финансовой цели
-window.loadFinancialGoal = function() {
+export function loadFinancialGoal() {
     const user = getCurrentUser();
     if (!user) return;
     
@@ -125,7 +125,7 @@ window.loadFinancialGoal = function() {
         if (goalInputs) goalInputs.style.display = 'flex';
         if (goalProgress) goalProgress.style.display = 'none';
     }
-};
+}
 
 // Обновление отображения цели
 function updateGoalDisplay() {
@@ -167,7 +167,7 @@ function updateHistoryList() {
 }
 
 // Сохранение цели
-window.saveGoal = async function() {
+export async function saveGoal() {
     const user = getCurrentUser();
     if (!user) return;
     
@@ -182,11 +182,11 @@ window.saveGoal = async function() {
     await updateUserData({ financialGoal: user.financialGoal });
     
     showNotification('Цель сохранена');
-    window.loadFinancialGoal();
-};
+    loadFinancialGoal();
+}
 
 // Удаление цели
-window.clearGoal = async function() {
+export async function clearGoal() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
     
@@ -194,12 +194,12 @@ window.clearGoal = async function() {
         user.financialGoal = null;
         await updateUserData({ financialGoal: null });
         showNotification('Цель удалена');
-        window.loadFinancialGoal();
+        loadFinancialGoal();
     }
-};
+}
 
 // Добавление к цели
-window.addToGoal = async function() {
+export async function addToGoal() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
     
@@ -216,12 +216,12 @@ window.addToGoal = async function() {
     });
     
     await updateUserData({ financialGoal: user.financialGoal });
-    window.loadFinancialGoal();
+    loadFinancialGoal();
     showNotification(`Добавлено ${amount} €`);
-};
+}
 
 // Снятие с цели
-window.withdrawFromGoal = async function() {
+export async function withdrawFromGoal() {
     const user = getCurrentUser();
     if (!user?.financialGoal) return;
     
@@ -239,12 +239,14 @@ window.withdrawFromGoal = async function() {
     });
     
     await updateUserData({ financialGoal: user.financialGoal });
-    window.loadFinancialGoal();
+    loadFinancialGoal();
     showNotification(`Снято ${amount} €`);
-};
+}
 
-// Делаем функции глобальными
-window.saveGoal = window.saveGoal;
-window.clearGoal = window.clearGoal;
-window.addToGoal = window.addToGoal;
-window.withdrawFromGoal = window.withdrawFromGoal;
+// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
+window.updateFinanceStats = updateFinanceStats;
+window.loadFinancialGoal = loadFinancialGoal;
+window.saveGoal = saveGoal;
+window.clearGoal = clearGoal;
+window.addToGoal = addToGoal;
+window.withdrawFromGoal = withdrawFromGoal;
