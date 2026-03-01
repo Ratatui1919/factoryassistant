@@ -23,6 +23,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Прелоадер */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader {
+            text-align: center;
+        }
+        .loader img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--dark-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         /* Дополнительные стили для красивого блока курса валют */
         .exchange-rate-card {
             background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
@@ -162,9 +202,24 @@
             padding-top: 15px;
             border-top: 1px solid var(--border);
         }
+        
+        /* Скрываем модалку пока идет проверка */
+        .modal[style*="display: flex"]:not(.show) {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
+    <!-- Прелоадер -->
+    <div id="preloader">
+        <div class="loader">
+            <div class="loader-spinner"></div>
+            <img src="assets/vaillant-logo.png" alt="Vaillant">
+            <h2 style="color: var(--primary);">Vaillant Assistant</h2>
+            <p style="color: var(--text-muted);">Загрузка...</p>
+        </div>
+    </div>
+
     <!-- Модалка авторизации -->
     <div class="modal" id="authModal">
         <div class="modal-content auth-card">
