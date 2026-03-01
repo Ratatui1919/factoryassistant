@@ -1,7 +1,7 @@
-// modules/finance.js - ФИНАНСЫ (УПРОЩЕННАЯ)
+// modules/finance.js - ФИНАНСЫ (ФИНАЛЬНАЯ ВЕРСИЯ)
 
 import { getCurrentUser, updateUserData } from './auth.js';
-import { showNotification, t } from './utils.js';
+import { showNotification } from './utils.js';
 
 // Обновление финансовой статистики
 export function updateFinanceStats() {
@@ -43,9 +43,12 @@ function buildPieChart(net, tax, lunch, savings) {
     canvas.width = canvas.parentElement?.clientWidth || 300;
     canvas.height = canvas.parentElement?.clientHeight || 300;
     
+    // Безопасное уничтожение графика
     if (window.pieChart) {
         try {
-            window.pieChart.destroy();
+            if (typeof window.pieChart.destroy === 'function') {
+                window.pieChart.destroy();
+            }
         } catch (e) {
             console.warn('Ошибка при уничтожении графика:', e);
         }
@@ -89,7 +92,8 @@ export function loadFinancialGoal() {
     
     const user = getCurrentUser();
     if (!user) {
-        console.log('loadFinancialGoal: пользователь не найден');
+        console.log('loadFinancialGoal: пользователь не найден, пробуем через 500ms');
+        setTimeout(loadFinancialGoal, 500);
         return;
     }
     
@@ -169,7 +173,7 @@ function updateHistoryList() {
     let html = '';
     user.financialGoal.history.slice().reverse().slice(0, 10).forEach(item => {
         html += `<div class="history-item">
-            <span>${item.type === 'add' ? '➕' : '➖'} ${item.date}</span>
+            <span>${item.type === 'add' ? '➕' : '➖'} ${new Date(item.date).toLocaleString()}</span>
             <span style="color:${item.type === 'add' ? '#00b060' : '#ef4444'}">${item.type === 'add' ? '+' : '-'}${item.amount.toFixed(2)} €</span>
             <span style="color:#94a3b8;">(баланс: ${item.balance.toFixed(2)} €)</span>
         </div>`;
@@ -222,7 +226,7 @@ export async function addToGoal() {
     user.financialGoal.history.push({ 
         type: 'add', 
         amount, 
-        date: new Date().toLocaleString(), 
+        date: new Date().toISOString(), 
         balance: user.financialGoal.saved 
     });
     
@@ -245,7 +249,7 @@ export async function withdrawFromGoal() {
     user.financialGoal.history.push({ 
         type: 'withdraw', 
         amount, 
-        date: new Date().toLocaleString(), 
+        date: new Date().toISOString(), 
         balance: user.financialGoal.saved 
     });
     
