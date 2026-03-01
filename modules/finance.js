@@ -1,9 +1,9 @@
-// modules/finance.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// modules/finance.js - ФИНАНСЫ (ИСПРАВЛЕННЫЙ)
 
 import { getCurrentUser, updateUserData } from './auth.js';
 import { showNotification } from './utils.js';
 
-let financialGoalLoaded = false; // Флаг, чтобы не грузить много раз
+let financialGoalLoaded = false;
 
 export function updateFinanceStats() {
     const dashboardNet = parseFloat(document.getElementById('net')?.innerText) || 0;
@@ -88,20 +88,12 @@ function buildPieChart(net, tax, lunch, savings) {
 export function loadFinancialGoal() {
     console.log('loadFinancialGoal вызван');
     
-    if (financialGoalLoaded) {
-        console.log('Финансовая цель уже загружена, пропускаем');
-        return;
-    }
-    
     const user = getCurrentUser();
-    console.log('getCurrentUser вернул:', user);
-    
     if (!user) {
         console.log('loadFinancialGoal: пользователь не найден');
         return;
     }
     
-    financialGoalLoaded = true;
     console.log('Загрузка финансовой цели пользователя:', user.financialGoal);
     
     const goal = user.financialGoal;
@@ -184,6 +176,8 @@ function updateHistoryList() {
     historyList.innerHTML = html || '<div style="color:#94a3b8;">История пуста</div>';
 }
 
+// ===== ИСПРАВЛЕННЫЕ ФУНКЦИИ С МГНОВЕННЫМ ОБНОВЛЕНИЕМ =====
+
 export async function saveGoal() {
     const user = getCurrentUser();
     if (!user) return;
@@ -195,12 +189,35 @@ export async function saveGoal() {
         return alert('Введите название и сумму цели');
     }
     
-    user.financialGoal = { name, amount, saved: 0, history: [], date: new Date().toISOString() };
+    // Создаем новую цель
+    user.financialGoal = { 
+        name, 
+        amount, 
+        saved: 0, 
+        history: [], 
+        date: new Date().toISOString() 
+    };
+    
+    // Сохраняем в Firebase
     await updateUserData({ financialGoal: user.financialGoal });
     
+    // Мгновенно обновляем интерфейс
+    const goalInputs = document.querySelector('.goal-inputs');
+    const goalProgress = document.getElementById('goalProgress');
+    const goalActions = document.getElementById('goalActions');
+    const goalNameDisplay = document.getElementById('goalNameDisplay');
+    const goalTarget = document.getElementById('goalTarget');
+    
+    if (goalNameDisplay) goalNameDisplay.innerText = name;
+    if (goalTarget) goalTarget.innerText = amount.toFixed(2) + ' €';
+    if (goalInputs) goalInputs.style.display = 'none';
+    if (goalProgress) goalProgress.style.display = 'block';
+    if (goalActions) goalActions.style.display = 'flex';
+    
+    // Обновляем отображение цели
+    updateGoalDisplay();
+    
     showNotification('Цель сохранена');
-    financialGoalLoaded = false; // Сбрасываем флаг, чтобы перезагрузить
-    loadFinancialGoal();
 }
 
 export async function clearGoal() {
@@ -210,9 +227,19 @@ export async function clearGoal() {
     if (confirm('Удалить цель?')) {
         user.financialGoal = null;
         await updateUserData({ financialGoal: null });
+        
+        // Мгновенно обновляем интерфейс
+        const goalInputs = document.querySelector('.goal-inputs');
+        const goalProgress = document.getElementById('goalProgress');
+        const goalName = document.getElementById('goalName');
+        const goalAmount = document.getElementById('goalAmount');
+        
+        if (goalName) goalName.value = '';
+        if (goalAmount) goalAmount.value = '';
+        if (goalInputs) goalInputs.style.display = 'flex';
+        if (goalProgress) goalProgress.style.display = 'none';
+        
         showNotification('Цель удалена');
-        financialGoalLoaded = false; // Сбрасываем флаг
-        loadFinancialGoal();
     }
 }
 
@@ -223,6 +250,7 @@ export async function addToGoal() {
     const amount = parseFloat(prompt('Сколько добавить?', '100'));
     if (isNaN(amount) || amount <= 0) return alert('Введите сумму');
     
+    // Обновляем данные
     user.financialGoal.saved = (user.financialGoal.saved || 0) + amount;
     user.financialGoal.history = user.financialGoal.history || [];
     user.financialGoal.history.push({ 
@@ -232,8 +260,12 @@ export async function addToGoal() {
         balance: user.financialGoal.saved 
     });
     
+    // Сохраняем в Firebase
     await updateUserData({ financialGoal: user.financialGoal });
-    loadFinancialGoal();
+    
+    // Мгновенно обновляем интерфейс
+    updateGoalDisplay();
+    
     showNotification(`Добавлено ${amount} €`);
 }
 
@@ -245,6 +277,7 @@ export async function withdrawFromGoal() {
     if (isNaN(amount) || amount <= 0) return alert('Введите сумму');
     if (amount > (user.financialGoal.saved || 0)) return alert('Недостаточно средств');
     
+    // Обновляем данные
     user.financialGoal.saved -= amount;
     user.financialGoal.history = user.financialGoal.history || [];
     user.financialGoal.history.push({ 
@@ -254,11 +287,16 @@ export async function withdrawFromGoal() {
         balance: user.financialGoal.saved 
     });
     
+    // Сохраняем в Firebase
     await updateUserData({ financialGoal: user.financialGoal });
-    loadFinancialGoal();
+    
+    // Мгновенно обновляем интерфейс
+    updateGoalDisplay();
+    
     showNotification(`Снято ${amount} €`);
 }
 
+// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
 window.updateFinanceStats = updateFinanceStats;
 window.loadFinancialGoal = loadFinancialGoal;
 window.saveGoal = saveGoal;
