@@ -1,4 +1,4 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ (УПРОЩЕННЫЙ)
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ФИНАЛЬНАЯ ВЕРСИЯ)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
@@ -64,6 +64,12 @@ async function loadAllUserData(user) {
                 const saturdayBonus = document.getElementById('saturdayBonus');
                 const sundayBonus = document.getElementById('sundayBonus');
                 const extraBonus = document.getElementById('extraBonus');
+                const personalDoctorDays = document.getElementById('personalDoctorDays');
+                const accompanyDoctorDays = document.getElementById('accompanyDoctorDays');
+                const usedPersonalDoctor = document.getElementById('usedPersonalDoctor');
+                const usedAccompanyDoctor = document.getElementById('usedAccompanyDoctor');
+                const usedWeekends = document.getElementById('usedWeekends');
+                const accruedWeekendsInput = document.getElementById('accruedWeekendsInput');
                 
                 if (hourlyRate) hourlyRate.value = userData.settings.hourlyRate || 6.10;
                 if (lunchCost) lunchCost.value = userData.settings.lunchCost || 1.31;
@@ -71,6 +77,12 @@ async function loadAllUserData(user) {
                 if (saturdayBonus) saturdayBonus.value = userData.settings.saturdayBonus || 1.5;
                 if (sundayBonus) sundayBonus.value = userData.settings.sundayBonus || 2.0;
                 if (extraBonus) extraBonus.value = userData.settings.extraBonus || 25;
+                if (personalDoctorDays) personalDoctorDays.value = userData.settings.personalDoctorDays || 7;
+                if (accompanyDoctorDays) accompanyDoctorDays.value = userData.settings.accompanyDoctorDays || 6;
+                if (usedPersonalDoctor) usedPersonalDoctor.value = userData.settings.usedPersonalDoctor || 0;
+                if (usedAccompanyDoctor) usedAccompanyDoctor.value = userData.settings.usedAccompanyDoctor || 0;
+                if (usedWeekends) usedWeekends.value = userData.settings.usedWeekends || 0;
+                if (accruedWeekendsInput) accruedWeekendsInput.value = userData.settings.accruedWeekends || 0;
             }
             
             // Аватар
@@ -89,11 +101,6 @@ async function loadAllUserData(user) {
             if (userName) userName.textContent = displayName;
             if (profileName) profileName.textContent = displayName;
             
-            // Финансовая цель
-            setTimeout(() => {
-                if (window.loadFinancialGoal) window.loadFinancialGoal();
-            }, 200);
-            
             // Обновляем отображение
             if (window.updateMonthDisplay) window.updateMonthDisplay();
             if (window.buildCalendar) window.buildCalendar();
@@ -104,7 +111,16 @@ async function loadAllUserData(user) {
             if (window.updateWeather) window.updateWeather();
             if (window.updateFinancialTip) window.updateFinancialTip();
             if (window.updateExchangeRate) window.updateExchangeRate();
-        }, 100);
+            
+            // Загружаем финансовую цель ПОСЛЕ всего
+            setTimeout(() => {
+                if (window.loadFinancialGoal) {
+                    console.log('Вызов loadFinancialGoal из main');
+                    window.loadFinancialGoal();
+                }
+            }, 500);
+            
+        }, 200);
         
         return true;
     } catch (error) {
@@ -190,9 +206,13 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
+        // Перезагружаем финансовую цель при переходе на вкладку
         setTimeout(() => {
-            if (window.loadFinancialGoal) window.loadFinancialGoal();
-        }, 100);
+            if (window.loadFinancialGoal) {
+                console.log('Вызов loadFinancialGoal из setView');
+                window.loadFinancialGoal();
+            }
+        }, 200);
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
