@@ -213,12 +213,36 @@
                     </div>
                 </div>
 
-                <!-- Курс валют -->
-                <div class="exchange-rate-info glass-effect" style="margin-top: 15px; margin-bottom: 15px; padding: 15px; border-radius: 16px; text-align: center;">
-                    <div id="exchangeRate" class="exchange-rate" style="font-size: 1.1rem; font-weight: 600;">
-                        <i class="fas fa-euro-sign"></i> € → <i class="fas fa-hryvnia"></i> ₴ ...
+                <!-- Курс валют - красивый блок -->
+                <div class="exchange-rate-card glass-effect" style="margin: 20px 0; padding: 20px; border-radius: 20px; background: linear-gradient(135deg, var(--dark-card), var(--dark-light));">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.5rem;"></i>
+                            <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
+                        </div>
+                        <button class="btn-small" onclick="window.updateExchangeRate()" style="padding: 5px 15px;">
+                            <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
+                        </button>
                     </div>
-                    <div id="toUAH" class="exchange-rate-label" data-lang="toUAH" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">до гривни</div>
+                    
+                    <div id="exchangeRate" style="margin: 15px 0; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                            <span style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.5rem;"></i>
+                                <span style="font-weight: 600; font-size: 1.2rem;">1 EUR</span>
+                            </span>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 1.2rem;"></i>
+                            <span style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.5rem;"></i>
+                                <span style="font-weight: 700; font-size: 1.8rem; color: var(--primary);">42.50</span>
+                                <span style="color: var(--text-muted);">UAH</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div id="lastRateUpdate" style="text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+                        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: --
+                    </div>
                 </div>
 
                 <div class="stats-row">
@@ -289,16 +313,21 @@
                 </div>
             </section>
 
-            <!-- СТАТИСТИКА -->
+            <!-- СТАТИСТИКА С КНОПКОЙ РАССЧИТАТЬ -->
             <section id="stats" class="view">
                 <div class="stats-header">
                     <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Общая статистика</span></h2>
-                    <select id="yearSelectStats" onchange="window.loadYearStats()" class="glass-effect">
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026" selected>2026</option>
-                        <option value="2027">2027</option>
-                    </select>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="yearSelectStats" class="glass-effect" style="min-width: 120px;">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                        <button class="btn-primary" onclick="window.calculateYearStats()" style="padding: 10px 20px;">
+                            <i class="fas fa-calculator"></i> <span data-lang="calculate">Рассчитать</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="stats-grid">
@@ -307,7 +336,7 @@
                         <div>
                             <span class="stats-label" data-lang="totalEarned">Всего заработано</span>
                             <span class="stats-value" id="totalEarned">0 €</span>
-                            <span class="stats-value-small" id="totalEarnedUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
+                            <span class="stats-value-small" id="totalEarnedUAH" style="font-size: 0.9rem; color: var(--text-muted); display: block;"></span>
                         </div>
                     </div>
                     <div class="stats-card glass-effect">
@@ -322,7 +351,7 @@
                         <div>
                             <span class="stats-label" data-lang="totalLunch">Потрачено на обеды</span>
                             <span class="stats-value" id="totalLunch">0 €</span>
-                            <span class="stats-value-small" id="totalLunchUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
+                            <span class="stats-value-small" id="totalLunchUAH" style="font-size: 0.9rem; color: var(--text-muted); display: block;"></span>
                         </div>
                     </div>
                     <div class="stats-card glass-effect">
@@ -506,7 +535,7 @@
                             <span class="finance-value positive" id="financeNet">0 €</span>
                         </div>
                         <div class="finance-item">
-                            <span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">В гривнах</span></span>
+                            <span class="finance-label"><i class="fas fa-hryvnia" style="color:#ffd700;"></i> <span data-lang="netIncome">Чистый доход</span> <span data-lang="inUAH">в гривнах</span></span>
                             <span class="finance-value positive" id="financeNetUAH">0 ₴</span>
                         </div>
                         <div class="finance-item">
@@ -526,7 +555,7 @@
                             <span class="finance-value" id="financeGross">0 €</span>
                         </div>
                         <div class="finance-item">
-                            <span class="finance-label"><i class="fas fa-euro-sign"></i> <span data-lang="gross">Брутто в гривнах</span></span>
+                            <span class="finance-label"><i class="fas fa-hryvnia" style="color:#ffd700;"></i> <span data-lang="gross">Брутто</span> <span data-lang="inUAH">в гривнах</span></span>
                             <span class="finance-value" id="financeGrossUAH">0 ₴</span>
                         </div>
                     </div>
