@@ -34,7 +34,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 10000;
             transition: opacity 0.3s ease;
         }
         #preloader.hidden {
@@ -61,6 +61,12 @@
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        /* Стили для модалки авторизации */
+        #authModal {
+            display: none;
+            z-index: 10001;
         }
         
         /* Дополнительные стили для красивого блока курса валют */
@@ -202,15 +208,10 @@
             padding-top: 15px;
             border-top: 1px solid var(--border);
         }
-        
-        /* Скрываем модалку пока идет проверка */
-        .modal[style*="display: flex"]:not(.show) {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
-    <!-- Прелоадер -->
+    <!-- Прелоадер - виден только при первой загрузке -->
     <div id="preloader">
         <div class="loader">
             <div class="loader-spinner"></div>
@@ -220,8 +221,8 @@
         </div>
     </div>
 
-    <!-- Модалка авторизации -->
-    <div class="modal" id="authModal">
+    <!-- Модалка авторизации - по умолчанию скрыта -->
+    <div class="modal" id="authModal" style="display: none;">
         <div class="modal-content auth-card">
             <div class="auth-logo">
                 <img src="assets/vaillant-logo.png" alt="Vaillant">
@@ -908,10 +909,9 @@
 
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="app.js"></script>
+    
+    <!-- Подключаем модули -->
+    <link rel="stylesheet" href="modules/important-dates.css">
+    <script type="module" src="modules/important-dates.js"></script>
 </body>
 </html>
-
-<!-- Новые модули -->
-<link rel="stylesheet" href="modules/important-dates.css">
-<script type="module" src="modules/important-dates.js"></script>
-
