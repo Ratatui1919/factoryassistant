@@ -1,19 +1,68 @@
-/* css/mobile.css - СТИЛИ ДЛЯ ТЕЛЕФОНОВ */
+/* mobile-theme-1.css - Material You (Современный, округлый, с мягкими тенями) */
 
 @media (max-width: 768px) {
-    /* ===== ОСНОВНЫЕ НАСТРОЙКИ ===== */
+    /* ===== БАЗОВЫЕ НАСТРОЙКИ ===== */
     body {
         font-size: 14px;
+        background: #f8fafc;
+    }
+    
+    .theme-dark body {
+        background: #0f172a;
+    }
+    
+    /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+    nav {
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 40px;
+        border: 1px solid rgba(0, 176, 96, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 10px;
+        z-index: 1000;
+    }
+    
+    .theme-dark nav {
+        background: rgba(18, 22, 32, 0.9);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-btn {
+        flex: 1;
+        padding: 8px 0;
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        transition: all 0.3s;
+    }
+    
+    .nav-btn i {
+        font-size: 1.3rem;
+    }
+    
+    .nav-btn.active {
+        color: var(--primary);
+        background: rgba(0, 176, 96, 0.1);
     }
     
     /* ===== ХЕДЕР ===== */
     header {
-        padding: 0.8rem;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: var(--dark-card);
-        backdrop-filter: blur(10px);
+        padding: 12px 16px;
+        background: transparent;
+        border-bottom: none;
     }
     
     .header-left {
@@ -24,47 +73,22 @@
     }
     
     .logo h1 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, var(--primary), #00ff9d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     
     .header-badge {
-        font-size: 0.7rem;
-        padding: 3px 8px;
-    }
-    
-    .language-selector {
-        margin: 0;
-    }
-    
-    .lang-btn {
-        padding: 4px 8px;
-        font-size: 0.7rem;
-    }
-    
-    .header-right {
-        width: 100%;
-        margin-top: 10px;
+        display: none;
     }
     
     .header-widget {
-        width: 100%;
+        background: var(--dark-light);
+        border-radius: 40px;
+        padding: 6px 16px;
         min-width: auto;
-        padding: 6px 12px;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-    
-    .widget-time {
-        font-size: 0.85rem;
-    }
-    
-    .widget-date-weather {
-        font-size: 0.8rem;
-        gap: 8px;
-    }
-    
-    .weather-location {
-        display: none;
+        width: 100%;
     }
     
     .user-info {
@@ -72,590 +96,136 @@
     }
     
     .user-info img {
-        width: 30px;
-        height: 30px;
-    }
-    
-    .user-info span {
-        max-width: 80px;
-        font-size: 0.8rem;
+        width: 32px;
+        height: 32px;
     }
     
     .logout-btn {
-        width: 36px;
-        height: 36px;
-    }
-    
-    /* ===== НАВИГАЦИЯ ===== */
-    nav {
-        padding: 0.5rem;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        white-space: nowrap;
-        justify-content: flex-start;
-    }
-    
-    nav::-webkit-scrollbar {
-        display: none;
-    }
-    
-    .nav-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-        display: inline-flex;
-        white-space: nowrap;
-    }
-    
-    /* ===== МЕСЯЦ ===== */
-    .month-selector {
-        padding: 8px 12px;
-        margin-bottom: 15px;
-    }
-    
-    .month-selector h2 {
-        font-size: 1.1rem;
-        min-width: 140px;
-    }
-    
-    .month-selector button {
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
     }
     
     /* ===== KPI КАРТОЧКИ ===== */
     .kpi-grid {
-        gap: 8px;
-        margin-bottom: 15px;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px;
+        padding: 0 16px 16px;
+        margin: 0 -16px 16px;
+        scrollbar-width: none;
+    }
+    
+    .kpi-grid::-webkit-scrollbar {
+        display: none;
     }
     
     .kpi-card {
-        padding: 12px;
-        gap: 10px;
+        flex: 0 0 160px;
+        scroll-snap-align: start;
+        background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
+        border: none;
+        border-radius: 24px;
+        padding: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
     
     .kpi-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
+        width: 45px;
+        height: 45px;
+        border-radius: 20px;
     }
     
     .kpi-value {
-        font-size: 1.1rem;
-    }
-    
-    .kpi-label {
-        font-size: 0.65rem;
-    }
-    
-    /* ===== СТАТИСТИКА В РЯД ===== */
-    .stats-row {
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-    
-    .stat-box {
-        padding: 10px;
-        gap: 8px;
-    }
-    
-    .stat-box i {
         font-size: 1.3rem;
-    }
-    
-    .stat-value {
-        font-size: 0.95rem;
-    }
-    
-    .stat-label {
-        font-size: 0.65rem;
-    }
-    
-    /* ===== КАЛЕНДАРЬ ===== */
-    .calendar-weekdays span {
-        padding: 8px 2px;
-        font-size: 0.8rem;
-    }
-    
-    .calendar-grid {
-        gap: 4px;
-    }
-    
-    .day {
-        padding: 6px 2px;
-        min-height: 45px;
-    }
-    
-    .day-number {
-        font-size: 0.85rem;
-    }
-    
-    .day-icon {
-        font-size: 1rem;
-    }
-    
-    .day-icons-container {
-        min-height: 16px;
-    }
-    
-    .day-icon-important {
-        font-size: 0.8rem;
-    }
-    
-    /* ===== ЛЕГЕНДА ===== */
-    .calendar-legend {
-        padding: 12px;
-    }
-    
-    .legend-grid {
-        padding: 10px;
-        gap: 12px;
-    }
-    
-    .legend-title {
-        font-size: 0.9rem;
-        margin-bottom: 8px;
-    }
-    
-    .legend-items {
-        gap: 5px;
-    }
-    
-    .legend-item {
-        padding: 4px 8px;
-        font-size: 0.7rem;
-    }
-    
-    .legend-icon {
-        font-size: 0.9rem;
-    }
-    
-    .legend-text {
-        max-width: 70px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    
-    /* ===== ВИДЖЕТ ВАЖНЫХ ДАТ ===== */
-    .important-widget {
-        padding: 15px;
-        margin: 15px 0;
-    }
-    
-    .widget-header i {
-        font-size: 1.1rem;
-    }
-    
-    .widget-header h3 {
-        font-size: 1rem;
-    }
-    
-    .widget-item {
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .item-icon {
-        width: 35px;
-        height: 35px;
-        font-size: 1.1rem;
-    }
-    
-    .item-title {
-        font-size: 0.85rem;
-    }
-    
-    .item-date {
-        font-size: 0.7rem;
-    }
-    
-    .item-badge {
-        padding: 3px 8px;
-        font-size: 0.7rem;
     }
     
     /* ===== КУРС ВАЛЮТ ===== */
     .exchange-rate-card {
-        padding: 15px;
-        margin: 15px 0;
+        margin: 16px;
+        padding: 20px;
+        border-radius: 32px;
+        background: linear-gradient(135deg, #00b060, #009048);
+    }
+    
+    .exchange-rate-card .btn-primary {
+        background: white;
+        color: var(--primary);
+        border-radius: 40px;
+        padding: 8px 20px;
     }
     
     .currency-display {
-        gap: 10px;
-        padding: 10px;
-    }
-    
-    .currency-block {
-        padding: 5px 12px;
-    }
-    
-    .currency-icon {
-        width: 30px;
-        height: 30px;
-        font-size: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 60px;
+        padding: 12px;
     }
     
     .currency-value {
-        font-size: 1.4rem;
-    }
-    
-    .converter-box {
-        gap: 10px;
-    }
-    
-    .converter-input,
-    .converter-result {
-        min-width: 150px;
-    }
-    
-    .converter-input input {
-        padding: 8px;
-        font-size: 0.95rem;
-    }
-    
-    .result-number {
-        font-size: 1.1rem;
-    }
-    
-    .update-btn {
-        padding: 8px 15px;
-        font-size: 0.85rem;
-    }
-    
-    /* ===== ПРОФИЛЬ ===== */
-    .profile-header {
-        padding: 20px;
-        gap: 15px;
-    }
-    
-    .profile-avatar {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .avatar-upload {
-        width: 25px;
-        height: 25px;
-        font-size: 0.8rem;
-    }
-    
-    .profile-title h2 {
-        font-size: 1.3rem;
-    }
-    
-    .profile-title p {
-        font-size: 0.9rem;
-    }
-    
-    .profile-grid {
-        gap: 15px;
-    }
-    
-    .profile-card {
-        padding: 15px;
-    }
-    
-    .profile-card h3 {
-        font-size: 1rem;
-        margin-bottom: 15px;
-    }
-    
-    .profile-field {
-        margin-bottom: 12px;
-    }
-    
-    .profile-field input,
-    .profile-field select {
-        padding: 10px;
-        font-size: 0.9rem;
-    }
-    
-    .profile-actions {
-        gap: 8px;
-    }
-    
-    .profile-actions button {
-        padding: 10px;
-        font-size: 0.9rem;
+        color: white;
+        font-size: 2rem;
     }
     
     /* ===== СТАТИСТИКА ===== */
-    .stats-header {
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-    
-    .stats-header h2 {
-        font-size: 1.3rem;
-    }
-    
-    .stats-header select {
-        padding: 8px 15px;
-        font-size: 0.9rem;
-    }
-    
-    .stats-grid {
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-    
-    .stats-card {
-        padding: 12px;
-        gap: 10px;
-    }
-    
-    .stats-card i {
-        font-size: 1.4rem;
-    }
-    
-    .stats-value {
-        font-size: 1.1rem;
-    }
-    
-    .stats-label {
-        font-size: 0.7rem;
-    }
-    
-    /* ===== ФИНАНСЫ ===== */
-    .finance-month-info {
-        padding: 12px;
-    }
-    
-    .finance-month-info h3 {
-        font-size: 1rem;
-    }
-    
-    .pie-chart-container {
-        width: 200px;
-        height: 200px;
-    }
-    
-    .pie-total {
-        font-size: 1rem;
-    }
-    
-    .finance-details {
-        padding: 15px;
-    }
-    
-    .finance-item {
-        padding: 8px 0;
-        font-size: 0.9rem;
-    }
-    
-    .finance-item.total {
-        font-size: 1rem;
-    }
-    
-    .finance-goals {
-        padding: 15px;
-    }
-    
-    .goal-inputs {
-        gap: 10px;
-    }
-    
-    .goal-progress {
-        padding: 15px;
-    }
-    
-    .progress-stats {
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .goal-actions {
-        flex-direction: column;
-    }
-    
-    /* ===== ФИНАНСОВЫЕ СОВЕТЫ ===== */
-    .finance-tips {
-        padding: 15px;
-    }
-    
-    .finance-tips h4 {
-        font-size: 1rem;
-    }
-    
-    .finance-tips p {
-        font-size: 0.85rem;
-    }
-    
-    /* ===== PDF ИМПОРТ ===== */
-    .pdf-import {
-        padding: 15px;
-    }
-    
-    .pdf-label {
-        padding: 12px;
-        font-size: 0.9rem;
-    }
-    
-    .pdf-label i {
-        font-size: 1.2rem;
-    }
-    
-    /* ===== КНОПКИ ===== */
-    .btn-primary, .btn-secondary, .btn-danger, .btn-success, .btn-warning {
-        padding: 10px 18px;
-        font-size: 0.9rem;
-    }
-    
-    .btn-small {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-    
-    /* ===== МОДАЛЬНЫЕ ОКНА ===== */
-    .modal-content {
-        padding: 20px;
-        max-width: 90%;
-    }
-    
-    .auth-logo h2 {
-        font-size: 1.4rem;
-    }
-    
-    .auth-tabs {
-        gap: 5px;
-    }
-    
-    .auth-tab {
-        padding: 8px;
-        font-size: 0.9rem;
-    }
-    
-    .input-group input {
-        padding: 10px 10px 10px 40px;
-        font-size: 0.9rem;
-    }
-    
-    .checkbox-group {
-        font-size: 0.85rem;
-    }
-    
-    .day-types {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    
-    .day-type {
-        padding: 12px 5px;
-    }
-    
-    .day-type i {
-        font-size: 1.3rem;
-    }
-    
-    .day-type span {
-        font-size: 0.85rem;
-    }
-    
-    .day-type small {
-        font-size: 0.6rem;
-    }
-    
-    /* ===== ТЕМЫ ===== */
-    .theme-selector {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    
-    .theme-btn {
-        padding: 8px;
-        font-size: 0.8rem;
-    }
-    
-    /* ===== УВЕДОМЛЕНИЯ ===== */
-    .notification {
-        top: 10px;
-        right: 10px;
-        left: 10px;
-    }
-    
-    .notification-content {
-        padding: 12px 15px;
-        font-size: 0.9rem;
-    }
-    
-    /* ===== ГРАФИКИ ===== */
-    .chart-container {
-        padding: 15px;
-        margin-top: 15px;
-    }
-    
-    .chart-header h3 {
-        font-size: 1rem;
-    }
-    
-    canvas {
-        max-height: 250px;
-    }
-    
-    /* ===== КУРС ВАЛЮТ ===== */
-    .last-update {
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    /* Еще более мелкие экраны */
-    .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
     .stats-row {
-        grid-template-columns: repeat(2, 1fr);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 0 16px;
     }
     
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .stat-box {
+        flex: 1 1 calc(50% - 6px);
+        background: var(--dark-card);
+        border: none;
+        border-radius: 20px;
+        padding: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     
-    .header-widget {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
+    .stat-box i {
+        font-size: 1.5rem;
     }
     
-    .widget-date-weather {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .day-number {
+    /* ===== КАЛЕНДАРЬ ===== */
+    .calendar-weekdays span {
+        padding: 10px 0;
+        background: transparent;
+        border: none;
         font-size: 0.8rem;
     }
     
-    .day-icon {
-        font-size: 0.9rem;
+    .calendar-grid {
+        gap: 6px;
+        padding: 0 16px;
     }
     
-    .legend-item {
-        padding: 3px 5px;
-        font-size: 0.65rem;
+    .day {
+        background: var(--dark-card);
+        border: none;
+        border-radius: 16px;
+        padding: 8px 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
-    .legend-text {
-        max-width: 50px;
+    /* ===== ВАЖНЫЕ ДАТЫ ===== */
+    .important-widget {
+        margin: 20px 16px;
+        padding: 20px;
+        border-radius: 32px;
+        background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
+        border: none;
     }
     
-    .currency-display {
-        flex-direction: column;
-        gap: 5px;
+    .widget-item {
+        background: var(--dark);
+        border: none;
+        border-radius: 20px;
+        margin-bottom: 8px;
     }
     
-    .converter-box {
-        flex-direction: column;
-    }
-    
-    .converter-box .fa-arrow-right {
-        transform: rotate(90deg);
-    }
-    
-    .month-selector h2 {
-        font-size: 0.95rem;
-        min-width: 110px;
+    .item-badge {
+        background: rgba(0, 176, 96, 0.15);
+        border-radius: 40px;
     }
 }
