@@ -88,18 +88,32 @@ function buildPieChart(net, tax, lunch, savings) {
 
 // Загрузка финансовой цели
 export function loadFinancialGoal() {
+    console.log('loadFinancialGoal вызван');
     const user = getCurrentUser();
-    if (!user) return;
+    if (!user) {
+        console.log('Пользователь не найден');
+        return;
+    }
+    
+    console.log('Загрузка финансовой цели пользователя:', user.financialGoal);
     
     const goal = user.financialGoal;
+    const goalInputs = document.querySelector('.goal-inputs');
+    const goalProgress = document.getElementById('goalProgress');
+    const goalActions = document.getElementById('goalActions');
+    
+    if (!goalInputs || !goalProgress) {
+        console.log('Элементы финансовой цели не найдены');
+        return;
+    }
+    
     if (goal?.name && goal.amount > 0) {
+        console.log('Цель существует:', goal);
+        
         const goalNameDisplay = document.getElementById('goalNameDisplay');
         const goalTarget = document.getElementById('goalTarget');
         const goalName = document.getElementById('goalName');
         const goalAmount = document.getElementById('goalAmount');
-        const goalInputs = document.querySelector('.goal-inputs');
-        const goalProgress = document.getElementById('goalProgress');
-        const goalActions = document.getElementById('goalActions');
         
         if (goalNameDisplay) goalNameDisplay.innerText = goal.name;
         if (goalTarget) goalTarget.innerText = goal.amount.toFixed(2) + ' €';
@@ -115,10 +129,9 @@ export function loadFinancialGoal() {
         
         updateGoalDisplay();
     } else {
+        console.log('Цель не существует, показываем форму ввода');
         const goalName = document.getElementById('goalName');
         const goalAmount = document.getElementById('goalAmount');
-        const goalInputs = document.querySelector('.goal-inputs');
-        const goalProgress = document.getElementById('goalProgress');
         
         if (goalName) goalName.value = '';
         if (goalAmount) goalAmount.value = '';
