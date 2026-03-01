@@ -132,29 +132,6 @@
     }
 
     /**
-     * Сохраняем оригинальную функцию buildCalendar
-     */
-    let originalBuildCalendar = null;
-
-    /**
-     * Новая функция buildCalendar, которая вызывает оригинальную и добавляет важные даты
-     */
-    function enhancedBuildCalendar() {
-        // Вызываем оригинальную функцию, если она существует
-        if (originalBuildCalendar) {
-            originalBuildCalendar();
-        } else if (window.buildCalendar) {
-            originalBuildCalendar = window.buildCalendar;
-            originalBuildCalendar();
-        }
-        
-        // Добавляем важные даты в календарь
-        setTimeout(() => {
-            addImportantDatesToCalendar();
-        }, 50);
-    }
-
-    /**
      * Добавляем важные даты в календарь
      */
     function addImportantDatesToCalendar() {
@@ -164,7 +141,12 @@
         const importantDates = getImportantDatesForMonth(year, month);
         
         const calendarGrid = document.getElementById('calendarGrid');
-        if (!calendarGrid) return;
+        if (!calendarGrid) {
+            console.log('❌ Календарь не найден');
+            return;
+        }
+        
+        console.log('📅 Добавляем важные даты в календарь:', importantDates);
         
         const dayCells = calendarGrid.querySelectorAll('.day:not(.empty)');
         
@@ -194,6 +176,8 @@
                 // Добавляем полное название в title для подсказки
                 const fullName = importantDate[`name_${settings.language}`] || importantDate.name_ru;
                 cell.setAttribute('title', `${fullName} (${importantDate.type === 'salary' ? 'день зарплаты' : 'праздник'})`);
+                
+                console.log(`✅ День ${dayNumber}: ${fullName}`);
             }
         });
     }
@@ -336,6 +320,18 @@
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
+                max-height: 300px;
+                overflow-y: auto;
+                padding-right: 5px;
+            }
+            
+            .dates-list::-webkit-scrollbar {
+                width: 5px;
+            }
+            
+            .dates-list::-webkit-scrollbar-thumb {
+                background: var(--primary);
+                border-radius: 5px;
             }
             
             .date-item {
@@ -347,18 +343,22 @@
                 border-radius: 12px;
                 border-left: 4px solid;
                 transition: transform 0.2s;
+                animation: slideIn 0.3s ease;
             }
             
             .date-item:hover {
                 transform: translateX(5px);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             }
             
             .date-item.salary {
                 border-left-color: #00b060;
+                background: linear-gradient(90deg, rgba(0,176,96,0.1), transparent);
             }
             
             .date-item.holiday {
                 border-left-color: #f59e0b;
+                background: linear-gradient(90deg, rgba(245,158,11,0.1), transparent);
             }
             
             .date-icon {
@@ -392,9 +392,24 @@
                 border-radius: 20px;
             }
             
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            
             @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
             }
             
             @media (max-width: 768px) {
@@ -404,6 +419,30 @@
                 .date-countdown {
                     width: 100%;
                     text-align: right;
+                    margin-top: 5px;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .important-dates-widget {
+                    padding: 15px;
+                }
+                
+                .date-icon {
+                    font-size: 1.3rem;
+                    min-width: 30px;
+                }
+                
+                .date-title {
+                    font-size: 0.9rem;
+                }
+                
+                .date-day {
+                    font-size: 0.75rem;
+                }
+                
+                .date-countdown {
+                    font-size: 0.8rem;
                 }
             }
         `;
@@ -411,36 +450,89 @@
     }
 
     /**
+     * Перехватываем функцию buildCalendar после ее загрузки
+     */
+    function hookIntoCalendar() {
+        console.log('🔍 Ищем функцию buildCalendar...');
+        
+        // Сохраняем оригинальную функцию
+        const originalBuildCalendar = window.buildCalendar;
+        
+        if (originalBuildCalendar) {
+            console.log('✅ Функция buildCalendar найдена!');
+            
+            // Переопределяем функцию
+            window.buildCalendar = function() {
+                console.log('📅 Вызов оригинальной buildCalendar');
+                // Вызываем оригинальную функцию
+                originalBuildCalendar();
+                // Добавляем важные даты
+                setTimeout(() => {
+                    console.log('✨ Добавляем важные даты');
+                    addImportantDatesToCalendar();
+                }, 50);
+            };
+            
+            // Добавляем виджет на дашборд
+            setTimeout(() => {
+                const insertTarget = document.querySelector('.stats-row') || document.querySelector('.kpi-grid');
+                if (insertTarget && !document.getElementById('importantDatesWidget')) {
+                    console.log('📊 Добавляем виджет важных дат');
+                    insertTarget.parentNode.insertBefore(createUpcomingDatesWidget(), insertTarget.nextSibling);
+                }
+            }, 1000);
+            
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
      * Инициализация модуля
      */
     function init() {
-        console.log('📅 Модуль важных дат загружен');
+        console.log('🔥 Модуль важных дат загружен');
         
         loadSettings();
         settings.language = getCurrentLanguage();
         
         addStyles();
         
-        // Сохраняем оригинальную функцию и заменяем своей
-        if (window.buildCalendar && !originalBuildCalendar) {
-            originalBuildCalendar = window.buildCalendar;
-            window.buildCalendar = enhancedBuildCalendar;
+        // Пытаемся перехватить функцию сразу
+        if (!hookIntoCalendar()) {
+            console.log('⏳ Функция buildCalendar не найдена, ждем...');
+            
+            // Пробуем снова через интервал
+            let attempts = 0;
+            const maxAttempts = 20;
+            
+            const checkInterval = setInterval(() => {
+                attempts++;
+                console.log(`⏳ Попытка ${attempts}/${maxAttempts}...`);
+                
+                if (hookIntoCalendar() || attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    
+                    if (attempts >= maxAttempts) {
+                        console.log('❌ Не удалось найти buildCalendar, пробуем прямой вызов');
+                        // Пробуем прямой вызов добавления дат
+                        setTimeout(() => {
+                            addImportantDatesToCalendar();
+                        }, 2000);
+                    }
+                }
+            }, 500);
         }
         
-        // Добавляем виджет на дашборд
-        const insertTarget = document.querySelector('.stats-row') || document.querySelector('.kpi-grid');
-        if (insertTarget && !document.getElementById('importantDatesWidget')) {
-            insertTarget.parentNode.insertBefore(createUpcomingDatesWidget(), insertTarget.nextSibling);
-        }
-        
-        // Обновляем важные даты при смене месяца
+        // Следим за сменой месяца через кнопки
         const originalChangeMonth = window.changeMonth;
         if (originalChangeMonth) {
             window.changeMonth = function(delta) {
                 originalChangeMonth(delta);
                 setTimeout(() => {
                     addImportantDatesToCalendar();
-                }, 100);
+                }, 200);
             };
         }
         
@@ -459,12 +551,10 @@
         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
     }
 
-    // Ждем загрузки основного приложения
-    const checkInterval = setInterval(() => {
-        if (document.getElementById('app') && !document.getElementById('app').classList.contains('hidden')) {
-            clearInterval(checkInterval);
-            // Ждем, пока основной код полностью загрузится
-            setTimeout(init, 1500);
-        }
-    }, 100);
+    // Запускаем инициализацию после загрузки страницы
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
