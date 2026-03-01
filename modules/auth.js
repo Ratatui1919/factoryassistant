@@ -224,3 +224,9 @@ window.logout = async function() {
         window.showLoginForm();
     }
 };
+
+// Делаем функции глобальными
+window.saveProfile = saveProfile;
+window.previewAvatar = previewAvatar;
+window.exportData = exportData;
+window.clearAllData = clearAllData;
