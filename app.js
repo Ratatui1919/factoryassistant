@@ -3,30 +3,33 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
-  doc,
-  setDoc,
-  getDoc
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
+  doc, 
+  setDoc, 
+  getDoc,
   collection,
   query,
   where,
-  getDocs 
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-let currentUser = null;
+// Простая проверка
+console.log('✅ Авторизация загружена');
 
-function showMessage(msg, isError = false) {
-  alert(isError ? '❌ ' + msg : '✅ ' + msg);
-}
-
-// Простой интерфейс для проверки
+// Показываем интерфейс
 document.getElementById('main').innerHTML = `
-  <div style="text-align: center; margin-top: 50px;">
-    <h2 style="color: #00b060;">✅ Firebase и App.js работают!</h2>
-    <p>Можно загружать полную версию.</p>
+  <div style="text-align: center; margin-top: 50px; padding: 20px;">
+    <h2 style="color: #00b060; margin-bottom: 30px;">Vaillant Assistant</h2>
+    <div style="background: #1a1e2a; padding: 30px; border-radius: 20px; max-width: 400px; margin: 0 auto;">
+      <h3>Вход в систему</h3>
+      <p style="color: #a0a8b8; margin: 20px 0;">Базовая авторизация работает!</p>
+      <div style="color: #00b060; font-size: 48px; margin: 20px 0;">✅</div>
+    </div>
   </div>
 `;
 
-console.log('✅ Полная версия app.js загружена');
+// Проверяем соединение с Firebase
+console.log('Firebase Auth:', auth);
+console.log('Firebase DB:', db);
