@@ -71,7 +71,8 @@
             </div>
         </div>
     </div>
-        <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+
+    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div id="app" class="hidden">
         <header>
             <div class="header-left">
@@ -91,9 +92,8 @@
             <div class="header-right">
                 <!-- УНИВЕРСАЛЬНЫЙ ВИДЖЕТ (ПК + ТЕЛЕФОН) -->
                 <div class="header-widget">
-                    <!-- Время и приветствие -->
+                    <!-- Только время -->
                     <div class="widget-time">
-                        <span class="greeting" id="greeting"></span>
                         <span class="time" id="time"></span>
                     </div>
                     <!-- Дата и погода (Тренчин) -->
@@ -120,7 +120,7 @@
             </div>
         </header>
 
-        <!-- Навигация (скрывается на телефоне, пока не нажмут бургер) -->
+        <!-- Навигация -->
         <nav id="mainNav">
             <button class="nav-btn" data-view="dashboard" onclick="window.setView('dashboard')"><i class="fas fa-chart-pie"></i><span data-lang="dashboard">Дашборд</span></button>
             <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')"><i class="fas fa-calendar-alt"></i><span data-lang="calendar">Календарь</span></button>
@@ -274,7 +274,7 @@
                 </div>
             </section>
 
-                <!-- СТАТИСТИКА -->
+            <!-- СТАТИСТИКА -->
             <section id="stats" class="view">
                 <div class="stats-header">
                     <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Общая статистика</span></h2>
@@ -340,7 +340,7 @@
                         </div>
                         <div class="profile-title">
                             <h2 id="profileName"></h2>
-                            <p data-lang="employee">Оператор</p>
+                            <p data-lang="employee">Сотрудник завода</p>
                         </div>
                     </div>
                     
@@ -374,7 +374,7 @@
                                 <input type="number" id="usedWeekends" value="0" min="0">
                             </div>
                             <div class="profile-field">
-                                <label data-lang="personalDoctor">Перепустки (личные, в год)</label>
+                                <label data-lang="personalDoctor">Перепустки (личные)</label>
                                 <input type="number" id="personalDoctorDays" value="7" min="0">
                             </div>
                             <div class="profile-field">
@@ -382,7 +382,7 @@
                                 <input type="number" id="usedPersonalDoctor" value="0" min="0">
                             </div>
                             <div class="profile-field">
-                                <label data-lang="accompanyDoctor">Перепустки (сопровождение, в год)</label>
+                                <label data-lang="accompanyDoctor">Перепустки (сопровождение)</label>
                                 <input type="number" id="accompanyDoctorDays" value="6" min="0">
                             </div>
                             <div class="profile-field">
@@ -391,7 +391,25 @@
                             </div>
                         </div>
                         
-                        <!-- БЛОК ТЕМ (10 тем) -->
+                        <!-- ПОГОДНЫЕ ЭФФЕКТЫ -->
+                        <div class="profile-card glass-effect">
+                            <h3><i class="fas fa-cloud-sun"></i> Погодные эффекты</h3>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="weatherEffectsEnabled" onchange="window.toggleWeatherEffect()">
+                                <label for="weatherEffectsEnabled">Включить снег/дождь на фоне</label>
+                            </div>
+                            <div class="profile-field">
+                                <label>Режим</label>
+                                <select id="weatherEffectMode" onchange="window.toggleWeatherEffect()">
+                                    <option value="auto">Авто (по погоде)</option>
+                                    <option value="snow">❄️ Только снег</option>
+                                    <option value="rain">🌧️ Только дождь</option>
+                                    <option value="off">Выключено</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- БЛОК ТЕМ -->
                         <div class="profile-card glass-effect">
                             <h3><i class="fas fa-palette"></i> Тема оформления</h3>
                             <div class="theme-selector">
@@ -408,24 +426,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- ПОГОДНЫЕ ЭФФЕКТЫ (добавь после настроек зарплаты) -->
-<div class="profile-card glass-effect">
-    <h3><i class="fas fa-cloud-sun"></i> Погодные эффекты</h3>
-    <div class="checkbox-group">
-        <input type="checkbox" id="weatherEffectsEnabled" onchange="window.toggleWeatherEffect()">
-        <label for="weatherEffectsEnabled">Включить снег/дождь на фоне</label>
-    </div>
-    <div class="profile-field">
-        <label>Режим</label>
-        <select id="weatherEffectMode" onchange="window.toggleWeatherEffect()">
-            <option value="auto">Авто (по погоде)</option>
-            <option value="snow">❄️ Только снег</option>
-            <option value="rain">🌧️ Только дождь</option>
-            <option value="off">Выключено</option>
-        </select>
-    </div>
-</div>
                     
                     <div class="profile-actions">
                         <button class="btn-primary" onclick="window.saveProfile()"><i class="fas fa-save"></i> <span data-lang="saveChanges">Сохранить изменения</span></button>
@@ -492,7 +492,7 @@
                         </div>
                     </div>
                     
-                    <div class="finance-tips glass-effect" id="financeTips">
+                    <div class="finance-tips glass-effect">
                         <h4><i class="fas fa-lightbulb"></i> <span data-lang="financialTip">Финансовый совет</span></h4>
                         <p id="financeTip">Откладывай минимум 10% от зарплаты</p>
                         <div class="tip-date" id="tipDate"></div>
@@ -512,7 +512,8 @@
             </section>
         </main>
     </div>
-        <!-- МОДАЛКА ДНЯ -->
+
+    <!-- МОДАЛКА ДНЯ -->
     <div class="modal" id="dayModal">
         <div class="modal-content day-modal glass-effect">
             <div class="modal-header">
@@ -546,4 +547,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-
