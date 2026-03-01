@@ -1,4 +1,4 @@
-// modules/auth.js - АВТОРИЗАЦИЯ (УПРОЩЕННАЯ)
+// modules/auth.js - АВТОРИЗАЦИЯ (ПОЛНАЯ ВЕРСИЯ)
 
 import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc, updateDoc } from './firebase-config.js';
 import { showModal, hideModal, showNotification } from './utils.js';
@@ -134,7 +134,7 @@ export async function login() {
         hideModal('authModal');
         document.getElementById('app').classList.remove('hidden');
         
-        // Перезагружаем страницу для применения всех данных
+        // Перезагружаем страницу для корректной загрузки всех данных
         window.location.reload();
         
     } catch (error) {
