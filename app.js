@@ -27,6 +27,7 @@ let notificationTimeout = null;
 let updateInterval = null;
 let weatherParticles = null;
 let weatherAnimation = null;
+let exchangeRate = 0; // Курс евро к гривне
 
 const BASE_RATE = 6.10;
 const LUNCH_COST_REAL = 1.31;
@@ -135,177 +136,9 @@ const translations = {
     september: 'Сентябрь', october: 'Октябрь', november: 'Ноябрь', december: 'Декабрь',
     clearAllData: 'Очистить все данные',
     exportToExcel: 'Экспорт в Excel',
-    exportToPDF: 'Экспорт в PDF'
-  },
-  sk: {
-    dashboard: 'Nástenka',
-    calendar: 'Kalendár',
-    stats: 'Štatistika',
-    profile: 'Profil',
-    finance: 'Financie',
-    netSalary: 'Čistá mzda',
-    grossSalary: 'Hrubá',
-    hours: 'Hodiny',
-    lunches: 'Obed',
-    overtime: 'Nadčasy',
-    extraBlocks: 'Nadčasy',
-    saturdays: 'Soboty',
-    doctorVisits: 'Lekár',
-    weekendsThisMonth: 'Víkendy tento mesiac',
-    accruedWeekends: 'Nahromadené víkendy',
-    doctorLeft: 'Lekár zostáva',
-    accompanyLeft: 'Sprievod',
-    monthlyIncome: 'Príjem podľa mesiacov',
-    totalStats: 'Celková štatistika',
-    totalEarned: 'Celkový zárobok',
-    totalHours: 'Celkom hodín',
-    totalLunch: 'Mínus obedy',
-    bestMonth: 'Najlepší mesiac',
-    employee: 'Zamestnanec',
-    personalData: 'Osobné údaje',
-    fullName: 'Celé meno',
-    employeeId: 'Osobné číslo',
-    cardId: 'Číslo karty',
-    email: 'Email',
-    salarySettings: 'Nastavenia mzdy',
-    hourlyRate: 'Základná sadzba (€/hod)',
-    lunchCost: 'Cena obeda (€/deň)',
-    nightBonus: 'Nočný príplatok (%)',
-    saturdayBonus: 'Sobota koeficient',
-    sundayBonus: 'Nedeľa koeficient',
-    extraBonus: 'Extra blok bonus (€)',
-    vacations: 'Dovolenka a lekár',
-    accruedWeekendsLabel: 'Nahromadené víkendy',
-    usedWeekends: 'Použité víkendy',
-    personalDoctor: 'Lekár (osobné)',
-    usedPersonalDoctor: 'Použité osobné',
-    accompanyDoctor: 'Lekár (sprievod)',
-    usedAccompanyDoctor: 'Použité sprievod',
-    export: 'Export dát',
-    financeAnalytics: 'Finančná analýza',
-    netIncome: 'Čistý príjem',
-    taxes: 'Dane',
-    savings: 'Úspory',
-    financialTip: 'Finančná rada',
-    selectDayType: 'Vyberte typ dňa',
-    work: 'Zmena',
-    nightShift: 'Nočná zmena',
-    sick: 'PN',
-    vacation: 'Dovolenka',
-    doctor: 'Lekár',
-    dayOff: 'Voľno',
-    cancel: 'Zrušiť',
-    saveChanges: 'Uložiť zmeny',
-    goal: 'Môj finančný cieľ',
-    goalName: 'Názov cieľa',
-    goalAmount: 'Suma cieľa',
-    goalSaved: 'Nasporené',
-    goalTarget: 'Cieľ',
-    goalRemaining: 'Zostáva',
-    saveGoal: 'Uložiť cieľ',
-    deleteGoal: 'Zmazať cieľ',
-    add: 'Pridať',
-    withdraw: 'Vybrať',
-    history: 'História operácií',
-    currentMonth: 'Aktuálny mesiac',
-    importPDF: 'Import z PDF',
-    uploadPDF: 'Nahrajte PDF s platom',
-    processing: 'Spracúvam...',
-    importSuccess: 'Údaje za {count} mesiacov importované',
-    importError: 'Chyba pri spracovaní PDF',
-    chooseFile: 'Vyberte súbor',
-    mon: 'Po', tue: 'Ut', wed: 'St', thu: 'Št', fri: 'Pi', sat: 'So', sun: 'Ne',
-    january: 'Január', february: 'Február', march: 'Marec', april: 'Apríl',
-    may: 'Máj', june: 'Jún', july: 'Júl', august: 'August',
-    september: 'September', october: 'Október', november: 'November', december: 'December',
-    clearAllData: 'Vymazať všetky dáta',
-    exportToExcel: 'Export do Excel',
-    exportToPDF: 'Export do PDF'
-  },
-  en: {
-    dashboard: 'Dashboard',
-    calendar: 'Calendar',
-    stats: 'Statistics',
-    profile: 'Profile',
-    finance: 'Finance',
-    netSalary: 'Net Salary',
-    grossSalary: 'Gross',
-    hours: 'Hours',
-    lunches: 'Lunches',
-    overtime: 'Overtime',
-    extraBlocks: 'Extra Blocks',
-    saturdays: 'Saturdays',
-    doctorVisits: 'Doctor',
-    weekendsThisMonth: 'Weekends this month',
-    accruedWeekends: 'Accrued weekends',
-    doctorLeft: 'Doctor left',
-    accompanyLeft: 'Accompany',
-    monthlyIncome: 'Monthly Income',
-    totalStats: 'Total Statistics',
-    totalEarned: 'Total earned',
-    totalHours: 'Total hours',
-    totalLunch: 'Lunch cost',
-    bestMonth: 'Best month',
-    employee: 'Factory employee',
-    personalData: 'Personal data',
-    fullName: 'Full name',
-    employeeId: 'Employee ID',
-    cardId: 'Card ID',
-    email: 'Email',
-    salarySettings: 'Salary settings',
-    hourlyRate: 'Hourly rate (€/hour)',
-    lunchCost: 'Lunch cost (€/day)',
-    nightBonus: 'Night bonus (%)',
-    saturdayBonus: 'Saturday coeff',
-    sundayBonus: 'Sunday coeff',
-    extraBonus: 'Extra block bonus (€)',
-    vacations: 'Vacations & doctor',
-    accruedWeekendsLabel: 'Accrued weekends',
-    usedWeekends: 'Used weekends',
-    personalDoctor: 'Doctor (personal)',
-    usedPersonalDoctor: 'Used personal',
-    accompanyDoctor: 'Doctor (accompany)',
-    usedAccompanyDoctor: 'Used accompany',
-    export: 'Export data',
-    financeAnalytics: 'Finance analytics',
-    netIncome: 'Net income',
-    taxes: 'Taxes',
-    savings: 'Savings',
-    financialTip: 'Financial tip',
-    selectDayType: 'Select day type',
-    work: 'Shift',
-    nightShift: 'Night shift',
-    sick: 'Sick',
-    vacation: 'Vacation',
-    doctor: 'Doctor',
-    dayOff: 'Day off',
-    cancel: 'Cancel',
-    saveChanges: 'Save changes',
-    goal: 'My financial goal',
-    goalName: 'Goal name',
-    goalAmount: 'Goal amount',
-    goalSaved: 'Saved',
-    goalTarget: 'Target',
-    goalRemaining: 'Remaining',
-    saveGoal: 'Save goal',
-    deleteGoal: 'Delete goal',
-    add: 'Add',
-    withdraw: 'Withdraw',
-    history: 'Transaction history',
-    currentMonth: 'Current month',
-    importPDF: 'Import from PDF',
-    uploadPDF: 'Upload PDF with salary',
-    processing: 'Processing...',
-    importSuccess: 'Data for {count} months imported',
-    importError: 'Error processing PDF',
-    chooseFile: 'Choose file',
-    mon: 'Mo', tue: 'Tu', wed: 'We', thu: 'Th', fri: 'Fr', sat: 'Sa', sun: 'Su',
-    january: 'January', february: 'February', march: 'March', april: 'April',
-    may: 'May', june: 'June', july: 'July', august: 'August',
-    september: 'September', october: 'October', november: 'November', december: 'December',
-    clearAllData: 'Clear all data',
-    exportToExcel: 'Export to Excel',
-    exportToPDF: 'Export to PDF'
+    exportToPDF: 'Экспорт в PDF',
+    exchangeRate: 'Курс евро',
+    toUAH: 'до гривни'
   },
   uk: {
     dashboard: 'Панель',
@@ -390,7 +223,9 @@ const translations = {
     september: 'Вересень', october: 'Жовтень', november: 'Листопад', december: 'Грудень',
     clearAllData: 'Очистити всі дані',
     exportToExcel: 'Експорт в Excel',
-    exportToPDF: 'Експорт в PDF'
+    exportToPDF: 'Експорт в PDF',
+    exchangeRate: 'Курс євро',
+    toUAH: 'до гривні'
   }
 };
 
@@ -433,14 +268,24 @@ window.setLanguage = function(lang) {
   document.querySelectorAll('[data-lang]').forEach(el => {
     let key = el.getAttribute('data-lang');
     if (translations[lang] && translations[lang][key]) {
-      if (el.tagName === 'SPAN' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'P' || el.tagName === 'LABEL') {
-        el.textContent = translations[lang][key];
+      if (el.tagName === 'SPAN' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'P' || el.tagName === 'LABEL' || el.tagName === 'BUTTON') {
+        // Сохраняем иконки если они есть
+        const icon = el.querySelector('i');
+        if (icon) {
+          const text = document.createTextNode(' ' + translations[lang][key]);
+          el.innerHTML = '';
+          el.appendChild(icon);
+          el.appendChild(text);
+        } else {
+          el.textContent = translations[lang][key];
+        }
       }
     }
   });
   
   updateMonthDisplay();
   buildCalendar();
+  updateExchangeRateDisplay();
 };
 
 // ===== ТЕМЫ =====
@@ -581,6 +426,19 @@ window.setTheme = function(theme) {
   if (currentUser) {
     updateDoc(doc(db, "users", currentUser.uid), { theme: theme }).catch(() => {});
   }
+  
+  // Перерисовываем графики с новыми цветами
+  setTimeout(() => {
+    if (document.getElementById('dashboard').classList.contains('active')) {
+      buildYearChart();
+    }
+    if (document.getElementById('stats').classList.contains('active')) {
+      loadYearStats();
+    }
+    if (document.getElementById('finance').classList.contains('active')) {
+      updateFinanceStats();
+    }
+  }, 100);
 };
 
 function applyTheme(themeName) {
@@ -589,6 +447,34 @@ function applyTheme(themeName) {
   Object.keys(theme).forEach(key => root.style.setProperty(key, theme[key]));
   document.body.classList.remove('theme-dark', 'theme-light', 'theme-blue', 'theme-purple', 'theme-orange', 'theme-red', 'theme-green', 'theme-pink', 'theme-mint', 'theme-gray');
   document.body.classList.add(`theme-${themeName}`);
+}
+
+// ===== КУРС ВАЛЮТ =====
+async function updateExchangeRate() {
+  const rateEl = document.getElementById('exchangeRate');
+  if (!rateEl) return;
+  
+  try {
+    // Используем бесплатное API для курса валют
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+    const data = await response.json();
+    exchangeRate = data.rates.UAH;
+    updateExchangeRateDisplay();
+  } catch (error) {
+    console.error('Ошибка получения курса валют:', error);
+    // Если не удалось получить курс, используем приблизительный
+    exchangeRate = 42.5; // Примерный курс
+    updateExchangeRateDisplay();
+  }
+}
+
+function updateExchangeRateDisplay() {
+  const rateEl = document.getElementById('exchangeRate');
+  const toUahEl = document.getElementById('toUAH');
+  if (rateEl && toUahEl) {
+    rateEl.innerHTML = `<i class="fas fa-euro-sign"></i> € → <i class="fas fa-hryvnia"></i> ₴ ${exchangeRate.toFixed(2)}`;
+    toUahEl.textContent = translations[currentLanguage]?.toUAH || 'до гривни';
+  }
 }
 
 // ===== ВРЕМЯ, ДАТА, ПОГОДА =====
@@ -919,6 +805,7 @@ window.login = async function() {
     updateDateTime();
     updateWeather();
     updateFinancialTip();
+    updateExchangeRate(); // Получаем курс валют
     
     showNotification('Добро пожаловать!');
   } catch (error) {
@@ -952,6 +839,10 @@ window.setView = function(view) {
   if (view === 'calendar') buildCalendar();
   if (view === 'stats') loadYearStats();
   if (view === 'finance') updateFinanceStats();
+  if (view === 'dashboard') {
+    // Перестраиваем график при возвращении на дашборд
+    setTimeout(() => buildYearChart(), 100);
+  }
 };
 
 onAuthStateChanged(auth, async (user) => {
@@ -1003,6 +894,7 @@ onAuthStateChanged(auth, async (user) => {
       updateDateTime();
       updateWeather();
       updateFinancialTip();
+      updateExchangeRate(); // Получаем курс валют
     }
   } else {
     currentUser = null;
@@ -1044,6 +936,7 @@ window.onload = function() {
   
   showModal('authModal');
   window.showLoginForm();
+  updateExchangeRate(); // Получаем курс при загрузке
 };
 
 function updateMonthDisplay() {
@@ -1252,12 +1145,50 @@ function calculateDashboardStats() {
   document.getElementById('satCount').innerText = stats.saturdays + stats.sundays;
   document.getElementById('doctorCount').innerText = stats.doctorDays;
   document.getElementById('lunchCost').innerText = lunchCost.toFixed(2) + ' €';
+  
+  // Обновляем отображение в гривнах если есть курс
+  updateUAHValues();
+}
+
+function updateUAHValues() {
+  if (!exchangeRate) return;
+  
+  const grossEl = document.getElementById('gross');
+  const netEl = document.getElementById('net');
+  const lunchEl = document.getElementById('lunchCost');
+  
+  if (grossEl) {
+    const grossValue = parseFloat(grossEl.innerText) || 0;
+    const grossUahEl = document.getElementById('grossUAH');
+    if (grossUahEl) grossUahEl.innerHTML = `₴ ${(grossValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (netEl) {
+    const netValue = parseFloat(netEl.innerText) || 0;
+    const netUahEl = document.getElementById('netUAH');
+    if (netUahEl) netUahEl.innerHTML = `₴ ${(netValue * exchangeRate).toFixed(0)}`;
+  }
+  
+  if (lunchEl) {
+    const lunchValue = parseFloat(lunchEl.innerText) || 0;
+    const lunchUahEl = document.getElementById('lunchUAH');
+    if (lunchUahEl) lunchUahEl.innerHTML = `₴ ${(lunchValue * exchangeRate).toFixed(0)}`;
+  }
 }
 
 // ===== ГРАФИК НА ДАШБОРДЕ =====
 function buildYearChart() {
   const canvas = document.getElementById('yearChart');
   if (!canvas || !currentUser) return;
+  
+  // Устанавливаем размеры canvas
+  const container = canvas.parentElement;
+  if (container) {
+    canvas.style.width = '100%';
+    canvas.style.height = '300px';
+    canvas.width = container.clientWidth;
+    canvas.height = 300;
+  }
   
   // Собираем доход ПО МЕСЯЦАМ за ТЕКУЩИЙ год (currentYear)
   const months = new Array(12).fill(0);
@@ -1279,6 +1210,9 @@ function buildYearChart() {
   if (yearChart) yearChart.destroy();
   
   const ctx = canvas.getContext('2d');
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#ffffff';
+  const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#334155';
+  
   yearChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -1298,10 +1232,10 @@ function buildYearChart() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       plugins: {
         legend: { 
-          labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff' } 
+          labels: { color: textColor } 
         },
         tooltip: {
           callbacks: {
@@ -1313,11 +1247,12 @@ function buildYearChart() {
       },
       scales: {
         y: { 
-          grid: { color: '#334155' }, 
-          ticks: { color: '#94a3b8' } 
+          grid: { color: gridColor }, 
+          ticks: { color: textColor },
+          beginAtZero: true
         },
         x: { 
-          ticks: { color: '#94a3b8' } 
+          ticks: { color: textColor } 
         }
       }
     }
@@ -1340,6 +1275,14 @@ function updateFinanceStats() {
   document.getElementById('financeSavings').innerText = savings.toFixed(2) + ' €';
   document.getElementById('pieTotal').innerText = dashboardNet.toFixed(2) + ' €';
   
+  // Обновляем значения в гривнах для финансов
+  if (exchangeRate) {
+    const financeNetUah = document.getElementById('financeNetUAH');
+    const financeGrossUah = document.getElementById('financeGrossUAH');
+    if (financeNetUah) financeNetUah.innerHTML = `₴ ${(dashboardNet * exchangeRate).toFixed(0)}`;
+    if (financeGrossUah) financeGrossUah.innerHTML = `₴ ${(dashboardGross * exchangeRate).toFixed(0)}`;
+  }
+  
   buildPieChart(
     Math.max(dashboardNet, 0.01),
     Math.max(taxes, 0.01),
@@ -1351,9 +1294,18 @@ function updateFinanceStats() {
 function buildPieChart(net, tax, lunch, savings) {
   const canvas = document.getElementById('pieChart');
   if (!canvas) return;
+  
+  // Устанавливаем размеры canvas
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.width = canvas.parentElement.clientWidth || 300;
+  canvas.height = canvas.parentElement.clientHeight || 300;
+  
   if (pieChart) pieChart.destroy();
   
   const ctx = canvas.getContext('2d');
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#ffffff';
+  
   pieChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -1366,12 +1318,12 @@ function buildPieChart(net, tax, lunch, savings) {
     },
     options: { 
       responsive: true, 
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       cutout: '70%', 
       plugins: { 
         legend: { 
           position: 'bottom', 
-          labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff' } 
+          labels: { color: textColor } 
         } 
       } 
     }
@@ -1434,6 +1386,14 @@ function loadYearStats() {
   document.getElementById('totalHours').innerText = totalHours;
   document.getElementById('totalLunch').innerText = totalLunch.toFixed(2) + ' €';
   
+  // Добавляем значения в гривнах для статистики
+  if (exchangeRate) {
+    const totalEarnedUah = document.getElementById('totalEarnedUAH');
+    const totalLunchUah = document.getElementById('totalLunchUAH');
+    if (totalEarnedUah) totalEarnedUah.innerHTML = `₴ ${(totalGross * exchangeRate).toFixed(0)}`;
+    if (totalLunchUah) totalLunchUah.innerHTML = `₴ ${(totalLunch * exchangeRate).toFixed(0)}`;
+  }
+  
   if (bestMonthIndex !== -1) {
     document.getElementById('bestMonth').innerText = bestMonth.name + ' ' + bestMonth.value.toFixed(0) + '€';
   } else {
@@ -1446,9 +1406,22 @@ function loadYearStats() {
 function buildStatsChart(monthTotals) {
   const canvas = document.getElementById('statsChart');
   if (!canvas) return;
+  
+  // Устанавливаем размеры canvas
+  const container = canvas.parentElement;
+  if (container) {
+    canvas.style.width = '100%';
+    canvas.style.height = '300px';
+    canvas.width = container.clientWidth;
+    canvas.height = 300;
+  }
+  
   if (statsChart) statsChart.destroy();
   
   const ctx = canvas.getContext('2d');
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#ffffff';
+  const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#334155';
+  
   statsChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1464,10 +1437,10 @@ function buildStatsChart(monthTotals) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       plugins: {
         legend: { 
-          labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff' } 
+          labels: { color: textColor } 
         },
         tooltip: {
           callbacks: {
@@ -1479,11 +1452,12 @@ function buildStatsChart(monthTotals) {
       },
       scales: {
         y: { 
-          grid: { color: '#334155' }, 
-          ticks: { color: '#94a3b8' } 
+          grid: { color: gridColor }, 
+          ticks: { color: textColor },
+          beginAtZero: true
         },
         x: { 
-          ticks: { color: '#94a3b8' } 
+          ticks: { color: textColor } 
         }
       }
     }
@@ -1590,8 +1564,11 @@ window.previewAvatar = function(input) {
 function calculateAllStats() {
   calculateDashboardStats();
   updateWeekendStats();
-  buildYearChart(); // Перестраиваем график на дашборде
-  updateFinanceStats();
+  // Добавляем небольшую задержку для правильного рендеринга графиков
+  setTimeout(() => {
+    buildYearChart();
+    updateFinanceStats();
+  }, 50);
 }
 
 function updateWeekendStats() {
@@ -1658,6 +1635,16 @@ function updateGoalDisplay() {
   const percent = Math.min(((goal.saved || 0) / goal.amount) * 100, 100);
   document.getElementById('goalPercent').innerText = percent.toFixed(1) + '%';
   document.getElementById('goalProgressBar').style.width = percent + '%';
+  
+  // Добавляем значение в гривнах для цели
+  if (exchangeRate) {
+    const goalSavedUah = document.getElementById('goalSavedUAH');
+    const goalTargetUah = document.getElementById('goalTargetUAH');
+    const goalRemainingUah = document.getElementById('goalRemainingUAH');
+    if (goalSavedUah) goalSavedUah.innerHTML = `₴ ${((goal.saved || 0) * exchangeRate).toFixed(0)}`;
+    if (goalTargetUah) goalTargetUah.innerHTML = `₴ ${(goal.amount * exchangeRate).toFixed(0)}`;
+    if (goalRemainingUah) goalRemainingUah.innerHTML = `₴ ${(Math.max(goal.amount - (goal.saved || 0), 0) * exchangeRate).toFixed(0)}`;
+  }
   
   updateHistoryList();
 }
@@ -1732,11 +1719,11 @@ window.exportToExcel = function() {
   if (!currentUser) return;
   
   const data = [
-    ['Показатель', 'Значение'],
-    ['Всего заработано', document.getElementById('totalEarned').textContent],
-    ['Всего часов', document.getElementById('totalHours').textContent],
-    ['Потрачено на обеды', document.getElementById('totalLunch').textContent],
-    ['Лучший месяц', document.getElementById('bestMonth').textContent],
+    ['Показатель', 'Значение', 'В гривнах'],
+    ['Всего заработано', document.getElementById('totalEarned').textContent, exchangeRate ? `₴ ${(parseFloat(document.getElementById('totalEarned').textContent) * exchangeRate).toFixed(0)}` : '-'],
+    ['Всего часов', document.getElementById('totalHours').textContent, '-'],
+    ['Потрачено на обеды', document.getElementById('totalLunch').textContent, exchangeRate ? `₴ ${(parseFloat(document.getElementById('totalLunch').textContent) * exchangeRate).toFixed(0)}` : '-'],
+    ['Лучший месяц', document.getElementById('bestMonth').textContent, '-'],
   ];
   
   const wb = XLSX.utils.book_new();
@@ -1758,16 +1745,19 @@ window.exportToPDF = function() {
   doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
   doc.text(`Дата: ${new Date().toLocaleDateString()}`, 20, 30);
+  if (exchangeRate) {
+    doc.text(`Курс EUR/UAH: ${exchangeRate.toFixed(2)}`, 20, 40);
+  }
   
   const data = [
-    ['Показатель', 'Значение'],
-    ['Всего заработано', document.getElementById('totalEarned').textContent],
-    ['Всего часов', document.getElementById('totalHours').textContent],
-    ['Потрачено на обеды', document.getElementById('totalLunch').textContent],
-    ['Лучший месяц', document.getElementById('bestMonth').textContent],
+    ['Показатель', 'Значение', 'В гривнах'],
+    ['Всего заработано', document.getElementById('totalEarned').textContent, exchangeRate ? `₴ ${(parseFloat(document.getElementById('totalEarned').textContent) * exchangeRate).toFixed(0)}` : '-'],
+    ['Всего часов', document.getElementById('totalHours').textContent, '-'],
+    ['Потрачено на обеды', document.getElementById('totalLunch').textContent, exchangeRate ? `₴ ${(parseFloat(document.getElementById('totalLunch').textContent) * exchangeRate).toFixed(0)}` : '-'],
+    ['Лучший месяц', document.getElementById('bestMonth').textContent, '-'],
   ];
   
-  doc.autoTable({ startY: 40, head: [data[0]], body: data.slice(1), theme: 'grid', headStyles: { fillColor: [0, 176, 96] } });
+  doc.autoTable({ startY: 50, head: [data[0]], body: data.slice(1), theme: 'grid', headStyles: { fillColor: [0, 176, 96] } });
   doc.save(`vaillant_stats_${new Date().toISOString().split('T')[0]}.pdf`);
   showNotification('PDF файл сохранён');
 };
