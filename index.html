@@ -340,7 +340,7 @@
                         </div>
                         <div class="profile-title">
                             <h2 id="profileName"></h2>
-                            <p data-lang="employee">Сотрудник завода</p>
+                            <p data-lang="employee">Оператор</p>
                         </div>
                     </div>
                     
@@ -408,6 +408,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- ПОГОДНЫЕ ЭФФЕКТЫ (добавь после настроек зарплаты) -->
+<div class="profile-card glass-effect">
+    <h3><i class="fas fa-cloud-sun"></i> Погодные эффекты</h3>
+    <div class="checkbox-group">
+        <input type="checkbox" id="weatherEffectsEnabled" onchange="window.toggleWeatherEffect()">
+        <label for="weatherEffectsEnabled">Включить снег/дождь на фоне</label>
+    </div>
+    <div class="profile-field">
+        <label>Режим</label>
+        <select id="weatherEffectMode" onchange="window.toggleWeatherEffect()">
+            <option value="auto">Авто (по погоде)</option>
+            <option value="snow">❄️ Только снег</option>
+            <option value="rain">🌧️ Только дождь</option>
+            <option value="off">Выключено</option>
+        </select>
+    </div>
+</div>
                     
                     <div class="profile-actions">
                         <button class="btn-primary" onclick="window.saveProfile()"><i class="fas fa-save"></i> <span data-lang="saveChanges">Сохранить изменения</span></button>
@@ -528,3 +546,4 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
+
