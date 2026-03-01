@@ -1020,13 +1020,14 @@
     font-size: 0.8rem !important;
 }
 
-/* Стили для погодных эффектов */
+/* Стили для погодных эффектов на весь экран */
 #weather-particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    display: block !important;
 }
