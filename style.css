@@ -1,9 +1,4 @@
-/* style.css - ОСНОВНЫЕ СТИЛИ */
-
-/* ======================
-   Vaillant Assistant PRO v20.0
-   БАЗОВЫЕ СТИЛИ
-   ====================== */
+/* style.css - ПОЛНЫЙ ФАЙЛ СО ВСЕМИ СТИЛЯМИ */
 
 * {
     margin: 0;
@@ -43,7 +38,6 @@
     --text: #1a1e2a;
     --text-muted: #64748b;
     --border: #e2e8f0;
-    --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(0, 0, 0, 0.1);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -660,6 +654,8 @@ main {
 }
 
 .kpi-card {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 20px; 
     display: flex; 
@@ -862,6 +858,8 @@ main {
 }
 
 .stat-box {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 15px; 
     display: flex; 
@@ -900,6 +898,8 @@ main {
     gap: 20px; 
     margin-bottom: 25px;
     padding: 25px; 
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 20px; 
 }
 
@@ -990,6 +990,8 @@ main {
 }
 
 .profile-card {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 20px; 
     padding: 20px;
 }
@@ -1068,13 +1070,6 @@ main {
     align-items: center; 
     justify-content: center;
     gap: 8px;
-    width: 100%;
-}
-
-@media (min-width: 640px) {
-    .btn-primary, .btn-secondary, .btn-danger, .btn-success, .btn-warning {
-        width: auto;
-    }
 }
 
 .btn-primary { 
@@ -1198,6 +1193,8 @@ main {
 }
 
 .finance-month-info {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 15px;
     margin-bottom: 20px;
@@ -1235,6 +1232,8 @@ main {
 }
 
 .finance-details {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px; 
     margin: 20px 0;
@@ -1272,6 +1271,8 @@ main {
 
 /* ФИНАНСОВЫЕ ЦЕЛИ */
 .finance-goals {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 20px;
     margin: 20px 0;
@@ -1451,6 +1452,8 @@ main {
 
 /* PDF импорт */
 .pdf-import {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px;
     margin: 20px 0;
@@ -1584,6 +1587,8 @@ main {
 }
 
 .stats-card {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px; 
     display: flex; 
@@ -1611,6 +1616,8 @@ main {
 
 /* Графики */
 .chart-container {
+    background: var(--dark-card);
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 20px; 
     margin-top: 25px;
@@ -1848,4 +1855,74 @@ main {
     height: 100%;
     pointer-events: none;
     z-index: 9999;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    main {
+        padding: 1rem;
+    }
+    
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .kpi-card {
+        padding: 12px;
+    }
+    
+    .kpi-value {
+        font-size: 1.1rem;
+    }
+    
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .calendar-grid {
+        gap: 4px;
+    }
+    
+    .day {
+        padding: 6px 2px;
+        min-height: 45px;
+    }
+    
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pie-chart-container {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .month-selector h2 {
+        font-size: 1rem;
+        min-width: 120px;
+    }
+    
+    .day-number {
+        font-size: 0.9rem;
+    }
+    
+    .day-icon {
+        font-size: 1rem;
+    }
 }
