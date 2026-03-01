@@ -150,6 +150,7 @@
                         <div class="kpi-content">
                             <span class="kpi-label" data-lang="netSalary">Чистая зарплата</span>
                             <span class="kpi-value" id="net">0 €</span>
+                            <span class="kpi-value-small" id="netUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     
@@ -158,6 +159,7 @@
                         <div class="kpi-content">
                             <span class="kpi-label" data-lang="grossSalary">Грязная</span>
                             <span class="kpi-value" id="gross">0 €</span>
+                            <span class="kpi-value-small" id="grossUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     
@@ -174,6 +176,7 @@
                         <div class="kpi-content">
                             <span class="kpi-label" data-lang="lunches">Обеды</span>
                             <span class="kpi-value" id="lunchCost">0 €</span>
+                            <span class="kpi-value-small" id="lunchUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     
@@ -208,6 +211,14 @@
                             <span class="kpi-value" id="doctorCount">0</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Курс валют -->
+                <div class="exchange-rate-info glass-effect" style="margin-top: 15px; margin-bottom: 15px; padding: 15px; border-radius: 16px; text-align: center;">
+                    <div id="exchangeRate" class="exchange-rate" style="font-size: 1.1rem; font-weight: 600;">
+                        <i class="fas fa-euro-sign"></i> € → <i class="fas fa-hryvnia"></i> ₴ ...
+                    </div>
+                    <div id="toUAH" class="exchange-rate-label" data-lang="toUAH" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">до гривни</div>
                 </div>
 
                 <div class="stats-row">
@@ -245,7 +256,7 @@
                     <div class="chart-header">
                         <h3><i class="fas fa-chart-line"></i> <span data-lang="monthlyIncome">Доход по месяцам</span></h3>
                     </div>
-                    <canvas id="yearChart"></canvas>
+                    <canvas id="yearChart" style="width:100%; height:300px;"></canvas>
                 </div>
             </section>
 
@@ -296,6 +307,7 @@
                         <div>
                             <span class="stats-label" data-lang="totalEarned">Всего заработано</span>
                             <span class="stats-value" id="totalEarned">0 €</span>
+                            <span class="stats-value-small" id="totalEarnedUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     <div class="stats-card glass-effect">
@@ -310,6 +322,7 @@
                         <div>
                             <span class="stats-label" data-lang="totalLunch">Потрачено на обеды</span>
                             <span class="stats-value" id="totalLunch">0 €</span>
+                            <span class="stats-value-small" id="totalLunchUAH" style="font-size: 0.9rem; color: var(--text-muted);"></span>
                         </div>
                     </div>
                     <div class="stats-card glass-effect">
@@ -323,7 +336,7 @@
                 
                 <div class="chart-container glass-effect">
                     <h3><i class="fas fa-chart-bar"></i> <span data-lang="monthlyIncome">Доход по месяцам</span></h3>
-                    <canvas id="statsChart"></canvas>
+                    <canvas id="statsChart" style="width:100%; height:300px;"></canvas>
                 </div>
 
                 <div class="export-buttons">
@@ -483,7 +496,7 @@
                     </div>
                     
                     <div class="pie-chart-container">
-                        <canvas id="pieChart" width="300" height="300"></canvas>
+                        <canvas id="pieChart" width="300" height="300" style="width:100%; height:100%;"></canvas>
                         <div class="pie-total" id="pieTotal">0 €</div>
                     </div>
                     
@@ -491,6 +504,10 @@
                         <div class="finance-item">
                             <span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">Чистый доход</span></span>
                             <span class="finance-value positive" id="financeNet">0 €</span>
+                        </div>
+                        <div class="finance-item">
+                            <span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">В гривнах</span></span>
+                            <span class="finance-value positive" id="financeNetUAH">0 ₴</span>
                         </div>
                         <div class="finance-item">
                             <span class="finance-label"><i class="fas fa-percent" style="color:#f59e0b;"></i> <span data-lang="taxes">Налоги</span></span>
@@ -507,6 +524,10 @@
                         <div class="finance-item total">
                             <span class="finance-label" data-lang="gross">Брутто</span>
                             <span class="finance-value" id="financeGross">0 €</span>
+                        </div>
+                        <div class="finance-item">
+                            <span class="finance-label"><i class="fas fa-euro-sign"></i> <span data-lang="gross">Брутто в гривнах</span></span>
+                            <span class="finance-value" id="financeGrossUAH">0 ₴</span>
                         </div>
                     </div>
                     
@@ -531,8 +552,11 @@
                             <h4 id="goalNameDisplay"></h4>
                             <div class="progress-stats">
                                 <div><span data-lang="goalSaved">Накоплено</span>: <strong id="goalSaved">0 €</strong></div>
+                                <div><span data-lang="goalSaved">в гривнах</span>: <strong id="goalSavedUAH">0 ₴</strong></div>
                                 <div><span data-lang="goalTarget">Цель</span>: <strong id="goalTarget">0 €</strong></div>
+                                <div><span data-lang="goalTarget">в гривнах</span>: <strong id="goalTargetUAH">0 ₴</strong></div>
                                 <div><span data-lang="goalRemaining">Осталось</span>: <strong id="goalRemaining">0 €</strong></div>
+                                <div><span data-lang="goalRemaining">в гривнах</span>: <strong id="goalRemainingUAH">0 ₴</strong></div>
                             </div>
                             <div class="progress-bar-container">
                                 <div class="progress-bar" id="goalProgressBar" style="width:0%"></div>
