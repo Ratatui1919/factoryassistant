@@ -11,10 +11,15 @@ window.currentYear = new Date().getFullYear();
 
 // Функция загрузки данных пользователя в UI (будет определена позже)
 let loadUserDataToUIFn = null;
+let loadFinancialGoalFn = null;
 
-// Регистрируем функцию загрузки данных
+// Регистрируем функции
 export function registerLoadUserData(fn) {
     loadUserDataToUIFn = fn;
+}
+
+export function registerLoadFinancialGoal(fn) {
+    loadFinancialGoalFn = fn;
 }
 
 // Инициализация приложения
@@ -26,14 +31,22 @@ export function initApp(user, userData) {
     
     // Загружаем данные пользователя в UI
     if (loadUserDataToUIFn) {
-        loadUserDataToUIFn();
+        setTimeout(() => {
+            loadUserDataToUIFn();
+        }, 100);
+    }
+    
+    // Загружаем финансовую цель
+    if (loadFinancialGoalFn) {
+        setTimeout(() => {
+            loadFinancialGoalFn();
+        }, 200);
     }
     
     // Обновляем отображение
     if (window.updateMonthDisplay) window.updateMonthDisplay();
     if (window.buildCalendar) window.buildCalendar();
     if (window.calculateAllStats) window.calculateAllStats();
-    if (window.loadFinancialGoal) window.loadFinancialGoal();
     
     // Запускаем время
     if (window.updateDateTime) window.updateDateTime();
@@ -150,6 +163,9 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
+        if (loadFinancialGoalFn) {
+            setTimeout(() => loadFinancialGoalFn(), 100);
+        }
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
