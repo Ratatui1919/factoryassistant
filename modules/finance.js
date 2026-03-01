@@ -91,7 +91,7 @@ export function loadFinancialGoal() {
     console.log('loadFinancialGoal вызван');
     const user = getCurrentUser();
     if (!user) {
-        console.log('Пользователь не найден');
+        console.log('loadFinancialGoal: пользователь не найден');
         return;
     }
     
