@@ -1,4 +1,4 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ (ИСПРАВЛЕННЫЙ)
+// modules/main.js - ИСПРАВЛЕННАЯ ВЕРСИЯ (БЕЗ МНОЖЕСТВЕННЫХ ВЫЗОВОВ)
 
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
@@ -27,72 +27,6 @@ window.updateLoadingStatus = function(text) {
     if (statusEl) statusEl.textContent = text;
 };
 
-// Функция для загрузки всех данных в UI
-function loadUserDataToUI(userData) {
-    console.log('Загрузка данных в UI:', userData);
-    
-    // Заполняем поля профиля
-    const fullNameEl = document.getElementById('fullName');
-    const employeeIdEl = document.getElementById('employeeId');
-    const cardIdEl = document.getElementById('cardId');
-    const emailEl = document.getElementById('email');
-    const weatherEnabledEl = document.getElementById('weatherEffectsEnabled');
-    const weatherModeEl = document.getElementById('weatherEffectMode');
-    
-    if (fullNameEl) fullNameEl.value = userData.fullName || '';
-    if (employeeIdEl) employeeIdEl.value = userData.employeeId || '';
-    if (cardIdEl) cardIdEl.value = userData.cardId || '';
-    if (emailEl) emailEl.value = userData.email || '';
-    
-    if (weatherEnabledEl) weatherEnabledEl.checked = userData.weatherEffectsEnabled !== false;
-    if (weatherModeEl) weatherModeEl.value = userData.weatherEffectMode || 'auto';
-    
-    // Настройки зарплаты
-    if (userData.settings) {
-        const hourlyRate = document.getElementById('hourlyRate');
-        const lunchCost = document.getElementById('lunchCost');
-        const nightBonus = document.getElementById('nightBonus');
-        const saturdayBonus = document.getElementById('saturdayBonus');
-        const sundayBonus = document.getElementById('sundayBonus');
-        const extraBonus = document.getElementById('extraBonus');
-        const personalDoctorDays = document.getElementById('personalDoctorDays');
-        const accompanyDoctorDays = document.getElementById('accompanyDoctorDays');
-        const usedPersonalDoctor = document.getElementById('usedPersonalDoctor');
-        const usedAccompanyDoctor = document.getElementById('usedAccompanyDoctor');
-        const usedWeekends = document.getElementById('usedWeekends');
-        const accruedWeekendsInput = document.getElementById('accruedWeekendsInput');
-        
-        if (hourlyRate) hourlyRate.value = userData.settings.hourlyRate || 6.10;
-        if (lunchCost) lunchCost.value = userData.settings.lunchCost || 1.31;
-        if (nightBonus) nightBonus.value = userData.settings.nightBonus || 20;
-        if (saturdayBonus) saturdayBonus.value = userData.settings.saturdayBonus || 1.5;
-        if (sundayBonus) sundayBonus.value = userData.settings.sundayBonus || 2.0;
-        if (extraBonus) extraBonus.value = userData.settings.extraBonus || 25;
-        if (personalDoctorDays) personalDoctorDays.value = userData.settings.personalDoctorDays || 7;
-        if (accompanyDoctorDays) accompanyDoctorDays.value = userData.settings.accompanyDoctorDays || 6;
-        if (usedPersonalDoctor) usedPersonalDoctor.value = userData.settings.usedPersonalDoctor || 0;
-        if (usedAccompanyDoctor) usedAccompanyDoctor.value = userData.settings.usedAccompanyDoctor || 0;
-        if (usedWeekends) usedWeekends.value = userData.settings.usedWeekends || 0;
-        if (accruedWeekendsInput) accruedWeekendsInput.value = userData.settings.accruedWeekends || 0;
-    }
-    
-    // Аватар
-    const avatarPreview = document.getElementById('avatarPreview');
-    const profileAvatar = document.getElementById('profileAvatar');
-    const avatarUrl = userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.email?.split('@')[0] || 'User')}&background=00b060&color=fff&size=128`;
-    
-    if (avatarPreview) avatarPreview.src = avatarUrl;
-    if (profileAvatar) profileAvatar.src = avatarUrl;
-    
-    // Имя пользователя
-    const userName = document.getElementById('userName');
-    const profileName = document.getElementById('profileName');
-    const displayName = userData.fullName || userData.email?.split('@')[0] || 'User';
-    
-    if (userName) userName.textContent = displayName;
-    if (profileName) profileName.textContent = displayName;
-}
-
 // Загрузка всех данных после авторизации
 async function loadAllUserData(user) {
     console.log('Загрузка данных для пользователя:', user.uid);
@@ -107,30 +41,78 @@ async function loadAllUserData(user) {
         const userData = userDoc.data();
         console.log('Данные пользователя загружены:', userData);
         
-        // Устанавливаем пользователя через функцию из auth.js
         setCurrentUser({ uid: user.uid, ...userData }, userData);
         
         // Загружаем данные в UI
-        loadUserDataToUI(userData);
-        
-        // Обновляем отображение
-        if (window.updateMonthDisplay) window.updateMonthDisplay();
-        if (window.buildCalendar) window.buildCalendar();
-        if (window.calculateAllStats) window.calculateAllStats();
-        
-        // Запускаем время
-        if (window.updateDateTime) window.updateDateTime();
-        if (window.updateWeather) window.updateWeather();
-        if (window.updateFinancialTip) window.updateFinancialTip();
-        if (window.updateExchangeRate) window.updateExchangeRate();
-        
-        // Загружаем финансовую цель
         setTimeout(() => {
+            // Заполняем поля профиля
+            const fullNameEl = document.getElementById('fullName');
+            const employeeIdEl = document.getElementById('employeeId');
+            const cardIdEl = document.getElementById('cardId');
+            const emailEl = document.getElementById('email');
+            
+            if (fullNameEl) fullNameEl.value = userData.fullName || '';
+            if (employeeIdEl) employeeIdEl.value = userData.employeeId || '';
+            if (cardIdEl) cardIdEl.value = userData.cardId || '';
+            if (emailEl) emailEl.value = userData.email || '';
+            
+            if (userData.settings) {
+                const hourlyRate = document.getElementById('hourlyRate');
+                const lunchCost = document.getElementById('lunchCost');
+                const nightBonus = document.getElementById('nightBonus');
+                const saturdayBonus = document.getElementById('saturdayBonus');
+                const sundayBonus = document.getElementById('sundayBonus');
+                const extraBonus = document.getElementById('extraBonus');
+                const personalDoctorDays = document.getElementById('personalDoctorDays');
+                const accompanyDoctorDays = document.getElementById('accompanyDoctorDays');
+                const usedPersonalDoctor = document.getElementById('usedPersonalDoctor');
+                const usedAccompanyDoctor = document.getElementById('usedAccompanyDoctor');
+                const usedWeekends = document.getElementById('usedWeekends');
+                const accruedWeekendsInput = document.getElementById('accruedWeekendsInput');
+                
+                if (hourlyRate) hourlyRate.value = userData.settings.hourlyRate || 6.10;
+                if (lunchCost) lunchCost.value = userData.settings.lunchCost || 1.31;
+                if (nightBonus) nightBonus.value = userData.settings.nightBonus || 20;
+                if (saturdayBonus) saturdayBonus.value = userData.settings.saturdayBonus || 1.5;
+                if (sundayBonus) sundayBonus.value = userData.settings.sundayBonus || 2.0;
+                if (extraBonus) extraBonus.value = userData.settings.extraBonus || 25;
+                if (personalDoctorDays) personalDoctorDays.value = userData.settings.personalDoctorDays || 7;
+                if (accompanyDoctorDays) accompanyDoctorDays.value = userData.settings.accompanyDoctorDays || 6;
+                if (usedPersonalDoctor) usedPersonalDoctor.value = userData.settings.usedPersonalDoctor || 0;
+                if (usedAccompanyDoctor) usedAccompanyDoctor.value = userData.settings.usedAccompanyDoctor || 0;
+                if (usedWeekends) usedWeekends.value = userData.settings.usedWeekends || 0;
+                if (accruedWeekendsInput) accruedWeekendsInput.value = userData.settings.accruedWeekends || 0;
+            }
+            
+            const avatarPreview = document.getElementById('avatarPreview');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const avatarUrl = userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.email?.split('@')[0] || 'User')}&background=00b060&color=fff&size=128`;
+            
+            if (avatarPreview) avatarPreview.src = avatarUrl;
+            if (profileAvatar) profileAvatar.src = avatarUrl;
+            
+            const userName = document.getElementById('userName');
+            const profileName = document.getElementById('profileName');
+            const displayName = userData.fullName || userData.email?.split('@')[0] || 'User';
+            
+            if (userName) userName.textContent = displayName;
+            if (profileName) profileName.textContent = displayName;
+            
+            if (window.updateMonthDisplay) window.updateMonthDisplay();
+            if (window.buildCalendar) window.buildCalendar();
+            if (window.calculateAllStats) window.calculateAllStats();
+            
+            if (window.updateDateTime) window.updateDateTime();
+            if (window.updateWeather) window.updateWeather();
+            if (window.updateFinancialTip) window.updateFinancialTip();
+            if (window.updateExchangeRate) window.updateExchangeRate();
+            
+            // Загружаем финансовую цель ОДИН раз
             if (window.loadFinancialGoal) {
                 console.log('Вызов loadFinancialGoal из main');
                 window.loadFinancialGoal();
             }
-        }, 500);
+        }, 200);
         
         return true;
     } catch (error) {
@@ -151,7 +133,6 @@ onAuthStateChanged(auth, async (user) => {
             hidePreloader();
             document.getElementById('app').classList.remove('hidden');
             
-            // Устанавливаем тему
             if (window.setTheme && window.currentUser?.theme) {
                 window.setTheme(window.currentUser.theme);
             }
@@ -169,19 +150,15 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Загрузка страницы
 window.addEventListener('load', function() {
     console.log('Страница загружена');
     
-    // Восстанавливаем язык
     const savedLang = localStorage.getItem('vaillant_language') || 'ru';
     setLanguage(savedLang);
     
-    // Восстанавливаем тему
     const savedTheme = localStorage.getItem('vaillant_theme') || 'dark';
     if (window.setTheme) window.setTheme(savedTheme);
     
-    // Заполняем сохраненные данные входа
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     const rememberedPass = localStorage.getItem('rememberedPass');
     if (rememberedEmail) {
@@ -194,10 +171,13 @@ window.addEventListener('load', function() {
     }
 });
 
-// Переключение вкладок
+// ИСПРАВЛЕННАЯ функция setView - БЕЗ множественных вызовов
 window.setView = function(view) {
+    console.log('Переключение на вкладку:', view);
+    
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
     const viewElement = document.getElementById(view);
     if (viewElement) viewElement.classList.add('active');
     
@@ -207,7 +187,7 @@ window.setView = function(view) {
     const mainNav = document.getElementById('mainNav');
     if (mainNav) mainNav.classList.remove('active');
     
-    // Обновляем контент вкладки
+    // Обновляем данные ТОЛЬКО для текущей вкладки, БЕЗ повторных вызовов
     if (view === 'calendar' && window.buildCalendar) {
         setTimeout(() => window.buildCalendar(), 50);
     }
@@ -216,25 +196,18 @@ window.setView = function(view) {
     }
     if (view === 'finance' && window.updateFinanceStats) {
         setTimeout(() => window.updateFinanceStats(), 50);
-        setTimeout(() => {
-            if (window.loadFinancialGoal) {
-                console.log('Вызов loadFinancialGoal из setView');
-                window.loadFinancialGoal();
-            }
-        }, 200);
+        // НЕ вызываем loadFinancialGoal здесь - она уже загружена при старте
     }
     if (view === 'dashboard' && window.buildYearChart) {
         setTimeout(() => window.buildYearChart(), 100);
     }
 };
 
-// Бургер-меню
 window.toggleMobileMenu = function() {
     const nav = document.getElementById('mainNav');
     if (nav) nav.classList.toggle('active');
 };
 
-// Скрыть уведомление
 window.hideNotification = function() {
     const notification = document.getElementById('notification');
     if (notification) notification.classList.add('hidden');
