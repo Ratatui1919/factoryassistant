@@ -4,7 +4,6 @@ import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, s
 import { t, showModal, hideModal, showNotification, getAvatarUrl, getDisplayName } from './utils.js';
 import { BASE_RATE, LUNCH_COST_REAL, NIGHT_BONUS_PERCENT } from './salary.js';
 import { initApp } from './main.js';
-import { loadFinancialGoal } from './finance.js';
 
 let currentUser = null;
 let currentUserData = null;
@@ -341,7 +340,8 @@ export async function clearAllData() {
     }
 }
 
-// ===== ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
+// ===== ЭКСПОРТ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ =====
+// Эти функции будут доступны в HTML как window.showLoginForm и т.д.
 window.showLoginForm = showLoginForm;
 window.showRegisterForm = showRegisterForm;
 window.register = register;
@@ -351,20 +351,3 @@ window.saveProfile = saveProfile;
 window.previewAvatar = previewAvatar;
 window.exportData = exportData;
 window.clearAllData = clearAllData;
-
-// ===== ЭКСПОРТ ДЛЯ ДРУГИХ МОДУЛЕЙ =====
-export { 
-    getCurrentUser, 
-    getUserData, 
-    updateUserData, 
-    loadUserDataToUI, 
-    showLoginForm, 
-    showRegisterForm, 
-    register, 
-    login, 
-    logout, 
-    saveProfile, 
-    previewAvatar, 
-    exportData, 
-    clearAllData 
-};
