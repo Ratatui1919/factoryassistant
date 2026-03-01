@@ -1,27 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Vaillant Test</title>
+    <meta charset="UTF-8">
+    <title>Vaillant Assistant</title>
 </head>
 <body>
-    <h1>Тест Firebase</h1>
-    <div id="status">Загрузка...</div>
-
-    <script type="module">
-        import { auth, db } from './firebase-config.js';
-        
-        const status = document.getElementById('status');
-        
-        if (auth && db) {
-            status.innerHTML = '✅ Firebase подключен!';
-            status.style.color = 'green';
-        } else {
-            status.innerHTML = '❌ Ошибка Firebase';
-            status.style.color = 'red';
-        }
-        
-        console.log('Auth:', auth);
-        console.log('DB:', db);
-    </script>
+    <h1>Загрузка...</h1>
+    
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
