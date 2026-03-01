@@ -1,4 +1,4 @@
-// js/translations.js - ВСЕ ПЕРЕВОДЫ
+// modules/translations.js - ВСЕ ПЕРЕВОДЫ
 
 export const translations = {
     ru: {
@@ -41,6 +41,10 @@ export const translations = {
         totalHours: 'Всего часов',
         totalLunch: 'Потрачено на обеды',
         bestMonth: 'Лучший месяц',
+        calculate: 'Рассчитать',
+        value: 'Значение',
+        date: 'Дата',
+        stats: 'Статистика',
         
         // Профиль
         employee: 'Сотрудник завода',
@@ -110,6 +114,7 @@ export const translations = {
         importSuccess: 'Данные за {count} месяцев импортированы',
         importError: 'Ошибка при обработке PDF',
         chooseFile: 'Выберите файл',
+        imported: 'Данные импортированы',
         
         // Календарь
         mon: 'Пн',
@@ -143,7 +148,6 @@ export const translations = {
         // Действия
         selectDayType: 'Выберите тип дня',
         cancel: 'Отмена',
-        calculate: 'Рассчитать',
         exportToExcel: 'Экспорт в Excel',
         exportToPDF: 'Экспорт в PDF',
         clearAllData: 'Очистить все данные',
@@ -152,6 +156,9 @@ export const translations = {
         lastUpdate: 'Последнее обновление',
         enterEuro: 'Введите сумму в евро',
         resultUAH: 'Результат в гривнах',
+        updating: 'Обновление...',
+        rateUpdated: 'Курс обновлен',
+        rateError: 'Ошибка обновления курса',
         
         // Важные даты
         salary: 'День зарплаты',
@@ -173,18 +180,63 @@ export const translations = {
         holiday7: 'День Словацкого восстания',
         holiday8: 'День всех святых',
         holiday9: 'Сочельник',
-        holiday10: 'Рождество'
+        holiday10: 'Рождество',
+        
+        // Финансовые советы
+        financialTip: 'Финансовый совет',
+        tip1: 'Откладывай минимум 10% от зарплаты',
+        tip2: 'Используй надчасы для дополнительного дохода',
+        tip3: 'Субботние смены приносят +25€ бонуса',
+        tip4: 'Ночные смены оплачиваются на 20% выше',
+        tip5: 'Следи за количеством перепусток',
+        tip6: 'Создай финансовую подушку безопасности',
+        tip7: 'Инвестируй хотя бы 5% от дохода',
+        tip8: 'Избегай кредитов с высокими процентами',
+        tip9: 'Планируй крупные покупки заранее',
+        tip10: 'Используй кэшбэк и бонусные программы',
+        
+        // Уведомления
+        welcome: 'Добро пожаловать!',
+        profileSaved: 'Профиль сохранён!',
+        avatarUpdated: 'Аватар обновлён',
+        exported: 'Данные экспортированы',
+        exportedPDF: 'PDF файл сохранён',
+        dataCleared: 'Все данные очищены',
+        recordAdded: 'Запись добавлена',
+        goalSaved: 'Цель сохранена',
+        goalDeleted: 'Цель удалена',
+        added: 'Добавлено',
+        withdrawn: 'Снято',
+        
+        // Ошибки и сообщения
+        fillAllFields: 'Заполните все поля!',
+        validEmail: 'Введите корректный email!',
+        passwordsNotMatch: 'Пароли не совпадают!',
+        passwordLength: 'Пароль должен быть минимум 6 символов!',
+        enterEmailPass: 'Введите email и пароль!',
+        userNotFound: 'Данные пользователя не найдены!',
+        loginError: 'Ошибка входа',
+        error: 'Ошибка',
+        registrationSuccess: 'Регистрация успешна!',
+        confirmLogout: 'Выйти?',
+        enterGoalName: 'Введите название и сумму цели',
+        deleteGoalConfirm: 'Удалить цель?',
+        howMuchAdd: 'Сколько добавить?',
+        howMuchWithdraw: 'Сколько снять?',
+        enterAmount: 'Введите сумму',
+        insufficientFunds: 'Недостаточно средств',
+        calculated: 'Рассчитано'
     },
     
     sk: {
-        // Навигация
+        // Navigácia
         dashboard: 'Nástenka',
         calendar: 'Kalendár',
         stats: 'Štatistika',
         profile: 'Profil',
         finance: 'Financie',
         
-        // Авторизация
+        // Auth
         login: 'Prihlásenie',
         register: 'Registrácia',
         email: 'Email',
@@ -195,7 +247,7 @@ export const translations = {
         registerBtn: 'Registrovať',
         factoryPro: 'FACTORY PRO',
         
-        // Дашборд
+        // Dashboard
         netSalary: 'Čistá mzda',
         grossSalary: 'Hrubá',
         hours: 'Hodiny',
@@ -210,14 +262,18 @@ export const translations = {
         accompanyLeft: 'Sprievod',
         monthlyIncome: 'Príjem podľa mesiacov',
         
-        // Статистика
+        // Stats
         totalStats: 'Celková štatistika',
         totalEarned: 'Celkový zárobok',
         totalHours: 'Celkom hodín',
         totalLunch: 'Mínus obedy',
         bestMonth: 'Najlepší mesiac',
+        calculate: 'Vypočítať',
+        value: 'Hodnota',
+        date: 'Dátum',
+        stats: 'Štatistika',
         
-        // Профиль
+        // Profile
         employee: 'Zamestnanec',
         personalData: 'Osobné údaje',
         fullName: 'Celé meno',
@@ -258,7 +314,7 @@ export const translations = {
         gray: '⚪ Sivá',
         saveChanges: 'Uložiť zmeny',
         
-        // Финансы
+        // Finance
         financeAnalytics: 'Finančná analýza',
         currentMonth: 'Aktuálny mesiac',
         netIncome: 'Čistý príjem',
@@ -278,15 +334,16 @@ export const translations = {
         withdraw: 'Vybrať',
         history: 'História operácií',
         
-        // Импорт PDF
+        // PDF Import
         importPDF: 'Import z PDF',
         uploadPDF: 'Nahrajte PDF s platom',
         processing: 'Spracúvam...',
         importSuccess: 'Údaje za {count} mesiacov importované',
         importError: 'Chyba pri spracovaní PDF',
         chooseFile: 'Vyberte súbor',
+        imported: 'Dáta importované',
         
-        // Календарь
+        // Calendar
         mon: 'Po',
         tue: 'Ut',
         wed: 'St',
@@ -301,7 +358,7 @@ export const translations = {
         doctor: 'Lekár',
         dayOff: 'Voľno',
         
-        // Месяцы
+        // Months
         january: 'Január',
         february: 'Február',
         march: 'Marec',
@@ -315,10 +372,9 @@ export const translations = {
         november: 'November',
         december: 'December',
         
-        // Действия
+        // Actions
         selectDayType: 'Vyberte typ dňa',
         cancel: 'Zrušiť',
-        calculate: 'Vypočítať',
         exportToExcel: 'Export do Excel',
         exportToPDF: 'Export do PDF',
         clearAllData: 'Vymazať všetky dáta',
@@ -327,8 +383,11 @@ export const translations = {
         lastUpdate: 'Posledná aktualizácia',
         enterEuro: 'Zadajte sumu v eurách',
         resultUAH: 'Výsledok v UAH',
+        updating: 'Aktualizácia...',
+        rateUpdated: 'Kurz aktualizovaný',
+        rateError: 'Chyba pri aktualizácii kurzu',
         
-        // Важные даты
+        // Important dates
         salary: 'Deň výplaty',
         dayTypes: 'Typy dní',
         importantDates: 'Dôležité dátumy',
@@ -338,17 +397,62 @@ export const translations = {
         tomorrow: 'zajtra',
         days: 'dní',
         
-        // Праздники
-        holiday1: 'Deň vzniku SR',
-        holiday2: 'Traja králi',
+        // Holidays
+        holiday1: 'Deň vzniku Slovenskej republiky',
+        holiday2: 'Zjavenie Pána',
         holiday3: 'Veľký piatok',
         holiday4: 'Veľkonočný pondelok',
         holiday5: 'Sviatok práce',
-        holiday6: 'Cyril a Metod',
-        holiday7: 'SNP',
-        holiday8: 'Všetkých svätých',
+        holiday6: 'Sviatok svätých Cyrila a Metoda',
+        holiday7: 'Výročie SNP',
+        holiday8: 'Sviatok všetkých svätých',
         holiday9: 'Štedrý deň',
-        holiday10: 'Vianoce'
+        holiday10: 'Vianoce',
+        
+        // Financial tips
+        financialTip: 'Finančná rada',
+        tip1: 'Odkladaj aspoň 10% z výplaty',
+        tip2: 'Využi nadčasy na dodatočný príjem',
+        tip3: 'Sobotné zmeny prinášajú bonus +25€',
+        tip4: 'Nočné zmeny sú platené o 20% viac',
+        tip5: 'Sleduj počet dní u lekára',
+        tip6: 'Vytvor si finančnú rezervu',
+        tip7: 'Investuj aspoň 5% z príjmu',
+        tip8: 'Vyhýbaj sa pôžičkám s vysokým úrokom',
+        tip9: 'Plánuj veľké nákupy vopred',
+        tip10: 'Využívaj cashback a bonusové programy',
+        
+        // Notifications
+        welcome: 'Vitajte!',
+        profileSaved: 'Profil uložený!',
+        avatarUpdated: 'Avatar aktualizovaný',
+        exported: 'Dáta exportované',
+        exportedPDF: 'PDF súbor uložený',
+        dataCleared: 'Všetky dáta vymazané',
+        recordAdded: 'Záznam pridaný',
+        goalSaved: 'Cieľ uložený',
+        goalDeleted: 'Cieľ zmazaný',
+        added: 'Pridané',
+        withdrawn: 'Vybraté',
+        
+        // Errors
+        fillAllFields: 'Vyplňte všetky polia!',
+        validEmail: 'Zadajte platný email!',
+        passwordsNotMatch: 'Heslá sa nezhodujú!',
+        passwordLength: 'Heslo musí mať aspoň 6 znakov!',
+        enterEmailPass: 'Zadajte email a heslo!',
+        userNotFound: 'Dáta používateľa neboli nájdené!',
+        loginError: 'Chyba pri prihlásení',
+        error: 'Chyba',
+        registrationSuccess: 'Registrácia úspešná!',
+        confirmLogout: 'Odhlásiť sa?',
+        enterGoalName: 'Zadajte názov a sumu cieľa',
+        deleteGoalConfirm: 'Zmazať cieľ?',
+        howMuchAdd: 'Koľko pridať?',
+        howMuchWithdraw: 'Koľko vybrať?',
+        enterAmount: 'Zadajte sumu',
+        insufficientFunds: 'Nedostatok prostriedkov',
+        calculated: 'Vypočítané'
     },
     
     en: {
@@ -391,6 +495,10 @@ export const translations = {
         totalHours: 'Total hours',
         totalLunch: 'Lunch cost',
         bestMonth: 'Best month',
+        calculate: 'Calculate',
+        value: 'Value',
+        date: 'Date',
+        stats: 'Statistics',
         
         // Profile
         employee: 'Factory employee',
@@ -460,6 +568,7 @@ export const translations = {
         importSuccess: 'Data for {count} months imported',
         importError: 'Error processing PDF',
         chooseFile: 'Choose file',
+        imported: 'Data imported',
         
         // Calendar
         mon: 'Mo',
@@ -493,7 +602,6 @@ export const translations = {
         // Actions
         selectDayType: 'Select day type',
         cancel: 'Cancel',
-        calculate: 'Calculate',
         exportToExcel: 'Export to Excel',
         exportToPDF: 'Export to PDF',
         clearAllData: 'Clear all data',
@@ -502,6 +610,9 @@ export const translations = {
         lastUpdate: 'Last update',
         enterEuro: 'Enter amount in euro',
         resultUAH: 'Result in UAH',
+        updating: 'Updating...',
+        rateUpdated: 'Rate updated',
+        rateError: 'Error updating rate',
         
         // Important dates
         salary: 'Payday',
@@ -514,16 +625,61 @@ export const translations = {
         days: 'days',
         
         // Holidays
-        holiday1: 'Slovak Republic Day',
+        holiday1: 'Day of the Establishment of the Slovak Republic',
         holiday2: 'Epiphany',
         holiday3: 'Good Friday',
         holiday4: 'Easter Monday',
         holiday5: 'Labour Day',
-        holiday6: 'Cyril & Methodius Day',
-        holiday7: 'SNP Day',
+        holiday6: 'Saints Cyril and Methodius Day',
+        holiday7: 'Slovak National Uprising Day',
         holiday8: 'All Saints\' Day',
         holiday9: 'Christmas Eve',
-        holiday10: 'Christmas'
+        holiday10: 'Christmas',
+        
+        // Financial tips
+        financialTip: 'Financial tip',
+        tip1: 'Save at least 10% of your salary',
+        tip2: 'Use overtime for extra income',
+        tip3: 'Saturday shifts give +25€ bonus',
+        tip4: 'Night shifts pay 20% more',
+        tip5: 'Track your doctor visits',
+        tip6: 'Create an emergency fund',
+        tip7: 'Invest at least 5% of your income',
+        tip8: 'Avoid high-interest loans',
+        tip9: 'Plan large purchases in advance',
+        tip10: 'Use cashback and bonus programs',
+        
+        // Notifications
+        welcome: 'Welcome!',
+        profileSaved: 'Profile saved!',
+        avatarUpdated: 'Avatar updated',
+        exported: 'Data exported',
+        exportedPDF: 'PDF file saved',
+        dataCleared: 'All data cleared',
+        recordAdded: 'Record added',
+        goalSaved: 'Goal saved',
+        goalDeleted: 'Goal deleted',
+        added: 'Added',
+        withdrawn: 'Withdrawn',
+        
+        // Errors
+        fillAllFields: 'Fill all fields!',
+        validEmail: 'Enter valid email!',
+        passwordsNotMatch: 'Passwords do not match!',
+        passwordLength: 'Password must be at least 6 characters!',
+        enterEmailPass: 'Enter email and password!',
+        userNotFound: 'User data not found!',
+        loginError: 'Login error',
+        error: 'Error',
+        registrationSuccess: 'Registration successful!',
+        confirmLogout: 'Logout?',
+        enterGoalName: 'Enter goal name and amount',
+        deleteGoalConfirm: 'Delete goal?',
+        howMuchAdd: 'How much to add?',
+        howMuchWithdraw: 'How much to withdraw?',
+        enterAmount: 'Enter amount',
+        insufficientFunds: 'Insufficient funds',
+        calculated: 'Calculated'
     },
     
     uk: {
@@ -566,6 +722,10 @@ export const translations = {
         totalHours: 'Всього годин',
         totalLunch: 'Витрати на обіди',
         bestMonth: 'Найкращий місяць',
+        calculate: 'Розрахувати',
+        value: 'Значення',
+        date: 'Дата',
+        stats: 'Статистика',
         
         // Профіль
         employee: 'Працівник заводу',
@@ -635,6 +795,7 @@ export const translations = {
         importSuccess: 'Дані за {count} місяців імпортовано',
         importError: 'Помилка при обробці PDF',
         chooseFile: 'Виберіть файл',
+        imported: 'Дані імпортовано',
         
         // Календар
         mon: 'Пн',
@@ -668,7 +829,6 @@ export const translations = {
         // Дії
         selectDayType: 'Виберіть тип дня',
         cancel: 'Скасувати',
-        calculate: 'Розрахувати',
         exportToExcel: 'Експорт в Excel',
         exportToPDF: 'Експорт в PDF',
         clearAllData: 'Очистити всі дані',
@@ -677,6 +837,9 @@ export const translations = {
         lastUpdate: 'Останнє оновлення',
         enterEuro: 'Введіть суму в євро',
         resultUAH: 'Результат у гривнях',
+        updating: 'Оновлення...',
+        rateUpdated: 'Курс оновлено',
+        rateError: 'Помилка оновлення курсу',
         
         // Важливі дати
         salary: 'День зарплати',
@@ -698,6 +861,51 @@ export const translations = {
         holiday7: 'День Словацького повстання',
         holiday8: 'День усіх святих',
         holiday9: 'Святвечір',
-        holiday10: 'Різдво'
+        holiday10: 'Різдво',
+        
+        // Фінансові поради
+        financialTip: 'Фінансова порада',
+        tip1: 'Відкладай мінімум 10% від зарплати',
+        tip2: 'Використовуй надгодини для додаткового доходу',
+        tip3: 'Суботні зміни дають +25€ бонусу',
+        tip4: 'Нічні зміни оплачуються на 20% вище',
+        tip5: 'Слідкуй за кількістю перепусток',
+        tip6: 'Створи фінансову подушку безпеки',
+        tip7: 'Інвестуй хоча б 5% від доходу',
+        tip8: 'Уникай кредитів з високими відсотками',
+        tip9: 'Плануй великі покупки заздалегідь',
+        tip10: 'Використовуй кешбек та бонусні програми',
+        
+        // Сповіщення
+        welcome: 'Ласкаво просимо!',
+        profileSaved: 'Профіль збережено!',
+        avatarUpdated: 'Аватар оновлено',
+        exported: 'Дані експортовано',
+        exportedPDF: 'PDF файл збережено',
+        dataCleared: 'Всі дані очищено',
+        recordAdded: 'Запис додано',
+        goalSaved: 'Ціль збережено',
+        goalDeleted: 'Ціль видалено',
+        added: 'Додано',
+        withdrawn: 'Знято',
+        
+        // Помилки
+        fillAllFields: 'Заповніть всі поля!',
+        validEmail: 'Введіть коректний email!',
+        passwordsNotMatch: 'Паролі не співпадають!',
+        passwordLength: 'Пароль має бути мінімум 6 символів!',
+        enterEmailPass: 'Введіть email та пароль!',
+        userNotFound: 'Дані користувача не знайдено!',
+        loginError: 'Помилка входу',
+        error: 'Помилка',
+        registrationSuccess: 'Реєстрація успішна!',
+        confirmLogout: 'Вийти?',
+        enterGoalName: 'Введіть назву та суму цілі',
+        deleteGoalConfirm: 'Видалити ціль?',
+        howMuchAdd: 'Скільки додати?',
+        howMuchWithdraw: 'Скільки зняти?',
+        enterAmount: 'Введіть суму',
+        insufficientFunds: 'Недостатньо коштів',
+        calculated: 'Розраховано'
     }
 };
