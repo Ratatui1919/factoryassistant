@@ -1179,19 +1179,23 @@ function calculateDayEarnings(record, rate, settings) {
   }
 }
 
-// ===== ДАШБОРД (ИСПРАВЛЕНО) =====
+// ===== ДАШБОРД (ПОЛНОСТЬЮ ИСПРАВЛЕНО) =====
 function calculateDashboardStats() {
   if (!currentUser) return;
   
   const today = new Date();
   today.setHours(0,0,0,0);
   
+  // Фильтруем записи ТОЛЬКО за текущий месяц
   let monthly = (currentUser.records || []).filter(r => {
     const d = new Date(r.date);
     d.setHours(0,0,0,0);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear && d <= today;
   });
   
+  console.log(`Записей за ${currentMonth+1}.${currentYear}:`, monthly.length); // для отладки
+  
+  // Считаем рабочие дни для обедов
   const workDays = monthly.filter(r => {
     const d = new Date(r.date);
     const dayOfWeek = d.getDay();
@@ -1203,6 +1207,7 @@ function calculateDashboardStats() {
   
   let stats = { gross: 0, hours: 0, overtimeHours: 0, saturdays: 0, sundays: 0, extraBlocks: 0, doctorDays: 0 };
   
+  // Считаем доход
   monthly.forEach(r => {
     if (r.type === 'off') return;
     const hours = r.hours || 7.5;
@@ -1217,10 +1222,11 @@ function calculateDashboardStats() {
     if (r.type === 'doctor') stats.doctorDays++;
   });
   
+  // Добавляем бонусы за надчасы
   stats.gross += Math.floor(stats.extraBlocks / 2) * (currentUser.settings?.extraBonus || 25);
   stats.gross -= lunchCost;
   
-  // ИСПРАВЛЕНО: налоги считаем только если gross > 0
+  // Считаем налоги только если есть доход
   let net = stats.gross;
   if (stats.gross > 0) {
     const social = stats.gross * SOCIAL_RATE;
@@ -1230,6 +1236,7 @@ function calculateDashboardStats() {
     net = stats.gross - social - health - tax;
   }
   
+  // Обновляем карточки дашборда
   document.getElementById('gross').innerText = stats.gross.toFixed(2) + ' €';
   document.getElementById('net').innerText = net.toFixed(2) + ' €';
   document.getElementById('hoursWorked').innerText = stats.hours;
@@ -1742,3 +1749,4 @@ window.importFromPDF = function(input) {
     showNotification('Данные импортированы');
   }, 1500);
 };
+
