@@ -22,6 +22,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для красивого блока курса валют */
+        .exchange-rate-card {
+            background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .exchange-rate-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,176,96,0.2);
+            border-color: var(--primary);
+        }
+        .exchange-rate-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: rgba(0,176,96,0.05);
+            border-radius: 20px;
+            margin: 15px 0;
+        }
+        .currency-block {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: var(--dark);
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+        .currency-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .currency-icon.eur {
+            background: rgba(0,176,96,0.2);
+            color: #00b060;
+        }
+        .currency-icon.uah {
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
+        }
+        .currency-value {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        .rate-arrow {
+            font-size: 2rem;
+            color: var(--text-muted);
+        }
+        .update-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .update-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,176,96,0.4);
+        }
+        .update-btn i {
+            font-size: 0.9rem;
+        }
+        .last-update {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <!-- Модалка авторизации -->
@@ -32,40 +123,40 @@
                 <h2>Vaillant<span>Assistant</span></h2>
             </div>
             <div class="auth-tabs">
-                <button class="auth-tab active" onclick="window.showLoginForm()">Вход</button>
-                <button class="auth-tab" onclick="window.showRegisterForm()">Регистрация</button>
+                <button class="auth-tab active" onclick="window.showLoginForm()"><span data-lang="login">Вход</span></button>
+                <button class="auth-tab" onclick="window.showRegisterForm()"><span data-lang="register">Регистрация</span></button>
             </div>
             
             <div id="loginForm" class="auth-form active">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="loginEmail" placeholder="Email">
+                    <input type="email" id="loginEmail" data-lang-placeholder="email" placeholder="Email">
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPass" placeholder="Пароль">
+                    <input type="password" id="loginPass" data-lang-placeholder="password" placeholder="Пароль">
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe">Запомнить меня</label>
+                    <label for="rememberMe" data-lang="rememberMe">Запомнить меня</label>
                 </div>
-                <button class="btn-primary" onclick="window.login()">Войти</button>
+                <button class="btn-primary" onclick="window.login()"><span data-lang="loginBtn">Войти</span></button>
             </div>
             
             <div id="registerForm" class="auth-form">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="regEmail" placeholder="Email">
+                    <input type="email" id="regEmail" data-lang-placeholder="email" placeholder="Email">
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="regPass" placeholder="Пароль">
+                    <input type="password" id="regPass" data-lang-placeholder="password" placeholder="Пароль">
                 </div>
                 <div class="input-group">
                     <i class="fas fa-check-circle"></i>
-                    <input type="password" id="regConfirm" placeholder="Подтвердите пароль">
+                    <input type="password" id="regConfirm" data-lang-placeholder="confirmPassword" placeholder="Подтвердите пароль">
                 </div>
-                <button class="btn-primary" onclick="window.register()">Зарегистрироваться</button>
+                <button class="btn-primary" onclick="window.register()"><span data-lang="registerBtn">Зарегистрироваться</span></button>
             </div>
         </div>
     </div>
@@ -78,7 +169,7 @@
                     <img src="assets/vaillant-logo.png" alt="Vaillant">
                     <h1>Assistant</h1>
                 </div>
-                <div class="header-badge pulse">FACTORY PRO</div>
+                <div class="header-badge pulse"><span data-lang="factoryPro">FACTORY PRO</span></div>
                 <div class="language-selector">
                     <button class="lang-btn" data-lang="ru" onclick="window.setLanguage('ru')">RU</button>
                     <button class="lang-btn" data-lang="sk" onclick="window.setLanguage('sk')">SK</button>
@@ -104,9 +195,9 @@
                 
                 <div class="user-info">
                     <img id="avatarPreview" src="" alt="avatar">
-                    <span id="userName">Гость</span>
+                    <span id="userName">Guest</span>
                 </div>
-                <button class="logout-btn" onclick="window.logout()" title="Выйти">
+                <button class="logout-btn" onclick="window.logout()" title="Logout">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
                 
@@ -214,34 +305,45 @@
                 </div>
 
                 <!-- Курс валют - красивый блок -->
-                <div class="exchange-rate-card glass-effect" style="margin: 20px 0; padding: 20px; border-radius: 20px; background: linear-gradient(135deg, var(--dark-card), var(--dark-light));">
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                <div class="exchange-rate-card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.5rem;"></i>
+                            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
                             <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
                         </div>
-                        <button class="btn-small" onclick="window.updateExchangeRate()" style="padding: 5px 15px;">
+                        <button class="update-btn" onclick="window.updateExchangeRate()">
                             <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
                         </button>
                     </div>
                     
-                    <div id="exchangeRate" style="margin: 15px 0; text-align: center;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                            <span style="display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.5rem;"></i>
-                                <span style="font-weight: 600; font-size: 1.2rem;">1 EUR</span>
-                            </span>
-                            <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 1.2rem;"></i>
-                            <span style="display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.5rem;"></i>
-                                <span style="font-weight: 700; font-size: 1.8rem; color: var(--primary);">42.50</span>
-                                <span style="color: var(--text-muted);">UAH</span>
-                            </span>
+                    <div class="exchange-rate-display" id="exchangeRate">
+                        <div class="currency-block">
+                            <div class="currency-icon eur">
+                                <i class="fas fa-euro-sign"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">EUR</div>
+                                <div style="font-weight: 600; font-size: 1.2rem;">1</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rate-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        
+                        <div class="currency-block">
+                            <div class="currency-icon uah">
+                                <i class="fas fa-hryvnia"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">UAH</div>
+                                <div class="currency-value">42.50</div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div id="lastRateUpdate" style="text-align: center; font-size: 0.85rem; color: var(--text-muted);">
-                        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: --
+                    <div class="last-update" id="lastRateUpdate">
+                        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: <span id="lastUpdateTime">--:--</span>
                     </div>
                 </div>
 
@@ -293,8 +395,13 @@
                 </div>
                 
                 <div class="calendar-weekdays">
-                    <span data-lang="mon">Пн</span><span data-lang="tue">Вт</span><span data-lang="wed">Ср</span>
-                    <span data-lang="thu">Чт</span><span data-lang="fri">Пт</span><span data-lang="sat">Сб</span><span data-lang="sun">Вс</span>
+                    <span data-lang="mon">Пн</span>
+                    <span data-lang="tue">Вт</span>
+                    <span data-lang="wed">Ср</span>
+                    <span data-lang="thu">Чт</span>
+                    <span data-lang="fri">Пт</span>
+                    <span data-lang="sat">Сб</span>
+                    <span data-lang="sun">Вс</span>
                 </div>
                 
                 <div class="calendar-grid" id="calendarGrid"></div>
@@ -313,7 +420,7 @@
                 </div>
             </section>
 
-            <!-- СТАТИСТИКА С КНОПКОЙ РАССЧИТАТЬ -->
+            <!-- СТАТИСТИКА -->
             <section id="stats" class="view">
                 <div class="stats-header">
                     <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Общая статистика</span></h2>
@@ -471,35 +578,35 @@
                         </div>
                         
                         <div class="profile-card glass-effect">
-                            <h3><i class="fas fa-cloud-sun"></i> Погодные эффекты</h3>
+                            <h3><i class="fas fa-cloud-sun"></i> <span data-lang="weatherEffects">Погодные эффекты</span></h3>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="weatherEffectsEnabled" onchange="window.toggleWeatherEffect()">
-                                <label for="weatherEffectsEnabled">Включить снег/дождь на фоне</label>
+                                <label for="weatherEffectsEnabled" data-lang="enableWeatherEffects">Включить снег/дождь на фоне</label>
                             </div>
                             <div class="profile-field">
-                                <label>Режим</label>
+                                <label data-lang="weatherMode">Режим</label>
                                 <select id="weatherEffectMode" onchange="window.toggleWeatherEffect()">
-                                    <option value="auto">Авто (по погоде)</option>
-                                    <option value="snow">❄️ Только снег</option>
-                                    <option value="rain">🌧️ Только дождь</option>
-                                    <option value="off">Выключено</option>
+                                    <option value="auto" data-lang="auto">Авто (по погоде)</option>
+                                    <option value="snow" data-lang="snow">❄️ Только снег</option>
+                                    <option value="rain" data-lang="rain">🌧️ Только дождь</option>
+                                    <option value="off" data-lang="off">Выключено</option>
                                 </select>
                             </div>
                         </div>
                         
                         <div class="profile-card glass-effect">
-                            <h3><i class="fas fa-palette"></i> Тема оформления</h3>
+                            <h3><i class="fas fa-palette"></i> <span data-lang="theme">Тема оформления</span></h3>
                             <div class="theme-selector">
-                                <button class="theme-btn" data-theme="dark" onclick="window.setTheme('dark')">🌑 Тёмная</button>
-                                <button class="theme-btn" data-theme="light" onclick="window.setTheme('light')">☀️ Светлая</button>
-                                <button class="theme-btn" data-theme="blue" onclick="window.setTheme('blue')">🔵 Синяя</button>
-                                <button class="theme-btn" data-theme="purple" onclick="window.setTheme('purple')">🟣 Фиолетовая</button>
-                                <button class="theme-btn" data-theme="orange" onclick="window.setTheme('orange')">🟠 Оранжевая</button>
-                                <button class="theme-btn" data-theme="red" onclick="window.setTheme('red')">🔴 Красная</button>
-                                <button class="theme-btn" data-theme="green" onclick="window.setTheme('green')">🟢 Зелёная</button>
-                                <button class="theme-btn" data-theme="pink" onclick="window.setTheme('pink')">🌸 Розовая</button>
-                                <button class="theme-btn" data-theme="mint" onclick="window.setTheme('mint')">🌿 Мятная</button>
-                                <button class="theme-btn" data-theme="gray" onclick="window.setTheme('gray')">⚪ Серая</button>
+                                <button class="theme-btn" data-theme="dark" onclick="window.setTheme('dark')"><span data-lang="dark">🌑 Тёмная</span></button>
+                                <button class="theme-btn" data-theme="light" onclick="window.setTheme('light')"><span data-lang="light">☀️ Светлая</span></button>
+                                <button class="theme-btn" data-theme="blue" onclick="window.setTheme('blue')"><span data-lang="blue">🔵 Синяя</span></button>
+                                <button class="theme-btn" data-theme="purple" onclick="window.setTheme('purple')"><span data-lang="purple">🟣 Фиолетовая</span></button>
+                                <button class="theme-btn" data-theme="orange" onclick="window.setTheme('orange')"><span data-lang="orange">🟠 Оранжевая</span></button>
+                                <button class="theme-btn" data-theme="red" onclick="window.setTheme('red')"><span data-lang="red">🔴 Красная</span></button>
+                                <button class="theme-btn" data-theme="green" onclick="window.setTheme('green')"><span data-lang="green">🟢 Зелёная</span></button>
+                                <button class="theme-btn" data-theme="pink" onclick="window.setTheme('pink')"><span data-lang="pink">🌸 Розовая</span></button>
+                                <button class="theme-btn" data-theme="mint" onclick="window.setTheme('mint')"><span data-lang="mint">🌿 Мятная</span></button>
+                                <button class="theme-btn" data-theme="gray" onclick="window.setTheme('gray')"><span data-lang="gray">⚪ Серая</span></button>
                             </div>
                         </div>
                     </div>
@@ -566,7 +673,7 @@
                         <div class="goal-inputs">
                             <div class="input-group">
                                 <label data-lang="goalName">Название цели</label>
-                                <input type="text" id="goalName" placeholder="Подушка безопасности">
+                                <input type="text" id="goalName" placeholder="e.g., Emergency Fund">
                             </div>
                             <div class="input-group">
                                 <label data-lang="goalAmount">Сумма цели (€)</label>
