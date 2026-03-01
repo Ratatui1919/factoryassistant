@@ -27,6 +27,52 @@
     
     <!-- Основные стили -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Экстренные стили для предотвращения "голого" HTML -->
+    <style>
+        body { 
+            background: #0a0c14; 
+            color: white; 
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0c14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .loader {
+            text-align: center;
+        }
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #1a1e2a;
+            border-top-color: #00b060;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        .loader img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Прелоадер -->
@@ -34,8 +80,8 @@
         <div class="loader">
             <div class="loader-spinner"></div>
             <img src="assets/vaillant-logo.png" alt="Vaillant">
-            <h2 style="color: var(--primary);">Vaillant Assistant</h2>
-            <p style="color: var(--text-muted);" id="loadingStatus">Загрузка...</p>
+            <h2 style="color: var(--primary, #00b060);">Vaillant Assistant</h2>
+            <p style="color: var(--text-muted, #a0a8b8);" id="loadingStatus">Загрузка...</p>
         </div>
     </div>
 
@@ -227,7 +273,7 @@
 
                 <!-- Курс валют -->
                 <div class="exchange-rate-card glass-effect">
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
                             <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
