@@ -63,12 +63,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Стили для модалки авторизации */
-        #authModal {
-            display: none;
-            z-index: 10001;
-        }
-        
         /* Дополнительные стили для красивого блока курса валют */
         .exchange-rate-card {
             background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
@@ -157,10 +151,6 @@
             width: 100%;
             outline: none;
         }
-        .converter-input input[type="number"]::-webkit-inner-spin-button,
-        .converter-input input[type="number"]::-webkit-outer-spin-button {
-            opacity: 0.5;
-        }
         .converter-result {
             flex: 1;
             min-width: 200px;
@@ -195,11 +185,6 @@
             transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(0,176,96,0.4);
         }
-        .update-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
         .last-update {
             text-align: center;
             font-size: 0.85rem;
@@ -211,18 +196,18 @@
     </style>
 </head>
 <body>
-    <!-- Прелоадер - виден только при первой загрузке -->
+    <!-- Прелоадер -->
     <div id="preloader">
         <div class="loader">
             <div class="loader-spinner"></div>
             <img src="assets/vaillant-logo.png" alt="Vaillant">
             <h2 style="color: var(--primary);">Vaillant Assistant</h2>
-            <p style="color: var(--text-muted);">Загрузка...</p>
+            <p style="color: var(--text-muted);" id="loadingStatus">Загрузка...</p>
         </div>
     </div>
 
-    <!-- Модалка авторизации - по умолчанию скрыта -->
-    <div class="modal" id="authModal" style="display: none;">
+    <!-- Модалка авторизации -->
+    <div class="modal" id="authModal">
         <div class="modal-content auth-card">
             <div class="auth-logo">
                 <img src="assets/vaillant-logo.png" alt="Vaillant">
@@ -407,7 +392,7 @@
                     </div>
                 </div>
 
-                <!-- Курс валют - красивый блок с конвертером -->
+                <!-- Курс валют -->
                 <div class="exchange-rate-card">
                     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -419,7 +404,6 @@
                         </button>
                     </div>
                     
-                    <!-- Текущий курс -->
                     <div class="currency-display">
                         <div class="currency-block">
                             <div class="currency-icon eur">
@@ -436,7 +420,6 @@
                         </div>
                     </div>
                     
-                    <!-- Конвертер -->
                     <div class="converter-box">
                         <div class="converter-input">
                             <i class="fas fa-euro-sign" style="color: var(--text-muted); margin-right: 5px;"></i>
@@ -741,7 +724,6 @@
                         <div class="pie-total" id="pieTotal">0 €</div>
                     </div>
                     
-                    <!-- ФИНАНСОВЫЕ ДЕТАЛИ (только евро) -->
                     <div class="finance-details glass-effect">
                         <div class="finance-item">
                             <span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">Чистый доход</span></span>
@@ -765,7 +747,7 @@
                         </div>
                     </div>
                     
-                    <!-- ФИНАНСОВЫЕ ЦЕЛИ (исправлено, без гривен) -->
+                    <!-- ФИНАНСОВЫЕ ЦЕЛИ -->
                     <div class="finance-goals glass-effect">
                         <h3><i class="fas fa-bullseye"></i> <span data-lang="goal">Моя финансовая цель</span></h3>
                         
@@ -784,9 +766,8 @@
                         </div>
                         
                         <div class="goal-progress" id="goalProgress" style="display:none">
-                            <h4 id="goalNameDisplay">Подушка безопасности</h4>
+                            <h4 id="goalNameDisplay"></h4>
                             
-                            <!-- Прогресс бар -->
                             <div style="margin: 20px 0;">
                                 <div class="progress-bar-container">
                                     <div class="progress-bar" id="goalProgressBar" style="width:0%"></div>
@@ -794,7 +775,6 @@
                                 <div class="progress-percent" id="goalPercent">0%</div>
                             </div>
                             
-                            <!-- Статистика цели (ТОЛЬКО В ЕВРО) -->
                             <div style="display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; background: var(--dark); border-radius: 12px;">
                                 <div style="text-align: center; flex: 1;">
                                     <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalSaved">Накоплено</div>
@@ -810,7 +790,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Кнопки действий -->
                             <div class="goal-actions" id="goalActions" style="display: none; gap: 10px; margin: 20px 0;">
                                 <button class="btn-success" onclick="window.addToGoal()" style="flex: 1;">
                                     <i class="fas fa-plus-circle"></i> <span data-lang="add">Добавить</span>
@@ -820,13 +799,11 @@
                                 </button>
                             </div>
                             
-                            <!-- История операций -->
                             <div class="goal-history">
                                 <h5><i class="fas fa-history"></i> <span data-lang="history">Последние операции</span></h5>
                                 <div id="goalHistory"></div>
                             </div>
                             
-                            <!-- Кнопка удаления -->
                             <button class="btn-danger btn-small" onclick="window.clearGoal()" style="width: 100%; margin-top: 15px;">
                                 <i class="fas fa-times"></i> <span data-lang="deleteGoal">Удалить цель</span>
                             </button>
@@ -841,7 +818,7 @@
 
                     <div class="pdf-import glass-effect">
                         <h3><i class="fas fa-file-pdf"></i> <span data-lang="importPDF">Импорт из PDF</span></h3>
-                        <p><span data-lang="uploadPDF">Загрузите PDF с зарплатой за последние 4 месяца</span></p>
+                        <p><span data-lang="uploadPDF">Загрузите PDF с зарплатой</span></p>
                         <div class="pdf-upload-area">
                             <input type="file" id="pdfUpload" accept=".pdf" onchange="window.importFromPDF(this)">
                             <label for="pdfUpload" class="pdf-label">
@@ -910,7 +887,7 @@
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="app.js"></script>
     
-    <!-- Подключаем модули -->
+    <!-- Модули -->
     <link rel="stylesheet" href="modules/important-dates.css">
     <script type="module" src="modules/important-dates.js"></script>
 </body>
