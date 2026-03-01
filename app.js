@@ -966,10 +966,12 @@ function buildCalendar() {
     let cell = document.createElement('div');
     cell.className = 'day';
     
+    // ИСПРАВЛЕНО: теперь можно редактировать СЕГОДНЯШНИЙ день
     let isPast = false;
     if (currentYear < todayYear) isPast = true;
     else if (currentYear === todayYear && currentMonth < todayMonth) isPast = true;
     else if (currentYear === todayYear && currentMonth === todayMonth && d < todayDate) isPast = true;
+    // НЕ добавляем в будущее те дни, которые равны todayDate
     
     if (!isPast) cell.classList.add('future');
     
@@ -991,7 +993,8 @@ function buildCalendar() {
       }
     }
     
-    if (isPast) {
+    // ИСПРАВЛЕНО: добавляем клик для ПРОШЛЫХ дней И СЕГОДНЯ
+    if (isPast || (currentYear === todayYear && currentMonth === todayMonth && d === todayDate)) {
       cell.onclick = () => {
         selectedDay = d;
         showModal('dayModal');
@@ -1750,3 +1753,4 @@ window.importFromPDF = function(input) {
     }
   }, 1500);
 };
+
