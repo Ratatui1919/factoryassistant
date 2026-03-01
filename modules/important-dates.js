@@ -1,9 +1,9 @@
-// modules/important-dates.js - С РАБОЧИМ ПЕРЕВОДОМ
+// modules/important-dates.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
 
 (function() {
     console.log('🔥 Модуль важных дат запущен');
 
-    // ПЕРЕВОДЫ ДЛЯ ВАЖНЫХ ДАТ
+    // ПЕРЕВОДЫ
     const translations = {
         ru: {
             salary: 'День зарплаты',
@@ -36,7 +36,8 @@
             today: 'сегодня',
             tomorrow: 'завтра',
             days: 'дн.',
-            upcoming: 'Ближайшие даты'
+            upcoming: 'Ближайшие даты',
+            dayTypesTitle: 'Типы дней'
         },
         sk: {
             salary: 'Deň výplaty',
@@ -69,7 +70,8 @@
             today: 'dnes',
             tomorrow: 'zajtra',
             days: 'dní',
-            upcoming: 'Najbližšie dátumy'
+            upcoming: 'Najbližšie dátumy',
+            dayTypesTitle: 'Typy dní'
         },
         en: {
             salary: 'Payday',
@@ -102,7 +104,8 @@
             today: 'today',
             tomorrow: 'tomorrow',
             days: 'days',
-            upcoming: 'Upcoming Dates'
+            upcoming: 'Upcoming Dates',
+            dayTypesTitle: 'Day Types'
         },
         uk: {
             salary: 'День зарплати',
@@ -135,7 +138,8 @@
             today: 'сьогодні',
             tomorrow: 'завтра',
             days: 'дн.',
-            upcoming: 'Найближчі дати'
+            upcoming: 'Найближчі дати',
+            dayTypesTitle: 'Типи днів'
         }
     };
 
@@ -144,79 +148,53 @@
         return document.documentElement.lang || 'ru';
     }
 
-    // ПОЛУЧАЕМ ПЕРЕВОД
-    function t(key, category = null, subKey = null) {
+    // ФУНКЦИЯ ПЕРЕВОДА
+    function translate(key, category = null) {
         const lang = getCurrentLanguage();
-        
-        if (category && subKey && translations[lang]?.[category]?.[subKey]) {
-            return translations[lang][category][subKey];
-        }
         
         if (category && translations[lang]?.[category]?.[key]) {
             return translations[lang][category][key];
         }
-        
         if (translations[lang]?.[key]) {
             return translations[lang][key];
         }
-        
         // Fallback to Russian
-        if (category && subKey && translations.ru?.[category]?.[subKey]) {
-            return translations.ru[category][subKey];
-        }
-        
         if (category && translations.ru?.[category]?.[key]) {
             return translations.ru[category][key];
         }
-        
         return translations.ru?.[key] || key;
     }
 
-    // ВСЕ ПРАЗДНИКИ 2026 ПО МЕСЯЦАМ
+    // ПРАЗДНИКИ
     const holidays = {
         0: [ // Январь
-            { day: 1, name: 'День образования Словацкой Республики', icon: '🇸🇰', shortName: 'День Республики' },
-            { day: 6, name: 'Богоявление', icon: '👑', shortName: 'Богоявление' }
-        ],
-        1: [ // Февраль
-            // нет праздников
-        ],
-        2: [ // Март
-            // нет праздников
+            { day: 1, name: 'День образования Словацкой Республики', icon: '🇸🇰' },
+            { day: 6, name: 'Богоявление', icon: '👑' }
         ],
         3: [ // Апрель
-            { day: 3, name: 'Страстная пятница', icon: '✝️', shortName: 'Страстная пятница' },
-            { day: 6, name: 'Пасхальный понедельник', icon: '🐣', shortName: 'Пасхальный понедельник' }
+            { day: 3, name: 'Страстная пятница', icon: '✝️' },
+            { day: 6, name: 'Пасхальный понедельник', icon: '🐣' }
         ],
         4: [ // Май
-            { day: 1, name: 'День труда', icon: '⚒️', shortName: 'День труда' }
-        ],
-        5: [ // Июнь
-            // нет праздников
+            { day: 1, name: 'День труда', icon: '⚒️' }
         ],
         6: [ // Июль
-            { day: 5, name: 'День Кирилла и Мефодия', icon: '📜', shortName: 'Кирилл и Мефодий' }
+            { day: 5, name: 'День Кирилла и Мефодия', icon: '📜' }
         ],
         7: [ // Август
-            { day: 29, name: 'День Словацкого восстания', icon: '⚔️', shortName: 'День восстания' }
-        ],
-        8: [ // Сентябрь
-            // нет праздников
-        ],
-        9: [ // Октябрь
-            // нет праздников
+            { day: 29, name: 'День Словацкого восстания', icon: '⚔️' }
         ],
         10: [ // Ноябрь
-            { day: 1, name: 'День всех святых', icon: '🕯️', shortName: 'День всех святых' }
+            { day: 1, name: 'День всех святых', icon: '🕯️' }
         ],
         11: [ // Декабрь
-            { day: 24, name: 'Сочельник', icon: '🎄', shortName: 'Сочельник' },
-            { day: 25, name: 'Рождество', icon: '🎅', shortName: 'Рождество' },
-            { day: 26, name: 'Рождество', icon: '🎁', shortName: 'Рождество' }
+            { day: 24, name: 'Сочельник', icon: '🎄' },
+            { day: 25, name: 'Рождество', icon: '🎅' },
+            { day: 26, name: 'Рождество', icon: '🎁' }
         ]
     };
 
-    // ТИПЫ ДНЕЙ ДЛЯ ЛЕГЕНДЫ
+    // ТИПЫ ДНЕЙ
     const dayTypes = [
         { color: '#f39c12', icon: '💼', name: 'Смена' },
         { color: '#2c3e50', icon: '🌙', name: 'Ночная' },
@@ -230,7 +208,7 @@
         { color: '#2c3e50', icon: '❌', name: 'Выходной' }
     ];
 
-    // ПОЛУЧАЕМ 3-Й РАБОЧИЙ ДЕНЬ
+    // ПОЛУЧАЕМ ДЕНЬ ЗАРПЛАТЫ
     function getSalaryDay(month, year = 2026) {
         let workDays = 0;
         let day = 1;
@@ -282,7 +260,7 @@
         };
     }
 
-    // ВЫЧИСЛЯЕМ РАЗНИЦУ В ДНЯХ
+    // РАЗНИЦА В ДНЯХ
     function daysBetween(date1, date2) {
         const d1 = new Date(date1.year, date1.month, date1.day);
         const d2 = new Date(date2.year, date2.month, date2.day);
@@ -290,7 +268,7 @@
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
-    // ФОРМАТИРУЕМ ДАТУ
+    // ФОРМАТ ДАТЫ
     function formatDate(day, month) {
         const months = [
             'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
@@ -299,7 +277,7 @@
         return `${day} ${months[month]}`;
     }
 
-    // ПОЛУЧАЕМ ЦВЕТ ДЛЯ ТИПА ДАТЫ
+    // ЦВЕТ ДЛЯ ТИПА
     function getDateColor(type) {
         return type === 'salary' ? '#00b060' : '#f59e0b';
     }
@@ -317,125 +295,106 @@
         const salaryDay = getSalaryDay(month, year);
         const monthHolidays = holidays[month] || [];
         
-        setTimeout(() => {
-            const cells = document.querySelectorAll('#calendarGrid .day:not(.empty)');
+        const cells = document.querySelectorAll('#calendarGrid .day:not(.empty)');
+        
+        cells.forEach(cell => {
+            const dayNum = cell.querySelector('.day-number')?.textContent;
+            if (!dayNum) return;
             
-            cells.forEach(cell => {
-                const dayNum = cell.querySelector('.day-number')?.textContent;
-                if (!dayNum) return;
-                
-                const day = parseInt(dayNum);
-                const hasSalary = (day === salaryDay);
-                const holiday = monthHolidays.find(h => h.day === day);
-                
-                if (hasSalary || holiday) {
-                    let container = cell.querySelector('.day-icons-container');
-                    if (!container) {
-                        container = document.createElement('div');
-                        container.className = 'day-icons-container';
-                        cell.appendChild(container);
-                    }
-                    
-                    if (hasSalary) {
-                        cell.classList.add('has-salary');
-                        const icon = document.createElement('span');
-                        icon.className = 'day-icon-important';
-                        icon.textContent = '💰';
-                        icon.title = t('salary');
-                        container.appendChild(icon);
-                    }
-                    
-                    if (holiday) {
-                        cell.classList.add('has-holiday');
-                        const icon = document.createElement('span');
-                        icon.className = 'day-icon-important';
-                        icon.textContent = holiday.icon;
-                        icon.title = t(holiday.name, 'holidays');
-                        container.appendChild(icon);
-                    }
+            const day = parseInt(dayNum);
+            const hasSalary = (day === salaryDay);
+            const holiday = monthHolidays.find(h => h.day === day);
+            
+            if (hasSalary || holiday) {
+                let container = cell.querySelector('.day-icons-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'day-icons-container';
+                    cell.appendChild(container);
                 }
-            });
-        }, 100);
+                
+                if (hasSalary) {
+                    cell.classList.add('has-salary');
+                    const icon = document.createElement('span');
+                    icon.className = 'day-icon-important';
+                    icon.textContent = '💰';
+                    icon.title = translate('salary');
+                    container.appendChild(icon);
+                }
+                
+                if (holiday) {
+                    cell.classList.add('has-holiday');
+                    const icon = document.createElement('span');
+                    icon.className = 'day-icon-important';
+                    icon.textContent = holiday.icon;
+                    icon.title = translate(holiday.name, 'holidays');
+                    container.appendChild(icon);
+                }
+            }
+        });
     }
 
-    // ОБЪЕДИНЯЕМ ВСЕ ЭЛЕМЕНТЫ ЛЕГЕНДЫ В ОДНОМ СТИЛЕ
-    function createUnifiedLegend() {
+    // СОЗДАНИЕ ЛЕГЕНДЫ
+    function createLegend() {
         const legendContainer = document.querySelector('.calendar-legend');
         if (!legendContainer) return;
 
-        // Очищаем контейнер
-        const existingLegend = document.getElementById('unified-legend');
-        if (existingLegend) existingLegend.remove();
-
-        // Собираем все уникальные праздники
-        const allHolidays = [];
+        // Собираем уникальные праздники
+        const uniqueHolidays = [];
         const seen = new Set();
         
         Object.values(holidays).flat().forEach(h => {
             if (!seen.has(h.icon)) {
                 seen.add(h.icon);
-                allHolidays.push(h);
+                uniqueHolidays.push(h);
             }
         });
 
-        allHolidays.sort((a, b) => {
+        uniqueHolidays.sort((a, b) => {
             const aDay = a.day + (a.month * 100);
             const bDay = b.day + (b.month * 100);
             return aDay - bDay;
         });
 
-        const unifiedLegendHTML = `
-            <div id="unified-legend" class="unified-legend">
+        const lang = getCurrentLanguage();
+
+        legendContainer.innerHTML = `
+            <div class="legend-grid">
                 <div class="legend-section">
-                    <div class="legend-title">
-                        <i class="fas fa-calendar-day"></i>
-                        <span>${t('dayTypesTitle', null, null) || 'Типы дней'}</span>
-                    </div>
+                    <div class="legend-title">${translate('dayTypesTitle')}</div>
                     <div class="legend-items">
-                        ${dayTypes.map(d => {
-                            const translatedName = t(d.name, 'dayTypes');
-                            return `
-                                <div class="legend-item" title="${translatedName}">
-                                    <span class="legend-color" style="background: ${d.color};"></span>
-                                    <span class="legend-icon">${d.icon}</span>
-                                    <span class="legend-text">${translatedName}</span>
-                                </div>
-                            `;
-                        }).join('')}
+                        ${dayTypes.map(d => `
+                            <div class="legend-item" title="${translate(d.name, 'dayTypes')}">
+                                <span class="legend-color" style="background: ${d.color};"></span>
+                                <span class="legend-icon">${d.icon}</span>
+                                <span class="legend-text">${translate(d.name, 'dayTypes')}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
-                
                 <div class="legend-section">
-                    <div class="legend-title">
-                        <i class="fas fa-star" style="color: var(--primary);"></i>
-                        <span>${t('legend')}</span>
-                    </div>
+                    <div class="legend-title">${translate('legend')}</div>
                     <div class="legend-items">
-                        <div class="legend-item" title="${t('salary')}">
+                        <div class="legend-item" title="${translate('salary')}">
                             <span class="legend-color" style="background: #00b060;"></span>
                             <span class="legend-icon">💰</span>
-                            <span class="legend-text">${t('salary')}</span>
+                            <span class="legend-text">${translate('salary')}</span>
                         </div>
-                        ${allHolidays.map(h => {
-                            const translatedName = t(h.name, 'holidays');
-                            return `
-                                <div class="legend-item" title="${translatedName}">
-                                    <span class="legend-color" style="background: #f59e0b;"></span>
-                                    <span class="legend-icon">${h.icon}</span>
-                                    <span class="legend-text">${translatedName}</span>
-                                </div>
-                            `;
-                        }).join('')}
+                        ${uniqueHolidays.map(h => `
+                            <div class="legend-item" title="${translate(h.name, 'holidays')}">
+                                <span class="legend-color" style="background: #f59e0b;"></span>
+                                <span class="legend-icon">${h.icon}</span>
+                                <span class="legend-text">${translate(h.name, 'holidays')}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             </div>
         `;
-
-        legendContainer.innerHTML = unifiedLegendHTML;
     }
 
-    // СОЗДАЕМ КРАСИВЫЙ ВИДЖЕТ
-    function createBeautifulWidget() {
+    // СОЗДАНИЕ ВИДЖЕТА
+    function createWidget() {
         const currentDate = getCurrentDate();
         const selectedMonth = getCurrentMonth();
         const year = 2026;
@@ -445,37 +404,32 @@
         
         const allDates = [];
         
-        // Добавляем зарплату
         const salaryDay = getSalaryDay(selectedMonth, year);
         allDates.push({
             day: salaryDay,
             month: selectedMonth,
             type: 'salary',
-            name: t('salary'),
-            icon: '💰',
-            fullName: t('salary')
+            name: translate('salary'),
+            icon: '💰'
         });
         
-        // Добавляем праздники
         (holidays[selectedMonth] || []).forEach(h => {
             allDates.push({
                 day: h.day,
                 month: selectedMonth,
                 type: 'holiday',
-                name: t(h.name, 'holidays'),
-                fullName: h.name,
+                name: translate(h.name, 'holidays'),
                 icon: h.icon
             });
         });
         
-        // Сортируем по дню
         allDates.sort((a, b) => a.day - b.day);
         
         const insertPoint = document.querySelector('.stats-row');
         if (!insertPoint) return;
         
         const widget = document.createElement('div');
-        widget.className = 'beautiful-widget';
+        widget.className = 'important-widget';
         widget.id = 'importantDatesWidget';
         
         let itemsHTML = '';
@@ -488,16 +442,16 @@
             let badgeClass = '';
             
             if (diff < 0) {
-                badge = t('past');
+                badge = translate('past');
                 badgeClass = 'past';
             } else if (diff === 0) {
-                badge = t('today');
+                badge = translate('today');
                 badgeClass = 'today';
             } else if (diff === 1) {
-                badge = t('tomorrow');
+                badge = translate('tomorrow');
                 badgeClass = 'tomorrow';
             } else {
-                badge = `${diff} ${t('days')}`;
+                badge = `${diff} ${translate('days')}`;
                 badgeClass = 'future';
             }
             
@@ -505,7 +459,7 @@
             const color = getDateColor(d.type);
             
             itemsHTML += `
-                <div class="widget-item ${d.type}" title="${d.fullName}">
+                <div class="widget-item ${d.type}">
                     <div class="item-icon" style="background: ${color}20; color: ${color};">${d.icon}</div>
                     <div class="item-content">
                         <div class="item-title">${d.name}</div>
@@ -518,8 +472,8 @@
         
         widget.innerHTML = `
             <div class="widget-header">
-                <i class="fas fa-calendar-alt" style="color: var(--primary);"></i>
-                <h3>${t('upcoming')}</h3>
+                <i class="fas fa-calendar-alt"></i>
+                <h3>${translate('upcoming')}</h3>
             </div>
             <div class="widget-items">
                 ${itemsHTML}
@@ -532,19 +486,19 @@
     // ДОБАВЛЯЕМ СТИЛИ
     const style = document.createElement('style');
     style.textContent = `
-        /* Стили для иконок в календаре */
+        /* Иконки в календаре */
         .day-icons-container {
             display: flex;
             gap: 2px;
             justify-content: center;
             margin-top: 2px;
             min-height: 20px;
+            flex-wrap: wrap;
         }
         
         .day-icon-important {
             font-size: 1rem;
             line-height: 1;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
         }
         
         .day.has-salary {
@@ -562,8 +516,8 @@
             border-color: #00b060 #f59e0b #00b060 #f59e0b !important;
         }
 
-        /* Единая легенда */
-        .unified-legend {
+        /* Легенда */
+        .legend-grid {
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -574,17 +528,10 @@
             border: 1px solid var(--border);
         }
         
-        .legend-section {
-            width: 100%;
-        }
-        
         .legend-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
             font-weight: 600;
             color: var(--primary);
+            margin-bottom: 10px;
             font-size: 1rem;
         }
         
@@ -604,26 +551,22 @@
             font-size: 0.85rem;
             border: 1px solid var(--border);
             cursor: help;
-            transition: all 0.2s ease;
-            color: var(--text);
+            transition: all 0.2s;
         }
         
         .legend-item:hover {
             border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .legend-color {
             width: 8px;
             height: 8px;
             border-radius: 2px;
-            flex-shrink: 0;
         }
         
         .legend-icon {
             font-size: 1rem;
-            flex-shrink: 0;
         }
         
         .legend-text {
@@ -631,17 +574,16 @@
             white-space: nowrap;
         }
 
-        /* Красивый виджет */
-        .beautiful-widget {
+        /* Виджет */
+        .important-widget {
             margin: 20px 0;
             padding: 20px;
             border-radius: 24px;
             background: linear-gradient(135deg, var(--dark-card), var(--dark-light));
             border: 1px solid var(--border);
-            box-shadow: var(--shadow);
         }
         
-        .beautiful-widget .widget-header {
+        .important-widget .widget-header {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -650,11 +592,12 @@
             border-bottom: 1px solid var(--border);
         }
         
-        .beautiful-widget .widget-header i {
+        .important-widget .widget-header i {
             font-size: 1.3rem;
+            color: var(--primary);
         }
         
-        .beautiful-widget .widget-header h3 {
+        .important-widget .widget-header h3 {
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--text);
@@ -675,14 +618,12 @@
             background: var(--dark);
             border-radius: 16px;
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            cursor: help;
+            transition: all 0.3s;
         }
         
         .widget-item:hover {
             transform: translateX(5px);
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,176,96,0.2);
         }
         
         .item-icon {
@@ -693,7 +634,6 @@
             align-items: center;
             justify-content: center;
             font-size: 1.4rem;
-            flex-shrink: 0;
         }
         
         .item-content {
@@ -722,7 +662,6 @@
             font-size: 0.8rem;
             font-weight: 500;
             white-space: nowrap;
-            flex-shrink: 0;
         }
         
         .item-badge.past {
@@ -746,6 +685,7 @@
             color: var(--text-muted);
         }
 
+        /* Мобильные стили */
         @media (max-width: 768px) {
             .legend-items {
                 gap: 5px;
@@ -753,29 +693,134 @@
             
             .legend-item {
                 padding: 4px 8px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            .legend-item .legend-text {
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             
             .widget-item {
                 flex-wrap: wrap;
+                gap: 10px;
             }
             
             .item-badge {
                 width: 100%;
                 text-align: center;
-                margin-top: 5px;
+                margin-left: 55px;
+            }
+            
+            .day-icons-container {
+                min-height: 18px;
+            }
+            
+            .day-icon-important {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .legend-item {
+                padding: 3px 6px;
+                font-size: 0.7rem;
+            }
+            
+            .legend-item .legend-text {
+                max-width: 60px;
+            }
+            
+            .item-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+            
+            .item-title {
+                font-size: 0.9rem;
+            }
+            
+            .item-date {
+                font-size: 0.75rem;
             }
         }
     `;
     document.head.appendChild(style);
 
-    // Следим за сменой языка
-    function watchLanguageChanges() {
+    // СВАЙП ДЛЯ ОБНОВЛЕНИЯ
+    function setupPullToRefresh() {
+        let startY = 0;
+        let currentY = 0;
+        let pulling = false;
+        const threshold = 100;
+        
+        const refreshIndicator = document.createElement('div');
+        refreshIndicator.className = 'refresh-indicator';
+        refreshIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обновление...';
+        refreshIndicator.style.cssText = `
+            position: fixed;
+            top: -50px;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            z-index: 10000;
+            transition: top 0.3s;
+            font-weight: 500;
+        `;
+        document.body.appendChild(refreshIndicator);
+        
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+                pulling = true;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (!pulling) return;
+            currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            
+            if (diff > 0 && diff < threshold) {
+                refreshIndicator.style.top = `${diff - 50}px`;
+            } else if (diff >= threshold) {
+                refreshIndicator.style.top = '0';
+                refreshIndicator.innerHTML = '<i class="fas fa-arrow-down"></i> Отпустите для обновления';
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchend', () => {
+            if (!pulling) return;
+            
+            const diff = currentY - startY;
+            
+            if (diff >= threshold) {
+                refreshIndicator.style.top = '0';
+                refreshIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обновление...';
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            } else {
+                refreshIndicator.style.top = '-50px';
+            }
+            
+            pulling = false;
+        }, { passive: true });
+    }
+
+    // СЛЕДИМ ЗА СМЕНОЙ ЯЗЫКА
+    function watchLanguage() {
         const observer = new MutationObserver(() => {
-            console.log('🔄 Язык изменен, обновляем интерфейс');
-            createUnifiedLegend();
+            console.log('Язык изменен, обновляем...');
+            createLegend();
             if (document.getElementById('dashboard').classList.contains('active')) {
-                createBeautifulWidget();
+                createWidget();
             }
             if (document.getElementById('calendar').classList.contains('active')) {
                 updateCalendar();
@@ -791,9 +836,10 @@
     // ЗАПУСК
     setTimeout(() => {
         updateCalendar();
-        createBeautifulWidget();
-        createUnifiedLegend();
-        watchLanguageChanges();
+        createWidget();
+        createLegend();
+        watchLanguage();
+        setupPullToRefresh();
     }, 1000);
 
     // ПЕРЕХВАТ СМЕНЫ МЕСЯЦА
@@ -803,12 +849,12 @@
             originalChangeMonth(delta);
             setTimeout(() => {
                 updateCalendar();
-                createBeautifulWidget();
+                createWidget();
             }, 300);
         };
     }
 
-    // ПЕРЕХВАТ ОТКРЫТИЯ КАЛЕНДАРЯ
+    // ПЕРЕХВАТ ОТКРЫТИЯ ВКЛАДОК
     const originalSetView = window.setView;
     if (originalSetView) {
         window.setView = function(view) {
@@ -816,28 +862,12 @@
             if (view === 'calendar') {
                 setTimeout(() => {
                     updateCalendar();
-                    createUnifiedLegend();
+                    createLegend();
                 }, 300);
             }
             if (view === 'dashboard') {
-                setTimeout(createBeautifulWidget, 300);
+                setTimeout(createWidget, 300);
             }
-        };
-    }
-
-    // ПЕРЕХВАТ ДОБАВЛЕНИЯ ЗАПИСИ
-    const originalAddRecord = window.addRecord;
-    if (originalAddRecord) {
-        window.addRecord = function(type) {
-            originalAddRecord(type);
-            setTimeout(() => {
-                if (document.getElementById('calendar').classList.contains('active')) {
-                    updateCalendar();
-                }
-                if (document.getElementById('dashboard').classList.contains('active')) {
-                    createBeautifulWidget();
-                }
-            }, 300);
         };
     }
 })();
