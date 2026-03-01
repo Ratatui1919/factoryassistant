@@ -24,7 +24,7 @@
         return SLOVAK_HOLIDAYS_2026.some(h => h.day === day && h.month === month);
     }
 
-    // ПОЛУЧАЕМ 3-Й РАБОЧИЙ ДЕНЬ МЕСЯЦА (ИСПРАВЛЕНО!)
+    // ПОЛУЧАЕМ 3-Й РАБОЧИЙ ДЕНЬ МЕСЯЦА
     function getSalaryDay(year, month) {
         let workingDays = 0;
         let day = 1;
@@ -38,17 +38,15 @@
             const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
             const isHolidayDay = isHoliday(year, month, day);
             
-            const isWorkingDay = !isWeekend && !isHolidayDay;
-            
-            console.log(`   День ${day}: ${isWeekend ? 'выходной' : 'рабочий'}, ${isHolidayDay ? 'праздник' : 'будень'}, ${isWorkingDay ? '✅ РАБОЧИЙ' : '❌ НЕ РАБОЧИЙ'}`);
-            
-            if (isWorkingDay) {
+            if (!isWeekend && !isHolidayDay) {
                 workingDays++;
-                console.log(`   ✅ Рабочий день #${workingDays}`);
+                console.log(`   День ${day}: рабочий день #${workingDays}`);
                 if (workingDays === 3) {
                     console.log(`🎯 ДЕНЬ ЗАРПЛАТЫ: ${day}.${month+1}.${year}`);
                     return day;
                 }
+            } else {
+                console.log(`   День ${day}: ${isWeekend ? 'выходной' : ''} ${isHolidayDay ? 'праздник' : ''}`);
             }
             day++;
         }
@@ -56,7 +54,25 @@
         return day;
     }
 
-    // Получаем все важные даты для месяца
+    // Получаем текущий месяц и год из глобальных переменных
+    function getCurrentMonthYear() {
+        // Пробуем получить из глобальных переменных
+        if (typeof window.currentMonth !== 'undefined' && typeof window.currentYear !== 'undefined') {
+            return {
+                month: window.currentMonth,
+                year: window.currentYear
+            };
+        }
+        
+        // Если нет - используем текущую дату
+        const now = new Date();
+        return {
+            month: now.getMonth(),
+            year: now.getFullYear()
+        };
+    }
+
+    // Получаем все важные даты для указанного месяца
     function getImportantDates(year, month) {
         const dates = [];
         
@@ -65,8 +81,9 @@
         dates.push({
             day: salaryDay,
             type: 'salary',
-            name: 'Зарплата',
-            icon: '💰'
+            name: '💰 Зарплата',
+            icon: '💰',
+            shortIcon: '💰'
         });
         
         // Праздники
@@ -76,7 +93,8 @@
                     day: h.day,
                     type: 'holiday',
                     name: h.name,
-                    icon: h.icon
+                    icon: h.icon,
+                    shortIcon: h.icon
                 });
             }
         });
@@ -85,12 +103,11 @@
         return dates.sort((a, b) => a.day - b.day);
     }
 
-    // Добавляем иконки в календарь
-    function addIconsToCalendar() {
-        const year = window.currentYear || new Date().getFullYear();
-        const month = window.currentMonth || new Date().getMonth();
+    // Обновляем иконки в календаре
+    function updateCalendarIcons() {
+        const { year, month } = getCurrentMonthYear();
         
-        console.log(`📅 Обновление иконок для ${month+1}.${year}`);
+        console.log(`📅 Обновление календаря для ${month+1}.${year}`);
         
         const importantDates = getImportantDates(year, month);
         console.log('📅 Важные даты:', importantDates);
@@ -112,10 +129,10 @@
             // Находим все важные даты для этого дня
             const datesForDay = importantDates.filter(d => d.day === day);
             
-            // Удаляем старые классы важных дат
+            // Удаляем старые классы
             cell.classList.remove('has-salary', 'has-holiday');
             
-            // Удаляем старый контейнер иконок если есть
+            // Удаляем старый контейнер иконок
             const oldContainer = cell.querySelector('.day-icons-container');
             if (oldContainer) {
                 oldContainer.remove();
@@ -149,76 +166,76 @@
         });
     }
 
-    // Создаем виджет для дашборда
-    function createWidget() {
+    // Обновляем виджет в дашборде
+    function updateDashboardWidget() {
+        const { year, month } = getCurrentMonthYear();
         const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const day = now.getDate();
+        const currentDay = now.getDate();
+        
+        console.log(`📊 Обновление виджета для ${month+1}.${year}`);
         
         const importantDates = getImportantDates(year, month);
         
-        // Фильтруем только будущие даты
+        // Фильтруем только будущие даты в этом месяце
         const upcoming = importantDates
-            .filter(d => d.day >= day)
+            .filter(d => d.day >= currentDay)
             .map(d => ({
                 ...d,
                 date: new Date(year, month, d.day),
-                diff: d.day - day
+                diff: d.day - currentDay
             }))
             .sort((a, b) => a.diff - b.diff)
             .slice(0, 5);
         
-        if (upcoming.length === 0) return null;
-        
-        const widget = document.createElement('div');
-        widget.className = 'important-dates-widget glass-effect';
-        widget.id = 'importantDatesWidget';
-        widget.innerHTML = `
-            <div class="widget-header">
-                <i class="fas fa-calendar-star"></i>
-                <h3>📅 Ближайшие даты</h3>
-            </div>
-            <div class="dates-list">
-                ${upcoming.map(d => {
-                    let countdownText = '';
-                    if (d.diff === 0) countdownText = 'сегодня';
-                    else if (d.diff === 1) countdownText = 'завтра';
-                    else countdownText = `через ${d.diff} дн.`;
-                    
-                    const monthName = d.date.toLocaleDateString('ru-RU', { month: 'long' });
-                    
-                    return `
-                        <div class="date-item ${d.type}" title="${d.name}">
-                            <div class="date-icon">${d.icon}</div>
-                            <div class="date-info">
-                                <div class="date-title">${d.name}</div>
-                                <div class="date-day">${d.day} ${monthName}</div>
-                            </div>
-                            <div class="date-countdown">${countdownText}</div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-        
-        return widget;
-    }
-
-    // Обновляем виджет
-    function updateWidget() {
+        // Удаляем старый виджет
         const oldWidget = document.getElementById('importantDatesWidget');
         if (oldWidget) {
             oldWidget.remove();
         }
         
+        if (upcoming.length === 0) return;
+        
+        // Создаем новый виджет
+        const widget = document.createElement('div');
+        widget.className = 'important-dates-widget glass-effect';
+        widget.id = 'importantDatesWidget';
+        
+        let widgetHTML = `
+            <div class="widget-header">
+                <i class="fas fa-calendar-star"></i>
+                <h3>📅 Ближайшие даты</h3>
+            </div>
+            <div class="dates-list">
+        `;
+        
+        upcoming.forEach(d => {
+            let countdownText = '';
+            if (d.diff === 0) countdownText = 'сегодня';
+            else if (d.diff === 1) countdownText = 'завтра';
+            else countdownText = `через ${d.diff} дн.`;
+            
+            const monthName = d.date.toLocaleDateString('ru-RU', { month: 'long' });
+            
+            widgetHTML += `
+                <div class="date-item ${d.type}" title="${d.name}">
+                    <div class="date-icon">${d.icon}</div>
+                    <div class="date-info">
+                        <div class="date-title">${d.name}</div>
+                        <div class="date-day">${d.day} ${monthName}</div>
+                    </div>
+                    <div class="date-countdown">${countdownText}</div>
+                </div>
+            `;
+        });
+        
+        widgetHTML += `</div>`;
+        widget.innerHTML = widgetHTML;
+        
+        // Добавляем виджет на страницу
         const insertPoint = document.querySelector('.stats-row') || document.querySelector('.kpi-grid');
         if (insertPoint) {
-            const newWidget = createWidget();
-            if (newWidget) {
-                insertPoint.parentNode.insertBefore(newWidget, insertPoint.nextSibling);
-                console.log('📊 Виджет обновлен');
-            }
+            insertPoint.parentNode.insertBefore(widget, insertPoint.nextSibling);
+            console.log('📊 Виджет обновлен');
         }
     }
 
@@ -270,12 +287,11 @@
                 border: 2px solid #f59e0b !important;
             }
             
-            /* Двойные даты - градиентная граница */
+            /* Двойные даты */
             .day.has-salary.has-holiday {
                 background: linear-gradient(145deg, rgba(0,176,96,0.15), rgba(245,158,11,0.1)) !important;
-                border: 2px solid transparent !important;
-                border-image: linear-gradient(45deg, #00b060, #f59e0b) !important;
-                border-image-slice: 1 !important;
+                border: 2px solid;
+                border-color: #00b060 #f59e0b #00b060 #f59e0b !important;
             }
             
             /* Виджет */
@@ -378,64 +394,87 @@
         document.head.appendChild(style);
     }
 
+    // Перехватываем функцию changeMonth
+    function hookIntoChangeMonth() {
+        const originalChangeMonth = window.changeMonth;
+        if (originalChangeMonth) {
+            window.changeMonth = function(delta) {
+                console.log('📅 Перехвачен changeMonth');
+                originalChangeMonth(delta);
+                // Обновляем всё после смены месяца
+                setTimeout(() => {
+                    updateCalendarIcons();
+                    updateDashboardWidget();
+                }, 300);
+            };
+            console.log('✅ changeMonth перехвачен');
+        }
+    }
+
+    // Перехватываем функцию setView
+    function hookIntoSetView() {
+        const originalSetView = window.setView;
+        if (originalSetView) {
+            window.setView = function(view) {
+                originalSetView(view);
+                if (view === 'calendar') {
+                    setTimeout(updateCalendarIcons, 200);
+                }
+                if (view === 'dashboard') {
+                    setTimeout(updateDashboardWidget, 200);
+                }
+            };
+            console.log('✅ setView перехвачен');
+        }
+    }
+
+    // Перехватываем функцию addRecord
+    function hookIntoAddRecord() {
+        const originalAddRecord = window.addRecord;
+        if (originalAddRecord) {
+            window.addRecord = function(type) {
+                originalAddRecord(type);
+                setTimeout(updateCalendarIcons, 200);
+            };
+            console.log('✅ addRecord перехвачен');
+        }
+    }
+
     // Инициализация
     function init() {
         console.log('✅ Модуль важных дат инициализирован');
         
         addStyles();
         
-        // Ждем календарь
+        // Перехватываем функции
+        hookIntoChangeMonth();
+        hookIntoSetView();
+        hookIntoAddRecord();
+        
+        // Ждем появления календаря
         const waitForCalendar = setInterval(() => {
             if (document.getElementById('calendarGrid')) {
                 clearInterval(waitForCalendar);
                 setTimeout(() => {
-                    addIconsToCalendar();
+                    updateCalendarIcons();
                 }, 500);
             }
         }, 100);
         
         // Добавляем виджет
         setTimeout(() => {
-            updateWidget();
+            updateDashboardWidget();
         }, 1000);
         
-        // Отслеживаем смену месяца
-        const originalChangeMonth = window.changeMonth;
-        if (originalChangeMonth) {
-            window.changeMonth = function(delta) {
-                console.log('📅 Смена месяца');
-                originalChangeMonth(delta);
-                setTimeout(() => {
-                    addIconsToCalendar();
-                    updateWidget();
-                }, 300);
-            };
-        }
-        
-        // Отслеживаем добавление записи
-        const originalAddRecord = window.addRecord;
-        if (originalAddRecord) {
-            window.addRecord = function(type) {
-                originalAddRecord(type);
-                setTimeout(() => {
-                    addIconsToCalendar();
-                }, 300);
-            };
-        }
-        
-        // Отслеживаем переключение вкладок
-        const originalSetView = window.setView;
-        if (originalSetView) {
-            window.setView = function(view) {
-                originalSetView(view);
-                if (view === 'calendar') {
-                    setTimeout(addIconsToCalendar, 300);
-                }
-                if (view === 'dashboard') {
-                    setTimeout(updateWidget, 300);
-                }
-            };
-        }
+        // Обновляем каждые 5 минут
+        setInterval(() => {
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                updateDashboardWidget();
+            }
+            if (document.getElementById('calendar').classList.contains('active')) {
+                updateCalendarIcons();
+            }
+        }, 300000);
     }
 
     // Запускаем
