@@ -1,4 +1,4 @@
-// modules/finance.js - ФИНАНСЫ (ФИНАЛЬНАЯ ВЕРСИЯ)
+// modules/finance.js - ФИНАНСЫ (ИСПРАВЛЕННЫЙ)
 
 import { getCurrentUser, updateUserData } from './auth.js';
 import { showNotification } from './utils.js';
@@ -91,6 +91,8 @@ export function loadFinancialGoal() {
     console.log('loadFinancialGoal вызван');
     
     const user = getCurrentUser();
+    console.log('getCurrentUser вернул:', user);
+    
     if (!user) {
         console.log('loadFinancialGoal: пользователь не найден, пробуем через 500ms');
         setTimeout(loadFinancialGoal, 500);
