@@ -1,4 +1,4 @@
-/* mobile.css - ПОЛНАЯ ВЕРСИЯ С НИЖНЕЙ НАВИГАЦИЕЙ */
+/* mobile.css - ПОЛНЫЙ ИСПРАВЛЕННЫЙ ФАЙЛ */
 
 @media (max-width: 768px) {
     
@@ -6,7 +6,7 @@
     body {
         font-size: 14px;
         background: var(--dark);
-        padding-bottom: 70px !important; /* Отступ для нижней навигации */
+        padding-bottom: 70px !important;
         margin: 0;
     }
     
@@ -20,7 +20,57 @@
         margin-bottom: 20px !important;
     }
     
-    /* ===== НИЖНЯЯ НАВИГАЦИЯ (ПЛАШКА) ===== */
+    /* ===== ПРЕЛОАДЕР ===== */
+    #preloader {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: var(--dark) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 10000 !important;
+    }
+    
+    .loader {
+        text-align: center !important;
+        max-width: 90% !important;
+    }
+    
+    .loader-spinner {
+        width: 50px !important;
+        height: 50px !important;
+        border: 3px solid var(--dark-light) !important;
+        border-top-color: var(--primary) !important;
+        border-radius: 50% !important;
+        animation: spin 1s linear infinite !important;
+        margin: 0 auto 20px !important;
+    }
+    
+    .loader img {
+        width: 60px !important;
+        height: 60px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .loader h2 {
+        font-size: 1.3rem !important;
+        margin-bottom: 10px !important;
+        color: var(--primary) !important;
+    }
+    
+    .loader p {
+        font-size: 0.9rem !important;
+        color: var(--text-muted) !important;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
     nav {
         position: fixed !important;
         bottom: 0 !important;
@@ -62,13 +112,13 @@
     }
     
     .nav-btn i {
-        font-size: 1.4rem !important;
+        font-size: 1.3rem !important;
         margin-bottom: 2px !important;
         color: var(--text-muted) !important;
     }
     
     .nav-btn span {
-        font-size: 0.65rem !important;
+        font-size: 0.6rem !important;
         font-weight: 500 !important;
         color: var(--text-muted) !important;
     }
@@ -83,7 +133,6 @@
         color: var(--primary) !important;
     }
     
-    /* Прячем бургер-меню */
     .mobile-menu-toggle {
         display: none !important;
     }
@@ -196,6 +245,10 @@
         gap: 2px !important;
     }
     
+    .weather i {
+        color: var(--primary) !important;
+    }
+    
     .weather-location {
         display: none !important;
     }
@@ -244,6 +297,12 @@
         flex-shrink: 0 !important;
         margin-left: 0 !important;
         font-size: 0.9rem !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .logout-btn:hover {
+        background: var(--danger) !important;
+        color: white !important;
     }
     
     /* ===== СЕЛЕКТОР МЕСЯЦА ===== */
@@ -280,6 +339,7 @@
         cursor: pointer !important;
         font-size: 0.8rem !important;
         padding: 0 !important;
+        transition: all 0.2s ease !important;
     }
     
     .month-selector button:hover {
@@ -488,6 +548,11 @@
         border-radius: 30px !important;
         border: none !important;
         cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .update-btn:active {
+        transform: scale(0.95) !important;
     }
     
     .last-update {
@@ -605,7 +670,6 @@
         font-size: 0.55rem !important;
     }
     
-    /* Цвета для типов дней */
     .day.work { background: linear-gradient(145deg, #f39c12, #e67e22) !important; }
     .day.night { background: linear-gradient(145deg, #2c3e50, #1a2634) !important; }
     .day.overtime { background: linear-gradient(145deg, #c0392b, #a93226) !important; }
@@ -827,6 +891,11 @@
         font-size: 0.7rem !important;
         cursor: pointer !important;
         border: 2px solid var(--dark-card) !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .avatar-upload:hover {
+        transform: scale(1.1) !important;
     }
     
     .profile-title {
@@ -1177,10 +1246,26 @@
         border-radius: 20px !important;
     }
     
+    /* СПЕЦИАЛЬНО ДЛЯ МОДАЛКИ ДНЯ */
+    #dayModal .modal-content {
+        max-width: 95% !important;
+        padding: 16px !important;
+    }
+    
+    #dayModal .modal-header {
+        margin-bottom: 12px !important;
+    }
+    
+    #dayModal .modal-header h3 {
+        font-size: 1.1rem !important;
+        color: var(--primary) !important;
+        text-align: center !important;
+    }
+    
     .day-types {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 6px !important;
+        gap: 8px !important;
         margin: 12px 0 !important;
     }
     
@@ -1188,11 +1273,11 @@
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        gap: 3px !important;
-        padding: 8px 4px !important;
+        gap: 4px !important;
+        padding: 10px 4px !important;
         background: var(--dark-light) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 12px !important;
+        border-radius: 16px !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
     }
@@ -1202,24 +1287,25 @@
     }
     
     .day-type i {
-        font-size: 1.1rem !important;
+        font-size: 1.2rem !important;
         color: var(--primary) !important;
     }
     
     .day-type span {
-        font-size: 0.7rem !important;
+        font-size: 0.8rem !important;
         font-weight: 600 !important;
         color: var(--text) !important;
     }
     
     .day-type small {
-        font-size: 0.55rem !important;
+        font-size: 0.6rem !important;
         color: var(--text-muted) !important;
+        display: block !important;
     }
     
     .cancel-btn {
         width: 100% !important;
-        margin-top: 6px !important;
+        margin-top: 8px !important;
     }
     
     /* ===== УВЕДОМЛЕНИЯ ===== */
