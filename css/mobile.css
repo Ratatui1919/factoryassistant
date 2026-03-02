@@ -1,37 +1,10 @@
-/* mobile.css - ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ */
+/* mobile.css - ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ */
 
 @media (max-width: 768px) {
     
     /* ===== БАЗОВЫЕ НАСТРОЙКИ ===== */
     body {
-        font-size: 14px;
-        background: var(--dark);
         padding-bottom: 70px !important;
-        margin: 0;
-    }
-    
-    #app {
-        padding-bottom: 0;
-    }
-    
-    main {
-        padding: 12px !important;
-        max-width: 100% !important;
-        margin-bottom: 20px !important;
-    }
-    
-    /* ===== ПРЕЛОАДЕР ===== */
-    #preloader {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        background: var(--dark) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        z-index: 10000 !important;
     }
     
     /* ===== ПРЯЧЕМ БУРГЕР ===== */
@@ -46,13 +19,15 @@
         left: 0 !important;
         right: 0 !important;
         top: auto !important;
-        height: 70px !important;
+        height: 65px !important;
         background: var(--dark-card) !important;
         border-top: 2px solid var(--primary) !important;
         display: flex !important;
         justify-content: space-around !important;
         align-items: center !important;
-        z-index: 10000 !important;
+        z-index: 999999 !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
     .nav-btn {
@@ -61,339 +36,136 @@
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 2px !important;
-        padding: 10px 0 !important;
+        height: 100% !important;
         background: transparent !important;
         border: none !important;
         color: var(--text-muted) !important;
         font-size: 0.7rem !important;
         cursor: pointer !important;
-        z-index: 10001 !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
     .nav-btn i {
         font-size: 1.4rem !important;
+        margin-bottom: 2px !important;
+        color: var(--text-muted) !important;
+    }
+    
+    .nav-btn span {
+        font-size: 0.65rem !important;
         color: var(--text-muted) !important;
     }
     
     .nav-btn.active {
         color: var(--primary) !important;
-        background: rgba(0, 176, 96, 0.15) !important;
     }
     
-    .nav-btn.active i {
+    .nav-btn.active i,
+    .nav-btn.active span {
         color: var(--primary) !important;
     }
     
     /* ===== ХЕДЕР ===== */
-    header {
-        padding: 8px 12px !important;
-        background: var(--dark-card) !important;
-        border-bottom: 1px solid var(--border) !important;
+    .header-left {
+        flex-wrap: wrap !important;
     }
     
-    .header-left {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
+    .header-badge {
+        display: none !important;
+    }
+    
+    .header-widget {
+        min-width: auto !important;
         width: 100% !important;
     }
     
-    .logo img {
-        height: 24px !important;
-    }
-    
-    .logo h1 {
-        font-size: 1rem !important;
-        color: var(--text) !important;
-    }
-    
-    .language-selector {
-        display: flex !important;
-        gap: 2px !important;
-    }
-    
-    .lang-btn {
-        padding: 3px 5px !important;
-        font-size: 0.65rem !important;
-        background: var(--dark-light) !important;
-        border: 1px solid var(--border) !important;
-        color: var(--text-muted) !important;
-        border-radius: 4px !important;
-        cursor: pointer !important;
-    }
-    
-    .lang-btn.active {
-        background: var(--primary) !important;
-        color: white !important;
-    }
-    
-    .header-right {
-        display: flex !important;
-        align-items: center !important;
-        gap: 6px !important;
-        margin-top: 8px !important;
-    }
-    
-    .user-info {
-        display: flex !important;
-        align-items: center !important;
-        gap: 4px !important;
-        padding: 2px 6px 2px 2px !important;
-        background: var(--dark-light) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 30px !important;
-    }
-    
-    .user-info img {
-        width: 30px !important;
-        height: 30px !important;
-        border-radius: 50% !important;
-        border: 2px solid var(--primary) !important;
+    .weather-location {
+        display: none !important;
     }
     
     .user-info span {
-        font-size: 0.7rem !important;
-        color: var(--text) !important;
-        max-width: 60px !important;
+        max-width: 80px !important;
     }
     
-    .logout-btn {
-        width: 32px !important;
-        height: 32px !important;
-        background: var(--dark-light) !important;
-        border: 1px solid var(--border) !important;
-        color: var(--danger) !important;
-        border-radius: 50% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        cursor: pointer !important;
-    }
-    
-    /* ===== МЕСЯЦ ===== */
-    .month-selector {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        padding: 6px 10px !important;
-        margin: 0 0 12px 0 !important;
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 30px !important;
-    }
-    
+    /* ===== СЕЛЕКТОР МЕСЯЦА ===== */
     .month-selector h2 {
-        font-size: 0.95rem !important;
-        color: var(--primary) !important;
-    }
-    
-    .month-selector button {
-        width: 30px !important;
-        height: 30px !important;
-        background: var(--dark-light) !important;
-        border: 1px solid var(--border) !important;
-        color: var(--text) !important;
-        border-radius: 50% !important;
-        cursor: pointer !important;
+        font-size: 1.1rem !important;
+        min-width: 130px !important;
     }
     
     /* ===== KPI ===== */
     .kpi-grid {
-        display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 6px !important;
-        margin: 0 0 12px 0 !important;
-    }
-    
-    .kpi-card {
-        display: flex !important;
-        align-items: center !important;
-        gap: 6px !important;
-        padding: 8px !important;
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 14px !important;
-    }
-    
-    .kpi-icon {
-        width: 32px !important;
-        height: 32px !important;
-        background: rgba(0, 176, 96, 0.1) !important;
-        border-radius: 10px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        color: var(--primary) !important;
+        gap: 8px !important;
     }
     
     .kpi-value {
-        font-size: 0.85rem !important;
-        font-weight: 600 !important;
-        color: var(--text) !important;
-    }
-    
-    /* ===== КУРС ВАЛЮТ ===== */
-    .exchange-rate-card {
-        padding: 12px !important;
-        margin: 0 0 12px 0 !important;
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 18px !important;
+        font-size: 1.1rem !important;
     }
     
     /* ===== КАЛЕНДАРЬ ===== */
-    .calendar-weekdays {
-        display: grid !important;
-        grid-template-columns: repeat(7, 1fr) !important;
-        gap: 4px !important;
-    }
-    
-    .calendar-weekdays span {
-        text-align: center !important;
-        padding: 6px 2px !important;
-        font-size: 0.65rem !important;
-        color: var(--primary) !important;
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 8px !important;
-    }
-    
     .calendar-grid {
-        display: grid !important;
-        grid-template-columns: repeat(7, 1fr) !important;
         gap: 4px !important;
     }
     
     .day {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 4px 2px !important;
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 8px !important;
-        color: var(--text) !important;
-        cursor: pointer !important;
+        padding: 6px 2px !important;
+        min-height: 45px !important;
+    }
+    
+    .day-number {
+        font-size: 0.9rem !important;
+    }
+    
+    .day-icon {
+        font-size: 1rem !important;
+    }
+    
+    /* ===== ЛЕГЕНДА ===== */
+    .legend-text {
+        max-width: 70px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     
     /* ===== ВАЖНЫЕ ДАТЫ ===== */
-    .important-widget {
-        margin: 12px 0 !important;
-        padding: 12px !important;
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 18px !important;
+    .widget-item {
+        flex-wrap: wrap !important;
     }
     
-    /* ===== МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ ===== */
-    .modal {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
+    .item-badge {
+        margin-left: 55px !important;
         width: 100% !important;
-        height: 100% !important;
-        background: rgba(0, 0, 0, 0.8) !important;
-        display: none !important;
-        align-items: center !important;
-        justify-content: center !important;
-        z-index: 20000 !important;
+        text-align: center !important;
     }
     
-    .modal.active {
-        display: flex !important;
+    /* ===== ПРОФИЛЬ ===== */
+    .profile-grid {
+        grid-template-columns: 1fr !important;
     }
     
-    .modal-content {
-        background: var(--dark-card) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 24px !important;
-        padding: 20px !important;
-        max-width: 90% !important;
-        width: 100% !important;
+    .profile-actions {
+        flex-direction: column !important;
     }
     
-    .auth-tabs {
-        display: flex !important;
-        gap: 10px !important;
-        background: var(--dark-light) !important;
-        padding: 5px !important;
-        border-radius: 12px !important;
-        margin-bottom: 20px !important;
+    /* ===== ФИНАНСЫ ===== */
+    .pie-chart-container {
+        width: 220px !important;
+        height: 220px !important;
     }
     
-    .auth-tab {
-        flex: 1 !important;
-        padding: 10px !important;
-        background: transparent !important;
-        border: none !important;
-        color: var(--text-muted) !important;
-        border-radius: 8px !important;
-        cursor: pointer !important;
-    }
-    
-    .auth-tab.active {
-        background: var(--primary) !important;
-        color: white !important;
-    }
-    
-    .input-group {
-        position: relative !important;
-        margin-bottom: 15px !important;
-    }
-    
-    .input-group i {
-        position: absolute !important;
-        left: 15px !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        color: var(--text-muted) !important;
-    }
-    
-    .input-group input {
-        width: 100% !important;
-        padding: 12px 12px 12px 45px !important;
-        background: var(--dark-light) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 12px !important;
-        color: var(--text) !important;
-    }
-    
-    .checkbox-group {
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-        margin: 15px 0 !important;
-        color: var(--text-muted) !important;
+    .progress-stats {
+        flex-direction: column !important;
     }
     
     /* ===== КНОПКИ ===== */
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
-        width: 100% !important;
-        padding: 10px !important;
-        border: none !important;
-        border-radius: 12px !important;
-        font-size: 0.9rem !important;
-        cursor: pointer !important;
-        margin: 5px 0 !important;
+    .export-buttons {
+        flex-direction: column !important;
     }
     
-    .btn-primary {
-        background: var(--primary) !important;
-        color: white !important;
-    }
-    
-    .btn-secondary {
-        background: var(--dark-light) !important;
-        border: 1px solid var(--border) !important;
-        color: var(--text) !important;
-    }
-    
-    .btn-danger {
-        background: var(--danger) !important;
-        color: white !important;
+    /* ===== ТЕМЫ ===== */
+    .theme-selector {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
 }
