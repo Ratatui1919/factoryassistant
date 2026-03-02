@@ -28,7 +28,7 @@
     <!-- Основные стили -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Мобильные стили - ВАЖНО: должны быть после основных -->
+    <!-- Мобильные стили -->
     <link rel="stylesheet" href="mobile.css">
 </head>
 <body>
@@ -156,7 +156,6 @@
         <main>
             <!-- ДАШБОРД -->
             <section id="dashboard" class="view active">
-                <!-- ИСПРАВЛЕННЫЙ селектор месяца -->
                 <div class="month-selector glass-effect">
                     <button type="button" onclick="window.safeChangeMonth(-1); return false;">
                         <i class="fas fa-chevron-left"></i>
@@ -668,7 +667,7 @@
         </main>
     </div>
 
-    <!-- Модалка выбора типа дня -->
+    <!-- Модалка выбора типа дня (ИСПРАВЛЕННАЯ) -->
     <div class="modal" id="dayModal">
         <div class="modal-content day-modal glass-effect">
             <div class="modal-header">
@@ -676,34 +675,54 @@
             </div>
             <div class="day-types">
                 <button class="day-type work" onclick="window.addRecord('work')">
-                    <i class="fas fa-briefcase"></i><span data-lang="work">Смена</span><small>7.5ч</small>
+                    <i class="fas fa-briefcase"></i>
+                    <span data-lang="work">Смена</span>
+                    <small>7.5ч</small>
                 </button>
                 <button class="day-type night" onclick="window.addRecord('night')">
-                    <i class="fas fa-moon"></i><span data-lang="nightShift">Ночная</span><small>+20%</small>
+                    <i class="fas fa-moon"></i>
+                    <span data-lang="nightShift">Ночная</span>
+                    <small>+20%</small>
                 </button>
                 <button class="day-type overtime" onclick="window.addRecord('overtime')">
-                    <i class="fas fa-clock"></i><span data-lang="overtime">Переработка</span><small>×1.5</small>
+                    <i class="fas fa-clock"></i>
+                    <span data-lang="overtime">Переработка</span>
+                    <small>×1.5</small>
                 </button>
                 <button class="day-type saturday" onclick="window.addRecord('sat')">
-                    <i class="fas fa-calendar-day"></i><span data-lang="saturday">Суббота</span><small>×1.5 +€25</small>
+                    <i class="fas fa-calendar-day"></i>
+                    <span data-lang="saturday">Суббота</span>
+                    <small>×1.5 +€25</small>
                 </button>
                 <button class="day-type sunday" onclick="window.addRecord('sun')">
-                    <i class="fas fa-sun"></i><span data-lang="sunday">Воскресенье</span><small>×2.0</small>
+                    <i class="fas fa-sun"></i>
+                    <span data-lang="sunday">Воскресенье</span>
+                    <small>×2.0</small>
                 </button>
                 <button class="day-type extra" onclick="window.addRecord('extra')">
-                    <i class="fas fa-plus-circle"></i><span data-lang="extraBlocks">Надчас</span><small>+3.75ч</small>
+                    <i class="fas fa-plus-circle"></i>
+                    <span data-lang="extraBlocks">Надчас</span>
+                    <small>+3.75ч</small>
                 </button>
                 <button class="day-type sick" onclick="window.addRecord('sick')">
-                    <i class="fas fa-hospital"></i><span data-lang="sick">Больничный</span><small>60%</small>
+                    <i class="fas fa-hospital"></i>
+                    <span data-lang="sick">Больничный</span>
+                    <small>60%</small>
                 </button>
                 <button class="day-type vacation" onclick="window.addRecord('vacation')">
-                    <i class="fas fa-umbrella-beach"></i><span data-lang="vacation">Отпуск</span><small>100%</small>
+                    <i class="fas fa-umbrella-beach"></i>
+                    <span data-lang="vacation">Отпуск</span>
+                    <small>100%</small>
                 </button>
                 <button class="day-type doctor" onclick="window.addRecord('doctor')">
-                    <i class="fas fa-stethoscope"></i><span data-lang="doctor">Перепустка</span><small>100%</small>
+                    <i class="fas fa-stethoscope"></i>
+                    <span data-lang="doctor">Перепустка</span>
+                    <small>100%</small>
                 </button>
                 <button class="day-type off" onclick="window.addRecord('off')">
-                    <i class="fas fa-times"></i><span data-lang="dayOff">Выходной</span><small>0 €</small>
+                    <i class="fas fa-times"></i>
+                    <span data-lang="dayOff">Выходной</span>
+                    <small>0 €</small>
                 </button>
             </div>
             <button class="btn-secondary cancel-btn" onclick="window.closeModal()">
