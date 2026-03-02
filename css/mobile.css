@@ -1,22 +1,201 @@
-/* mobile.css - МИНИМАЛЬНАЯ ВЕРСИЯ (ТОЛЬКО НИЖНЯЯ ПЛАШКА) */
+/* mobile.css - ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ВЕРСИЯ */
+
+/* ===== ОСНОВНЫЕ ПЕРЕМЕННЫЕ ===== */
+:root {
+    --primary: #2563eb;
+    --dark-card: #1e293b;
+    --text-muted: #64748b;
+    --bg-light: #f5f7fb;
+    --card-bg: #ffffff;
+}
 
 @media (max-width: 768px) {
     
-    /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+    /* ===== СБРОС И БАЗОВЫЕ СТИЛИ ===== */
+    * {
+        box-sizing: border-box !important;
+    }
+    
+    body {
+        margin: 0 !important;
+        padding: 0 0 70px 0 !important;
+        background: var(--bg-light) !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    
+    .app-container {
+        max-width: 100% !important;
+        background: white !important;
+        min-height: 100vh !important;
+        padding: 0 !important;
+    }
+    
+    /* ===== ИСПРАВЛЕННАЯ ВЕРХНЯЯ ПАНЕЛЬ ===== */
+    .top-bar, 
+    header,
+    [class*="header"] {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 16px 16px 12px 16px !important;
+        background: white !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    /* Переключатель языков (RU SK EN UA) */
+    .language-switcher {
+        display: flex !important;
+        gap: 4px !important;
+        background: #f0f3fa !important;
+        padding: 4px !important;
+        border-radius: 24px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .lang-btn {
+        border: none !important;
+        background: transparent !important;
+        padding: 6px 10px !important;
+        border-radius: 20px !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+        min-width: 36px !important;
+        text-align: center !important;
+    }
+    
+    .lang-btn.active {
+        background: white !important;
+        color: #2563eb !important;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15) !important;
+    }
+    
+    /* Логотип / имя пользователя */
+    .user-info,
+    [class*="logo"],
+    [class*="username"] {
+        display: flex !important;
+        align-items: center !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        color: #1e293b !important;
+        white-space: nowrap !important;
+        margin: 0 8px !important;
+    }
+    
+    /* Дата, время и погода */
+    .date-weather {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        color: #64748b !important;
+        font-size: 0.85rem !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .current-time {
+        font-weight: 600 !important;
+        color: #1e293b !important;
+    }
+    
+    .weather-temp {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        background: #f8fafc !important;
+        padding: 4px 10px !important;
+        border-radius: 20px !important;
+    }
+    
+    /* ===== ЗАГОЛОВОК МЕСЯЦА ===== */
+    .month-title {
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+        padding: 0 16px 8px 16px !important;
+        margin: 0 !important;
+        color: #0f172a !important;
+    }
+    
+    /* ===== KPI КАРТОЧКИ (Чистая зарплата, Грязная и т.д.) ===== */
+    .kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        padding: 0 16px 16px 16px !important;
+    }
+    
+    .kpi-card {
+        background: #f8fafc !important;
+        border-radius: 16px !important;
+        padding: 14px 12px !important;
+    }
+    
+    .kpi-label {
+        font-size: 0.75rem !important;
+        color: #64748b !important;
+        margin-bottom: 4px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.3px !important;
+    }
+    
+    .kpi-value {
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        line-height: 1.2 !important;
+    }
+    
+    .kpi-sub {
+        font-size: 0.7rem !important;
+        color: #94a3b8 !important;
+        margin-left: 4px !important;
+    }
+    
+    /* Строка с обедами, переработками и т.д. */
+    .stats-row {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px !important;
+        padding: 0 16px 20px 16px !important;
+    }
+    
+    .stat-item {
+        background: #f8fafc !important;
+        border-radius: 12px !important;
+        padding: 10px 4px !important;
+        text-align: center !important;
+    }
+    
+    .stat-label {
+        font-size: 0.65rem !important;
+        color: #64748b !important;
+        margin-bottom: 2px !important;
+    }
+    
+    .stat-value {
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        color: #0f172a !important;
+    }
+    
+    /* ===== НИЖНЯЯ НАВИГАЦИЯ (КОПКИ ДАШБОРД, КАЛЕНДАРЬ И Т.Д.) ===== */
     nav {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        top: auto !important;
         height: 65px !important;
-        background: var(--dark-card) !important;
-        border-top: 2px solid var(--primary) !important;
+        background: white !important;
+        border-top: 2px solid #2563eb !important;
         display: flex !important;
         justify-content: space-around !important;
         align-items: center !important;
         z-index: 999999 !important;
-        padding: 0 5px !important;
+        padding: 0 8px !important;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03) !important;
     }
     
     .nav-btn {
@@ -28,100 +207,107 @@
         gap: 2px !important;
         background: transparent !important;
         border: none !important;
-        color: var(--text-muted) !important;
+        color: #64748b !important;
         font-size: 0.7rem !important;
         cursor: pointer !important;
         padding: 8px 0 !important;
         height: 100% !important;
+        transition: color 0.2s !important;
     }
     
     .nav-btn i {
-        font-size: 1.3rem !important;
-        color: var(--text-muted) !important;
+        font-size: 1.4rem !important;
+        color: #64748b !important;
+        margin-bottom: 2px !important;
     }
     
     .nav-btn.active {
-        color: var(--primary) !important;
+        color: #2563eb !important;
     }
     
     .nav-btn.active i {
-        color: var(--primary) !important;
+        color: #2563eb !important;
     }
     
-    /* ===== ПРЯЧЕМ БУРГЕР ===== */
-    .mobile-menu-toggle {
+    /* ===== ПРЯЧЕМ БУРГЕР (ЕСЛИ ЕСТЬ) ===== */
+    .mobile-menu-toggle,
+    .burger-menu {
         display: none !important;
     }
     
-    /* ===== НИЖНИЙ ОТСТУП ===== */
-    body {
-        padding-bottom: 70px !important;
-    }
-    
-    main {
-        padding-bottom: 10px !important;
+    /* ===== АДАПТАЦИЯ ДЛЯ ЭКРАНОВ МЕНЬШЕ 360px ===== */
+    @media (max-width: 360px) {
+        .top-bar {
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+        }
+        
+        .language-switcher {
+            order: 1 !important;
+        }
+        
+        .user-info {
+            order: 2 !important;
+            margin-left: auto !important;
+            font-size: 1rem !important;
+        }
+        
+        .date-weather {
+            order: 3 !important;
+            width: 100% !important;
+            justify-content: space-between !important;
+        }
+        
+        .kpi-value {
+            font-size: 1.1rem !important;
+        }
+        
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
     }
     
     /* ===== АДАПТАЦИЯ КАЛЕНДАРЯ ===== */
     .calendar-grid {
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important;
         gap: 4px !important;
+        padding: 0 16px !important;
     }
     
     .day {
-        padding: 6px 2px !important;
+        padding: 8px 4px !important;
         min-height: 45px !important;
+        text-align: center !important;
+        background: #f8fafc !important;
+        border-radius: 8px !important;
     }
     
-    /* ===== АДАПТАЦИЯ KPI ===== */
-    .kpi-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
-    
-    .kpi-value {
-        font-size: 1.1rem !important;
-    }
-    
-    /* ===== АДАПТАЦИЯ ТЕКСТА ===== */
-    .weather-location {
-        display: none !important;
-    }
-    
-    .user-info span {
-        max-width: 80px !important;
-    }
-    
-    .header-badge {
-        display: none !important;
-    }
-    
-    /* ===== АДАПТАЦИЯ СТАТИСТИКИ ===== */
-    .stats-row {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-    
-    /* ===== АДАПТАЦИЯ ПРОФИЛЯ ===== */
+    /* ===== АДАПТАЦИЯ СТРАНИЦ ===== */
     .profile-grid {
         grid-template-columns: 1fr !important;
+        padding: 0 16px !important;
     }
     
     .profile-actions {
         flex-direction: column !important;
+        gap: 8px !important;
     }
     
-    /* ===== АДАПТАЦИЯ ФИНАНСОВ ===== */
     .pie-chart-container {
-        width: 220px !important;
-        height: 220px !important;
+        width: 200px !important;
+        height: 200px !important;
+        margin: 0 auto !important;
     }
     
     .progress-stats {
         flex-direction: column !important;
     }
     
-    /* ===== АДАПТАЦИЯ КНОПОК ===== */
     .export-buttons {
         flex-direction: column !important;
+        gap: 8px !important;
+        padding: 0 16px !important;
     }
     
     .theme-selector {
