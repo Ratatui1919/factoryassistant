@@ -1,90 +1,118 @@
-// modules/pull-to-refresh.js - ОБНОВЛЕНИЕ СТРАНИЦЫ СВАЙПОМ
-
+// ========== ПОЛНОСТЬЮ ИСПРАВЛЕННЫЙ PULL-TO-REFRESH ==========
 (function() {
-    // Работает только на мобильных устройствах
+    // Только для мобильных
     if (!('ontouchstart' in window)) return;
     
-    console.log('⚡ Pull-to-refresh модуль загружен');
+    console.log('⚡ Pull-to-refresh инициализация');
     
-    let touchStartY = 0;
-    let touchMoveY = 0;
+    let startY = 0;
+    let currentY = 0;
     let isPulling = false;
+    let isRefreshing = false;
     const threshold = 80;
     
-    // Создаем индикатор
-    const indicator = document.createElement('div');
-    indicator.id = 'pull-to-refresh-indicator';
-    indicator.style.cssText = `
-        position: fixed;
-        top: -50px;
-        left: 0;
-        right: 0;
-        background: var(--primary, #00b060);
-        color: white;
-        text-align: center;
-        padding: 15px;
-        font-size: 14px;
-        font-weight: 500;
-        z-index: 10000;
-        transition: top 0.2s;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        backdrop-filter: blur(5px);
-    `;
-    indicator.innerHTML = '⬇️ Потяните для обновления';
-    document.body.appendChild(indicator);
+    // Индикатор (уже есть в HTML)
+    const indicator = document.getElementById('refreshIndicator');
+    if (!indicator) return;
+    
+    // Функция обновления данных
+    async function refreshData() {
+        if (!window.currentUser) return;
+        
+        try {
+            const snapshot = await firebase.database().ref('users/' + window.currentUser.uid).once('value');
+            const data = snapshot.val();
+            
+            if (data) {
+                window.state.goals = data.goals || [];
+                window.state.debts = data.debts || { owed: [], owe: [] };
+                window.state.transactions = data.transactions || { EUR: [], UAH: [] };
+            }
+            
+            // Перерисовываем всё
+            if (typeof window.renderGoals === 'function') window.renderGoals();
+            if (typeof window.renderDebts === 'function') window.renderDebts();
+            if (typeof window.updateDebtStats === 'function') window.updateDebtStats();
+            if (typeof window.updateJournal === 'function') window.updateJournal();
+            
+        } catch (error) {
+            console.error('Ошибка обновления:', error);
+        }
+    }
     
     // Обработчик начала касания
     document.addEventListener('touchstart', (e) => {
-        if (window.scrollY === 0) {
-            touchStartY = e.touches[0].clientY;
-            isPulling = true;
-        }
+        if (window.scrollY > 5 || isRefreshing) return;
+        startY = e.touches[0].clientY;
+        isPulling = true;
     }, { passive: true });
     
     // Обработчик движения
     document.addEventListener('touchmove', (e) => {
-        if (!isPulling) return;
+        if (!isPulling || isRefreshing || window.scrollY > 5) return;
         
-        touchMoveY = e.touches[0].clientY;
-        const diff = touchMoveY - touchStartY;
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
         
-        if (diff > 0 && diff < threshold) {
-            indicator.style.top = `${diff - 50}px`;
-            indicator.innerHTML = '⬇️ Потяните для обновления';
-        } else if (diff >= threshold) {
-            indicator.style.top = '0';
-            indicator.innerHTML = '🔄 Отпустите для обновления';
+        if (diff > 0) {
+            e.preventDefault(); // Блокируем стандартный скролл
+            
+            if (diff > threshold) {
+                indicator.classList.add('active');
+                indicator.innerHTML = '<i class="fas fa-arrow-up"></i> Отпустите для обновления';
+            } else {
+                // Показываем прогресс
+                const progress = Math.min(diff / threshold * 100, 100);
+                indicator.innerHTML = `<i class="fas fa-arrow-down"></i> Потяните (${Math.round(progress)}%)`;
+            }
         }
-    }, { passive: true });
+    }, { passive: false });
     
     // Обработчик окончания касания
-    document.addEventListener('touchend', (e) => {
-        if (!isPulling) return;
+    document.addEventListener('touchend', async (e) => {
+        if (!isPulling || isRefreshing || window.scrollY > 5) return;
         
-        const diff = touchMoveY - touchStartY;
+        const diff = currentY - startY;
         
-        if (diff >= threshold) {
-            // Показываем индикатор загрузки
-            indicator.style.top = '0';
-            indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обновление...';
+        if (diff > threshold) {
+            isRefreshing = true;
             
-            // Обновляем страницу через 300мс
+            // Меняем индикатор
+            indicator.classList.add('active');
+            indicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Обновление...';
+            
+            // Обновляем данные
+            await refreshData();
+            
+            // Ждем немного для красоты
             setTimeout(() => {
-                window.location.reload();
-            }, 300);
+                indicator.classList.remove('active');
+                indicator.innerHTML = '<i class="fas fa-check"></i> Обновлено';
+                
+                // Прячем индикатор
+                setTimeout(() => {
+                    indicator.classList.remove('active');
+                }, 500);
+                
+                isRefreshing = false;
+            }, 600);
+            
         } else {
-            // Прячем индикатор
-            indicator.style.top = '-50px';
+            // Просто прячем
+            indicator.classList.remove('active');
         }
         
         isPulling = false;
-    }, { passive: true });
+        startY = 0;
+        currentY = 0;
+    });
     
-    // Прячем индикатор при скролле
+    // Прячем при скролле
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 0) {
-            indicator.style.top = '-50px';
+        if (window.scrollY > 10) {
+            indicator.classList.remove('active');
             isPulling = false;
         }
     }, { passive: true });
+    
 })();
