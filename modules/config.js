@@ -1,40 +1,39 @@
-// config.js - Система управления настройками с защитой паролем
+// modules/config.js - Центральное хранилище всех настроек
 
-// Настройки по умолчанию
+// Базовые настройки по умолчанию (словацкие правила 2026)
 const DEFAULT_SETTINGS = {
-    // Основные коэффициенты
-    baseRate: 15.0,           // базовая ставка €/час
-    nightMultiplier: 1.35,    // ночной коэффициент (35% доплаты)
-    sundayMultiplier: 1.50,   // воскресный коэффициент
-    saturdayBonus: 5.0,       // фиксированная доплата за субботу €/час
+    // --- Ставки и часы ---
+    baseRate: 6.10,              // базовая ставка €/час
+    shiftHours: 7.5,             // часов в смене
+    nightBonusPercent: 20,       // ночная доплата (%)
+    saturdayCoeff: 1.5,          // коэффициент субботы
+    sundayCoeff: 2.0,            // коэффициент воскресенья
+    extraBonus: 25,              // бонус за надчас (€)
+    fixedBonusEnabled: true,     // бонус 25€ за субботу (вкл/выкл)
+    overtimeCoeff: 1.5,          // коэффициент переработки
     
-    // Бонусы
-    fixedBonusEnabled: true,   // включен ли бонус 25€
-    fixedBonusAmount: 25.0,    // сумма фиксированного бонуса
+    // --- Расходы ---
+    lunchCost: 1.31,             // обед в день (€)
+    sickPayPercent: 60,          // оплата больничного (%)
+    vacationPayPercent: 100,     // оплата отпуска (%)
     
-    // Дополнительные настройки
-    overtimeThreshold: 40,     // порог overtime (часов в неделю)
-    overtimeMultiplier: 1.5,   // коэффициент за overtime
+    // --- Налоги и отчисления (Словакия 2026) ---
+    socialInsurance: 9.4,        // социальное страхование (%)
+    healthInsurance: 5.0,        // медицинское страхование (%)
+    taxBaseRate: 19,             // базовая ставка налога (%)
+    taxHighRate: 25,             // повышенная ставка (%)
+    taxHighThreshold: 5000,      // порог для повышенной ставки (€ gross monthly)
+    nonTaxablePart: 497.23,      // необлагаемая часть (€)
     
-    // Налоги и вычеты
-    taxRate: 0.20,            // налог 20%
-    socialSecurityRate: 0.10, // соцстрах 10%
-    
-    // Специальные доплаты
-    hazardousWorkBonus: 0,     // доплата за вредность €/час (0 - отключено)
-    transportAllowance: 0      // транспортные €/день
+    // --- Доп. настройки ---
+    defaultCurrency: "EUR",
+    exchangeRate: 42.50,
+    enableWeatherEffects: true
 };
 
-// Функция для проверки пароля
-function checkAdminPassword(inputPassword) {
-    // ИЗМЕНИТЕ ЭТОТ ПАРОЛЬ НА СВОЙ!
-    const ADMIN_PASSWORD = "YourStrongPassword123";
-    return inputPassword === ADMIN_PASSWORD;
-}
-
-// Получить текущие настройки
-function getSettings() {
-    const saved = localStorage.getItem('factoryAssistantSettings');
+// Загружаем настройки из localStorage
+export function getSystemSettings() {
+    const saved = localStorage.getItem('vaillant_system_settings');
     if (saved) {
         try {
             return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
@@ -46,105 +45,90 @@ function getSettings() {
     return DEFAULT_SETTINGS;
 }
 
-// Сохранить настройки (только после проверки пароля)
-function saveSettings(newSettings, password) {
-    if (!checkAdminPassword(password)) {
-        throw new Error('Неверный пароль! Доступ запрещён.');
-    }
-    
-    // Валидация данных
-    const validated = {};
-    for (let key in DEFAULT_SETTINGS) {
-        if (newSettings[key] !== undefined) {
-            if (typeof DEFAULT_SETTINGS[key] === 'number') {
-                validated[key] = parseFloat(newSettings[key]) || DEFAULT_SETTINGS[key];
-            } else if (typeof DEFAULT_SETTINGS[key] === 'boolean') {
-                validated[key] = Boolean(newSettings[key]);
-            } else {
-                validated[key] = newSettings[key];
-            }
-        }
-    }
-    
-    localStorage.setItem('factoryAssistantSettings', JSON.stringify(validated));
-    return validated;
+// Сохраняем настройки (только для админа)
+export function saveSystemSettings(newSettings, password) {
+    // Пароль проверяется в admin.html, здесь просто сохраняем
+    const merged = { ...getSystemSettings(), ...newSettings };
+    localStorage.setItem('vaillant_system_settings', JSON.stringify(merged));
+    // Триггерим событие для обновления других вкладок
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'vaillant_system_settings',
+        newValue: JSON.stringify(merged)
+    }));
+    return merged;
 }
 
-// Сбросить настройки на стандартные (требует пароль)
-function resetToDefaults(password) {
-    if (!checkAdminPassword(password)) {
-        throw new Error('Неверный пароль!');
-    }
-    localStorage.setItem('factoryAssistantSettings', JSON.stringify(DEFAULT_SETTINGS));
+// Сброс на стандарт
+export function resetSystemSettings() {
+    localStorage.setItem('vaillant_system_settings', JSON.stringify(DEFAULT_SETTINGS));
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'vaillant_system_settings',
+        newValue: JSON.stringify(DEFAULT_SETTINGS)
+    }));
     return DEFAULT_SETTINGS;
 }
 
-// Функция для расчёта зарплаты (используйте её в index.html)
-function calculateSalary(hoursData, settings = null) {
-    const config = settings || getSettings();
+// Применить настройки к полям профиля (вызывается в index.html)
+export function applySettingsToProfile() {
+    const settings = getSystemSettings();
     
-    // hoursData должен содержать:
-    // {
-    //   normalHours: 40,
-    //   saturdayHours: 8,
-    //   sundayHours: 0,
-    //   nightHours: 0,
-    //   hazardousHours: 0,
-    //   daysWorked: 20
-    // }
+    const fields = {
+        hourlyRate: settings.baseRate,
+        nightBonus: settings.nightBonusPercent,
+        saturdayBonus: settings.saturdayCoeff,
+        sundayBonus: settings.sundayCoeff,
+        extraBonus: settings.extraBonus,
+        lunchCost: settings.lunchCost
+    };
     
-    let total = 0;
-    
-    // Обычные часы
-    total += hoursData.normalHours * config.baseRate;
-    
-    // Субботы (фиксированная доплата)
-    total += hoursData.saturdayHours * (config.baseRate + config.saturdayBonus);
-    
-    // Воскресенья (повышенный коэффициент)
-    total += hoursData.sundayHours * config.baseRate * config.sundayMultiplier;
-    
-    // Ночные часы
-    total += hoursData.nightHours * config.baseRate * config.nightMultiplier;
-    
-    // Вредность
-    if (config.hazardousWorkBonus > 0) {
-        total += hoursData.hazardousHours * config.hazardousWorkBonus;
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
     }
     
-    // Транспортные
-    if (config.transportAllowance > 0) {
-        total += hoursData.daysWorked * config.transportAllowance;
+    console.log('✅ Настройки применены к профилю');
+}
+
+// Расчёт чистой зарплаты по словацким правилам
+export function calculateNetSalary(grossMonthly, settings = null) {
+    const cfg = settings || getSystemSettings();
+    
+    // 1. Отчисления
+    const social = grossMonthly * (cfg.socialInsurance / 100);
+    const health = grossMonthly * (cfg.healthInsurance / 100);
+    const totalDeductions = social + health;
+    
+    // 2. База для налога
+    let taxBase = grossMonthly - totalDeductions;
+    let nonTaxable = cfg.nonTaxablePart;
+    
+    // Корректировка необлагаемой части при высоком доходе
+    if (grossMonthly > 2000) {
+        const reduction = Math.floor((grossMonthly - 2000) / 500) * 20;
+        nonTaxable = Math.max(0, cfg.nonTaxablePart - reduction);
     }
     
-    // Overtime (если обычные часы больше порога)
-    if (hoursData.normalHours > config.overtimeThreshold) {
-        const overtime = hoursData.normalHours - config.overtimeThreshold;
-        total += overtime * config.baseRate * (config.overtimeMultiplier - 1);
+    const taxableAmount = Math.max(0, taxBase - nonTaxable);
+    
+    // 3. Налог
+    let tax = taxableAmount * (cfg.taxBaseRate / 100);
+    if (grossMonthly > cfg.taxHighThreshold) {
+        const highPart = grossMonthly - cfg.taxHighThreshold;
+        const highTax = highPart * ((cfg.taxHighRate - cfg.taxBaseRate) / 100);
+        tax += highTax;
     }
     
-    // Фиксированный бонус
-    if (config.fixedBonusEnabled) {
-        total += config.fixedBonusAmount;
-    }
-    
-    // Вычет налогов
-    const tax = total * config.taxRate;
-    const socialSecurity = total * config.socialSecurityRate;
+    const netSalary = grossMonthly - totalDeductions - tax;
     
     return {
-        gross: total,
+        gross: grossMonthly,
+        social: social,
+        health: health,
+        totalDeductions: totalDeductions,
+        taxBase: taxBase,
+        nonTaxable: nonTaxable,
+        taxableAmount: taxableAmount,
         tax: tax,
-        socialSecurity: socialSecurity,
-        net: total - tax - socialSecurity,
-        details: {
-            ...hoursData,
-            rates: {
-                base: config.baseRate,
-                saturdayBonus: config.saturdayBonus,
-                sundayMultiplier: config.sundayMultiplier,
-                nightMultiplier: config.nightMultiplier
-            }
-        }
+        net: netSalary
     };
 }
