@@ -10,18 +10,29 @@ export const HEALTH_RATE = 0.10;
 export const TAX_RATE = 0.19;
 export const NON_TAXABLE = 410;
 
-// Расчет заработка за день
+// Замените существующую функцию calculateDayEarnings на эту:
+
 export function calculateDayEarnings(record, rate, settings) {
     let hours = record.hours || 7.5;
+    
+    // Получаем админ-настройки
+    const adminSettings = JSON.parse(localStorage.getItem('adminSalarySettings') || '{}');
+    const satCoeff = adminSettings.saturdayCoeff || 1.5;
+    const sunCoeff = adminSettings.sundayCoeff || 2.0;
+    const overtimeCoeff = adminSettings.overtimeCoeff || 1.5;
+    const satBonus = adminSettings.saturdayBonus || 25;
+    const nightBonus = adminSettings.nightBonusPercent || 20;
+    const extraBonus = adminSettings.extraBonus || 25;
+    
     switch(record.type) {
         case 'night': 
-            return hours * rate * (1 + (settings?.nightBonus || NIGHT_BONUS_PERCENT)/100);
+            return hours * rate * (1 + nightBonus/100);
         case 'overtime': 
-            return hours * rate * 1.5;
+            return hours * rate * overtimeCoeff;
         case 'sat': 
-            return hours * rate * 1.5 + SATURDAY_BONUS;
+            return hours * rate * satCoeff + satBonus;
         case 'sun': 
-            return hours * rate * 2.0;
+            return hours * rate * sunCoeff;
         case 'extra': 
             return (hours/2) * rate * 1.36;
         case 'sick': 
