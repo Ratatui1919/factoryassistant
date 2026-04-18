@@ -11,8 +11,6 @@ import {
     NON_TAXABLE
 } from './salary.js';
 
-import { saveUserSettings, loadUserSettings } from './firebase-config.js';
-
 // Состояние админ-панели
 let adminPanelVisible = false;
 let adminSettings = {
@@ -52,7 +50,9 @@ export function loadAdminSettings() {
         try {
             const parsed = JSON.parse(saved);
             Object.assign(adminSettings, parsed);
-        } catch(e) {}
+        } catch(e) {
+            console.error('Ошибка загрузки настроек:', e);
+        }
     }
     applyAdminSettings();
 }
@@ -65,33 +65,42 @@ export function saveAdminSettings() {
 
 // Применение настроек к глобальным переменным
 export function applyAdminSettings() {
-    // Переопределяем глобальные настройки через window
-    if (window.updateGlobalSettings) {
-        window.updateGlobalSettings(adminSettings);
-    }
-    
     // Обновляем поля в профиле, если они есть
     const hourlyRateInput = document.getElementById('hourlyRate');
-    if (hourlyRateInput) hourlyRateInput.value = adminSettings.hourlyRate;
+    if (hourlyRateInput && !document.activeElement === hourlyRateInput) {
+        hourlyRateInput.value = adminSettings.hourlyRate;
+    }
     
     const lunchCostInput = document.getElementById('lunchCost');
-    if (lunchCostInput) lunchCostInput.value = adminSettings.lunchCost;
+    if (lunchCostInput && !document.activeElement === lunchCostInput) {
+        lunchCostInput.value = adminSettings.lunchCost;
+    }
     
     const nightBonusInput = document.getElementById('nightBonus');
-    if (nightBonusInput) nightBonusInput.value = adminSettings.nightBonusPercent;
+    if (nightBonusInput && !document.activeElement === nightBonusInput) {
+        nightBonusInput.value = adminSettings.nightBonusPercent;
+    }
     
     const saturdayBonusInput = document.getElementById('saturdayBonus');
-    if (saturdayBonusInput) saturdayBonusInput.value = adminSettings.saturdayCoeff;
+    if (saturdayBonusInput && !document.activeElement === saturdayBonusInput) {
+        saturdayBonusInput.value = adminSettings.saturdayCoeff;
+    }
     
     const extraBonusInput = document.getElementById('extraBonus');
-    if (extraBonusInput) extraBonusInput.value = adminSettings.extraBonus;
+    if (extraBonusInput && !document.activeElement === extraBonusInput) {
+        extraBonusInput.value = adminSettings.extraBonus;
+    }
     
     // Пересчитываем зарплату
     if (window.updateDashboard) window.updateDashboard();
+    if (window.updateCalendar) window.updateCalendar();
 }
 
 // Создание и отображение админ-панели
 export function createAdminPanel() {
+    // Проверяем, не создана ли уже панель
+    if (document.getElementById('adminPanel')) return;
+    
     // Создаём контейнер для админ-панели
     const panel = document.createElement('div');
     panel.id = 'adminPanel';
@@ -475,48 +484,57 @@ export function createAdminPanel() {
     document.body.appendChild(panel);
     
     // Добавляем обработчики
-    document.getElementById('adminHourlyRate').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminLunchCost').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminNightBonus').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminSaturdayCoeff').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminSundayCoeff').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminOvertimeCoeff').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminSaturdayBonus').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminExtraBonus').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminSocialRate').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminHealthRate').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminTaxRate').addEventListener('change', updateAdminPreview);
-    document.getElementById('adminNonTaxable').addEventListener('change', updateAdminPreview);
+    document.getElementById('adminHourlyRate')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminLunchCost')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminNightBonus')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminSaturdayCoeff')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminSundayCoeff')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminOvertimeCoeff')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminSaturdayBonus')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminExtraBonus')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminSocialRate')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminHealthRate')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminTaxRate')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminNonTaxable')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminQualityBonusAmount')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminQualityBonusEnabled')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminTransportBonusAmount')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminTransportBonusEnabled')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminSeniorityBonusAmount')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminSeniorityBonusEnabled')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminRoundToCents')?.addEventListener('change', updateAdminPreview);
+    document.getElementById('adminProgressiveTax')?.addEventListener('change', updateAdminPreview);
 }
 
 function updateAdminPreview() {
     // Собираем текущие значения
-    adminSettings.hourlyRate = parseFloat(document.getElementById('adminHourlyRate').value);
-    adminSettings.lunchCost = parseFloat(document.getElementById('adminLunchCost').value);
-    adminSettings.nightBonusPercent = parseFloat(document.getElementById('adminNightBonus').value);
-    adminSettings.saturdayCoeff = parseFloat(document.getElementById('adminSaturdayCoeff').value);
-    adminSettings.sundayCoeff = parseFloat(document.getElementById('adminSundayCoeff').value);
-    adminSettings.overtimeCoeff = parseFloat(document.getElementById('adminOvertimeCoeff').value);
-    adminSettings.saturdayBonus = parseFloat(document.getElementById('adminSaturdayBonus').value);
-    adminSettings.extraBonus = parseFloat(document.getElementById('adminExtraBonus').value);
-    adminSettings.socialRate = parseFloat(document.getElementById('adminSocialRate').value) / 100;
-    adminSettings.healthRate = parseFloat(document.getElementById('adminHealthRate').value) / 100;
-    adminSettings.taxRate = parseFloat(document.getElementById('adminTaxRate').value) / 100;
-    adminSettings.nonTaxable = parseFloat(document.getElementById('adminNonTaxable').value);
-    adminSettings.qualityBonus.amount = parseFloat(document.getElementById('adminQualityBonusAmount').value);
-    adminSettings.qualityBonus.enabled = document.getElementById('adminQualityBonusEnabled').checked;
-    adminSettings.transportBonus.amount = parseFloat(document.getElementById('adminTransportBonusAmount').value);
-    adminSettings.transportBonus.enabled = document.getElementById('adminTransportBonusEnabled').checked;
-    adminSettings.seniorityBonus.amount = parseFloat(document.getElementById('adminSeniorityBonusAmount').value);
-    adminSettings.seniorityBonus.enabled = document.getElementById('adminSeniorityBonusEnabled').checked;
-    adminSettings.roundToCents = document.getElementById('adminRoundToCents').checked;
-    adminSettings.progressiveTax = document.getElementById('adminProgressiveTax').checked;
+    adminSettings.hourlyRate = parseFloat(document.getElementById('adminHourlyRate')?.value || adminSettings.hourlyRate);
+    adminSettings.lunchCost = parseFloat(document.getElementById('adminLunchCost')?.value || adminSettings.lunchCost);
+    adminSettings.nightBonusPercent = parseFloat(document.getElementById('adminNightBonus')?.value || adminSettings.nightBonusPercent);
+    adminSettings.saturdayCoeff = parseFloat(document.getElementById('adminSaturdayCoeff')?.value || adminSettings.saturdayCoeff);
+    adminSettings.sundayCoeff = parseFloat(document.getElementById('adminSundayCoeff')?.value || adminSettings.sundayCoeff);
+    adminSettings.overtimeCoeff = parseFloat(document.getElementById('adminOvertimeCoeff')?.value || adminSettings.overtimeCoeff);
+    adminSettings.saturdayBonus = parseFloat(document.getElementById('adminSaturdayBonus')?.value || adminSettings.saturdayBonus);
+    adminSettings.extraBonus = parseFloat(document.getElementById('adminExtraBonus')?.value || adminSettings.extraBonus);
+    adminSettings.socialRate = parseFloat(document.getElementById('adminSocialRate')?.value || adminSettings.socialRate * 100) / 100;
+    adminSettings.healthRate = parseFloat(document.getElementById('adminHealthRate')?.value || adminSettings.healthRate * 100) / 100;
+    adminSettings.taxRate = parseFloat(document.getElementById('adminTaxRate')?.value || adminSettings.taxRate * 100) / 100;
+    adminSettings.nonTaxable = parseFloat(document.getElementById('adminNonTaxable')?.value || adminSettings.nonTaxable);
+    adminSettings.qualityBonus.amount = parseFloat(document.getElementById('adminQualityBonusAmount')?.value || adminSettings.qualityBonus.amount);
+    adminSettings.qualityBonus.enabled = document.getElementById('adminQualityBonusEnabled')?.checked || false;
+    adminSettings.transportBonus.amount = parseFloat(document.getElementById('adminTransportBonusAmount')?.value || adminSettings.transportBonus.amount);
+    adminSettings.transportBonus.enabled = document.getElementById('adminTransportBonusEnabled')?.checked || false;
+    adminSettings.seniorityBonus.amount = parseFloat(document.getElementById('adminSeniorityBonusAmount')?.value || adminSettings.seniorityBonus.amount);
+    adminSettings.seniorityBonus.enabled = document.getElementById('adminSeniorityBonusEnabled')?.checked || false;
+    adminSettings.roundToCents = document.getElementById('adminRoundToCents')?.checked || false;
+    adminSettings.progressiveTax = document.getElementById('adminProgressiveTax')?.checked || false;
     
     // Применяем настройки
     applyAdminSettings();
     
     // Пересчитываем зарплату
     if (window.updateDashboard) window.updateDashboard();
+    if (window.updateCalendar) window.updateCalendar();
 }
 
 // Открытие админ-панели
@@ -525,26 +543,28 @@ export function openAdminPanel() {
     if (panel) {
         panel.classList.add('open');
         // Обновляем значения в полях
-        document.getElementById('adminHourlyRate').value = adminSettings.hourlyRate;
-        document.getElementById('adminLunchCost').value = adminSettings.lunchCost;
-        document.getElementById('adminNightBonus').value = adminSettings.nightBonusPercent;
-        document.getElementById('adminSaturdayCoeff').value = adminSettings.saturdayCoeff;
-        document.getElementById('adminSundayCoeff').value = adminSettings.sundayCoeff;
-        document.getElementById('adminOvertimeCoeff').value = adminSettings.overtimeCoeff;
-        document.getElementById('adminSaturdayBonus').value = adminSettings.saturdayBonus;
-        document.getElementById('adminExtraBonus').value = adminSettings.extraBonus;
-        document.getElementById('adminSocialRate').value = (adminSettings.socialRate * 100).toFixed(1);
-        document.getElementById('adminHealthRate').value = (adminSettings.healthRate * 100).toFixed(1);
-        document.getElementById('adminTaxRate').value = (adminSettings.taxRate * 100).toFixed(0);
-        document.getElementById('adminNonTaxable').value = adminSettings.nonTaxable;
-        document.getElementById('adminQualityBonusAmount').value = adminSettings.qualityBonus.amount;
-        document.getElementById('adminQualityBonusEnabled').checked = adminSettings.qualityBonus.enabled;
-        document.getElementById('adminTransportBonusAmount').value = adminSettings.transportBonus.amount;
-        document.getElementById('adminTransportBonusEnabled').checked = adminSettings.transportBonus.enabled;
-        document.getElementById('adminSeniorityBonusAmount').value = adminSettings.seniorityBonus.amount;
-        document.getElementById('adminSeniorityBonusEnabled').checked = adminSettings.seniorityBonus.enabled;
-        document.getElementById('adminRoundToCents').checked = adminSettings.roundToCents;
-        document.getElementById('adminProgressiveTax').checked = adminSettings.progressiveTax;
+        if (document.getElementById('adminHourlyRate')) {
+            document.getElementById('adminHourlyRate').value = adminSettings.hourlyRate;
+            document.getElementById('adminLunchCost').value = adminSettings.lunchCost;
+            document.getElementById('adminNightBonus').value = adminSettings.nightBonusPercent;
+            document.getElementById('adminSaturdayCoeff').value = adminSettings.saturdayCoeff;
+            document.getElementById('adminSundayCoeff').value = adminSettings.sundayCoeff;
+            document.getElementById('adminOvertimeCoeff').value = adminSettings.overtimeCoeff;
+            document.getElementById('adminSaturdayBonus').value = adminSettings.saturdayBonus;
+            document.getElementById('adminExtraBonus').value = adminSettings.extraBonus;
+            document.getElementById('adminSocialRate').value = (adminSettings.socialRate * 100).toFixed(1);
+            document.getElementById('adminHealthRate').value = (adminSettings.healthRate * 100).toFixed(1);
+            document.getElementById('adminTaxRate').value = (adminSettings.taxRate * 100).toFixed(0);
+            document.getElementById('adminNonTaxable').value = adminSettings.nonTaxable;
+            document.getElementById('adminQualityBonusAmount').value = adminSettings.qualityBonus.amount;
+            document.getElementById('adminQualityBonusEnabled').checked = adminSettings.qualityBonus.enabled;
+            document.getElementById('adminTransportBonusAmount').value = adminSettings.transportBonus.amount;
+            document.getElementById('adminTransportBonusEnabled').checked = adminSettings.transportBonus.enabled;
+            document.getElementById('adminSeniorityBonusAmount').value = adminSettings.seniorityBonus.amount;
+            document.getElementById('adminSeniorityBonusEnabled').checked = adminSettings.seniorityBonus.enabled;
+            document.getElementById('adminRoundToCents').checked = adminSettings.roundToCents;
+            document.getElementById('adminProgressiveTax').checked = adminSettings.progressiveTax;
+        }
     }
 }
 
@@ -608,19 +628,25 @@ export function resetAdminSettings() {
         }
         
         if (window.updateDashboard) window.updateDashboard();
+        if (window.updateCalendar) window.updateCalendar();
         showNotification('🔄 Настройки сброшены к стандартным', 'info');
     }
 }
 
 function showNotification(msg, type) {
-    const notif = document.getElementById('notification');
-    if (notif) {
-        const msgSpan = document.getElementById('notificationMessage');
-        if (msgSpan) msgSpan.textContent = msg;
-        notif.classList.remove('hidden');
-        setTimeout(() => notif.classList.add('hidden'), 3000);
+    // Используем существующую систему уведомлений
+    if (window.showNotification) {
+        window.showNotification(msg, type);
     } else {
-        alert(msg);
+        const notif = document.getElementById('notification');
+        if (notif) {
+            const msgSpan = document.getElementById('notificationMessage');
+            if (msgSpan) msgSpan.textContent = msg;
+            notif.classList.remove('hidden');
+            setTimeout(() => notif.classList.add('hidden'), 3000);
+        } else {
+            alert(msg);
+        }
     }
 }
 
