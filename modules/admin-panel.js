@@ -1,4 +1,4 @@
-// modules/admin-panel.js - НОВАЯ ВЕРСИЯ С БОНУСАМИ ЗА ПОСЕЩАЕМОСТЬ
+// modules/admin-panel.js - С ЗАЩИТОЙ ПАРОЛЕМ
 
 import { 
     BASE_RATE, 
@@ -11,54 +11,38 @@ import {
     NON_TAXABLE
 } from './salary.js';
 
+// Пароль для входа в админ-панель (измените на свой)
+const ADMIN_PASSWORD = "Vaillant2024"; // <- СМЕНИТЕ НА СВОЙ ПАРОЛЬ!
+
+// Состояние
+let isAdminAuthenticated = false;
 let adminSettings = {
-    // Основные ставки
     hourlyRate: 6.10,
     lunchCost: 1.31,
-    
-    // Коэффициенты в процентах
     nightBonusPercent: 20,
     overtimePercent: 25,
-    saturdayPercent: 25,           // Суббота +25% = коэффициент 1.25
-    sundayPercent: 100,             // Воскресенье +100% = коэффициент 2.0
-    saturdayFixedBonus: 4.34,       // Stravené за субботу
-    
-    extraBonus: 25,                 // Бонус за надчас
-    
-    // Бонусы за посещаемость (Productivity)
-    productivityBonus: {
-        enabled: true,
-        fullMonth: 20,      // 20% если был весь месяц
-        partialMonth: 15,   // 15% если пропущено 1-4 дня
-        lowMonth: 10        // 10% если пропущено 5+ дней
-    },
-    
-    // Фиксированные бонусы
-    attendanceBonus: 10,        // Attendance
-    monthlyEvalBonus: 8,        // Monthly eval.
-    doplatokBonus: 28.75,       // Doplatok
-    
-    // Налоги
-    socialRate: 0.04,    // Пенсионный 4%
-    healthRate: 0.04,    // Медицинский 4%
-    socialSecRate: 0.03, // Соц.страх 3%
-    disabilityRate: 0.01, // Инвалидность 1%
-    unemploymentRate: 0.01, // Безработица 1%
-    taxRate: 0.19,       // Налог на доход 19%
+    saturdayPercent: 25,
+    sundayPercent: 100,
+    saturdayFixedBonus: 4.34,
+    extraBonus: 25,
+    attendanceBonus: 10,
+    monthlyEvalBonus: 8,
+    doplatokBonus: 28.75,
+    productivityBonus: { fullMonth: 20, partialMonth: 15, lowMonth: 10 },
+    healthRate: 0.04,
+    socialRate: 0.04,
+    socialSecRate: 0.03,
+    taxRate: 0.19,
     nonTaxable: 410,
-    
-    // Дополнительные настройки
     roundToCents: true,
     progressiveTax: false,
-    
-    // Дополнительные бонусы (вкл/выкл)
     qualityBonus: { enabled: false, amount: 0 },
     transportBonus: { enabled: false, amount: 0 },
     seniorityBonus: { enabled: false, amount: 0 },
     customBonuses: []
 };
 
-// Загрузка и сохранение...
+// Загрузка сохранённых настроек
 export function loadAdminSettings() {
     const saved = localStorage.getItem('adminSalarySettings');
     if (saved) {
@@ -76,8 +60,6 @@ export function saveAdminSettings() {
 }
 
 export function applyAdminSettingsToGlobal() {
-    console.log('Применяю админ-настройки:', adminSettings);
-    
     const hourlyRateInput = document.getElementById('hourlyRate');
     if (hourlyRateInput) hourlyRateInput.value = adminSettings.hourlyRate;
     
@@ -93,24 +75,164 @@ function forceUpdateAllData() {
     if (window.buildCalendar) window.buildCalendar();
     if (window.calculateAllStats) window.calculateAllStats();
     if (window.updateFinanceStats) window.updateFinanceStats();
-    showNotification('✅ Зарплата пересчитана!', 'success');
 }
 
-// Функция для расчёта бонуса продуктивности
-export function calculateProductivityBonus(workDaysCount, totalMonthDays, regularHours, hourlyRate) {
-    const missedDays = totalMonthDays - workDaysCount;
-    let percent = 0;
+// Проверка пароля
+export function checkAdminPassword(password) {
+    return password === ADMIN_PASSWORD;
+}
+
+// Модалка ввода пароля
+function showPasswordModal(callback) {
+    const modal = document.createElement('div');
+    modal.id = 'adminPasswordModal';
+    modal.innerHTML = `
+        <style>
+            #adminPasswordModal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.95);
+                z-index: 10000000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .password-container {
+                background: var(--dark-card, #1e293b);
+                border-radius: 24px;
+                padding: 30px 25px;
+                width: 300px;
+                text-align: center;
+                border: 2px solid var(--primary, #00b060);
+            }
+            .password-container i {
+                font-size: 50px;
+                color: var(--primary, #00b060);
+                margin-bottom: 15px;
+            }
+            .password-container h3 {
+                color: var(--text, #fff);
+                margin-bottom: 20px;
+            }
+            .password-container input {
+                width: 100%;
+                padding: 12px;
+                border-radius: 12px;
+                border: 1px solid var(--border, #334155);
+                background: var(--bg-color, #0f172a);
+                color: var(--text, #fff);
+                font-size: 16px;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            .password-container input:focus {
+                outline: none;
+                border-color: var(--primary, #00b060);
+            }
+            .password-container button {
+                width: 100%;
+                padding: 12px;
+                border: none;
+                border-radius: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+            .btn-password-submit {
+                background: var(--primary, #00b060);
+                color: white;
+            }
+            .btn-password-cancel {
+                background: #ef4444;
+                color: white;
+            }
+            .error-message {
+                color: #ef4444;
+                font-size: 12px;
+                margin-top: 10px;
+                display: none;
+            }
+        </style>
+        <div class="password-container">
+            <i class="fas fa-lock"></i>
+            <h3>Введите пароль</h3>
+            <input type="password" id="adminPasswordInput" placeholder="Пароль" autocomplete="off">
+            <button class="btn-password-submit" onclick="window.submitAdminPassword()">Войти</button>
+            <button class="btn-password-cancel" onclick="window.closePasswordModal()">Отмена</button>
+            <div class="error-message" id="passwordError">Неверный пароль!</div>
+        </div>
+    `;
+    document.body.appendChild(modal);
     
-    if (missedDays === 0) {
-        percent = adminSettings.productivityBonus.fullMonth;
-    } else if (missedDays <= 4) {
-        percent = adminSettings.productivityBonus.partialMonth;
+    window.submitAdminPassword = () => {
+        const input = document.getElementById('adminPasswordInput');
+        const error = document.getElementById('passwordError');
+        if (checkAdminPassword(input.value)) {
+            isAdminAuthenticated = true;
+            closePasswordModal();
+            showAdminPanelContent();
+        } else {
+            error.style.display = 'block';
+            input.value = '';
+            input.focus();
+        }
+    };
+    
+    window.closePasswordModal = () => {
+        const modal = document.getElementById('adminPasswordModal');
+        if (modal) modal.remove();
+        if (callback && !isAdminAuthenticated) callback(false);
+    };
+    
+    document.getElementById('adminPasswordInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') window.submitAdminPassword();
+    });
+}
+
+// Показать админ-панель (с проверкой пароля)
+export function openAdminPanel() {
+    if (isAdminAuthenticated) {
+        showAdminPanelContent();
     } else {
-        percent = adminSettings.productivityBonus.lowMonth;
+        showPasswordModal();
+    }
+}
+
+// Содержимое админ-панели
+function showAdminPanelContent() {
+    let panel = document.getElementById('adminPanel');
+    if (!panel) {
+        createAdminPanel();
+        panel = document.getElementById('adminPanel');
     }
     
-    const bonusAmount = (regularHours * hourlyRate) * (percent / 100);
-    return { percent, bonusAmount, missedDays };
+    // Обновляем все поля
+    document.getElementById('adminHourlyRate').value = adminSettings.hourlyRate;
+    document.getElementById('adminLunchCost').value = adminSettings.lunchCost;
+    document.getElementById('adminNightBonus').value = adminSettings.nightBonusPercent;
+    document.getElementById('adminOvertimePercent').value = adminSettings.overtimePercent;
+    document.getElementById('adminSaturdayPercent').value = adminSettings.saturdayPercent;
+    document.getElementById('adminSundayPercent').value = adminSettings.sundayPercent;
+    document.getElementById('adminSaturdayFixedBonus').value = adminSettings.saturdayFixedBonus;
+    document.getElementById('adminExtraBonus').value = adminSettings.extraBonus;
+    document.getElementById('adminAttendanceBonus').value = adminSettings.attendanceBonus;
+    document.getElementById('adminMonthlyEvalBonus').value = adminSettings.monthlyEvalBonus;
+    document.getElementById('adminDoplatokBonus').value = adminSettings.doplatokBonus;
+    document.getElementById('adminProdFullMonth').value = adminSettings.productivityBonus.fullMonth;
+    document.getElementById('adminProdPartialMonth').value = adminSettings.productivityBonus.partialMonth;
+    document.getElementById('adminProdLowMonth').value = adminSettings.productivityBonus.lowMonth;
+    document.getElementById('adminHealthRate').value = adminSettings.healthRate * 100;
+    document.getElementById('adminSocialRate').value = adminSettings.socialRate * 100;
+    document.getElementById('adminSocialSecRate').value = adminSettings.socialSecRate * 100;
+    document.getElementById('adminTaxRate').value = adminSettings.taxRate * 100;
+    document.getElementById('adminNonTaxable').value = adminSettings.nonTaxable;
+    document.getElementById('adminRoundToCents').checked = adminSettings.roundToCents;
+    document.getElementById('adminProgressiveTax').checked = adminSettings.progressiveTax;
+    
+    panel.classList.add('open');
 }
 
 // Создание админ-панели
@@ -150,6 +272,7 @@ export function createAdminPanel() {
                 border-bottom: 2px solid var(--primary, #00b060);
             }
             .admin-header h2 { font-size: 1.4rem; color: var(--text, #fff); margin: 0; }
+            .admin-header h2 i { color: #fbbf24; margin-right: 8px; }
             .admin-close {
                 background: rgba(255,255,255,0.1);
                 border: none;
@@ -275,16 +398,24 @@ export function createAdminPanel() {
                 background: rgba(0,0,0,0.3);
                 border-radius: 12px;
             }
+            .admin-lock-badge {
+                display: inline-block;
+                background: #fbbf24;
+                color: #1e293b;
+                font-size: 10px;
+                padding: 2px 6px;
+                border-radius: 12px;
+                margin-left: 8px;
+            }
             hr { border-color: rgba(255,255,255,0.1); margin: 15px 0; }
         </style>
         
         <div class="admin-container">
             <div class="admin-header">
-                <h2><i class="fas fa-crown"></i> Админ-панель</h2>
+                <h2><i class="fas fa-crown"></i> Админ-панель <span class="admin-lock-badge"><i class="fas fa-lock"></i> Защищено</span></h2>
                 <button class="admin-close" onclick="window.closeAdminPanel()">✕</button>
             </div>
             
-            <!-- Основные ставки -->
             <div class="admin-section">
                 <h3><i class="fas fa-euro-sign"></i> Основные ставки</h3>
                 <div class="admin-row">
@@ -301,7 +432,6 @@ export function createAdminPanel() {
                 </div>
             </div>
             
-            <!-- Коэффициенты -->
             <div class="admin-section">
                 <h3><i class="fas fa-percent"></i> Коэффициенты доплат</h3>
                 <div class="admin-row">
@@ -330,7 +460,6 @@ export function createAdminPanel() {
                 </div>
             </div>
             
-            <!-- Бонусы -->
             <div class="admin-section">
                 <h3><i class="fas fa-gift"></i> Бонусы</h3>
                 <div class="admin-row">
@@ -365,7 +494,6 @@ export function createAdminPanel() {
                 </div>
             </div>
             
-            <!-- Бонус продуктивности -->
             <div class="admin-section">
                 <h3><i class="fas fa-chart-line"></i> Бонус продуктивности (Productivity)</h3>
                 <div class="admin-row">
@@ -388,9 +516,8 @@ export function createAdminPanel() {
                 </div>
             </div>
             
-            <!-- Налоги -->
             <div class="admin-section">
-                <h3><i class="fas fa-percent"></i> Налоги и отчисления (Словакия)</h3>
+                <h3><i class="fas fa-percent"></i> Налоги и отчисления</h3>
                 <div class="admin-row">
                     <span class="admin-label">🏥 Медицинский налог</span>
                     <div class="admin-value">
@@ -423,6 +550,24 @@ export function createAdminPanel() {
                 </div>
             </div>
             
+            <div class="admin-section">
+                <h3><i class="fas fa-cog"></i> Дополнительно</h3>
+                <div class="admin-row">
+                    <span class="admin-label">🔄 Округление до центов</span>
+                    <label class="admin-toggle">
+                        <input type="checkbox" id="adminRoundToCents" ${adminSettings.roundToCents ? 'checked' : ''}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="admin-row">
+                    <span class="admin-label">📈 Прогрессивный налог</span>
+                    <label class="admin-toggle">
+                        <input type="checkbox" id="adminProgressiveTax" ${adminSettings.progressiveTax ? 'checked' : ''}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
             <div class="admin-buttons">
                 <button class="btn-admin-apply" onclick="window.applyAdminSettingsAndClose()">✅ Применить и закрыть</button>
                 <button class="btn-admin-reset" onclick="window.resetAdminSettings()">🔄 Сброс</button>
@@ -446,7 +591,8 @@ export function createAdminPanel() {
                     'adminSaturdayPercent', 'adminSundayPercent', 'adminSaturdayFixedBonus', 'adminExtraBonus',
                     'adminAttendanceBonus', 'adminMonthlyEvalBonus', 'adminDoplatokBonus',
                     'adminProdFullMonth', 'adminProdPartialMonth', 'adminProdLowMonth',
-                    'adminHealthRate', 'adminSocialRate', 'adminSocialSecRate', 'adminTaxRate', 'adminNonTaxable'];
+                    'adminHealthRate', 'adminSocialRate', 'adminSocialSecRate', 'adminTaxRate', 'adminNonTaxable',
+                    'adminRoundToCents', 'adminProgressiveTax'];
     
     inputs.forEach(id => {
         const el = document.getElementById(id);
@@ -474,6 +620,8 @@ function updateAdminPreview() {
     adminSettings.socialSecRate = parseFloat(document.getElementById('adminSocialSecRate')?.value || adminSettings.socialSecRate * 100) / 100;
     adminSettings.taxRate = parseFloat(document.getElementById('adminTaxRate')?.value || adminSettings.taxRate * 100) / 100;
     adminSettings.nonTaxable = parseFloat(document.getElementById('adminNonTaxable')?.value || adminSettings.nonTaxable);
+    adminSettings.roundToCents = document.getElementById('adminRoundToCents')?.checked || false;
+    adminSettings.progressiveTax = document.getElementById('adminProgressiveTax')?.checked || false;
 }
 
 export function applyAdminSettingsAndClose() {
@@ -481,32 +629,7 @@ export function applyAdminSettingsAndClose() {
     saveAdminSettings();
     applyAdminSettingsToGlobal();
     closeAdminPanel();
-}
-
-export function openAdminPanel() {
-    const panel = document.getElementById('adminPanel');
-    if (panel) {
-        document.getElementById('adminHourlyRate').value = adminSettings.hourlyRate;
-        document.getElementById('adminLunchCost').value = adminSettings.lunchCost;
-        document.getElementById('adminNightBonus').value = adminSettings.nightBonusPercent;
-        document.getElementById('adminOvertimePercent').value = adminSettings.overtimePercent;
-        document.getElementById('adminSaturdayPercent').value = adminSettings.saturdayPercent;
-        document.getElementById('adminSundayPercent').value = adminSettings.sundayPercent;
-        document.getElementById('adminSaturdayFixedBonus').value = adminSettings.saturdayFixedBonus;
-        document.getElementById('adminExtraBonus').value = adminSettings.extraBonus;
-        document.getElementById('adminAttendanceBonus').value = adminSettings.attendanceBonus;
-        document.getElementById('adminMonthlyEvalBonus').value = adminSettings.monthlyEvalBonus;
-        document.getElementById('adminDoplatokBonus').value = adminSettings.doplatokBonus;
-        document.getElementById('adminProdFullMonth').value = adminSettings.productivityBonus.fullMonth;
-        document.getElementById('adminProdPartialMonth').value = adminSettings.productivityBonus.partialMonth;
-        document.getElementById('adminProdLowMonth').value = adminSettings.productivityBonus.lowMonth;
-        document.getElementById('adminHealthRate').value = adminSettings.healthRate * 100;
-        document.getElementById('adminSocialRate').value = adminSettings.socialRate * 100;
-        document.getElementById('adminSocialSecRate').value = adminSettings.socialSecRate * 100;
-        document.getElementById('adminTaxRate').value = adminSettings.taxRate * 100;
-        document.getElementById('adminNonTaxable').value = adminSettings.nonTaxable;
-        panel.classList.add('open');
-    }
+    showNotification('✅ Настройки применены!', 'success');
 }
 
 export function closeAdminPanel() {
@@ -532,8 +655,6 @@ export function resetAdminSettings() {
             healthRate: 0.04,
             socialRate: 0.04,
             socialSecRate: 0.03,
-            disabilityRate: 0.01,
-            unemploymentRate: 0.01,
             taxRate: 0.19,
             nonTaxable: 410,
             roundToCents: true,
@@ -545,7 +666,6 @@ export function resetAdminSettings() {
         };
         saveAdminSettings();
         applyAdminSettingsToGlobal();
-        openAdminPanel();
         showNotification('🔄 Настройки сброшены!', 'info');
     }
 }
@@ -572,10 +692,13 @@ export function addAdminButton() {
     }
 }
 
+// Глобальные функции
 window.openAdminPanel = openAdminPanel;
 window.closeAdminPanel = closeAdminPanel;
 window.applyAdminSettingsAndClose = applyAdminSettingsAndClose;
 window.resetAdminSettings = resetAdminSettings;
+window.submitAdminPassword = null;
+window.closePasswordModal = null;
 
 export function initAdminPanel() {
     loadAdminSettings();
