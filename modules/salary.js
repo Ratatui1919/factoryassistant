@@ -16,7 +16,14 @@ export function calculateDayEarnings(record, rate, settings) {
     let hours = record.hours || 7.5;
     
     // Получаем админ-настройки
-    const adminSettings = JSON.parse(localStorage.getItem('adminSalarySettings') || '{}');
+    let adminSettings = {};
+    try {
+        const saved = localStorage.getItem('adminSalarySettings');
+        if (saved) {
+            adminSettings = JSON.parse(saved);
+        }
+    } catch(e) {}
+    
     const satCoeff = adminSettings.saturdayCoeff || 1.5;
     const sunCoeff = adminSettings.sundayCoeff || 2.0;
     const overtimeCoeff = adminSettings.overtimeCoeff || 1.5;
