@@ -1,5 +1,11 @@
 // modules/main.js - ГЛАВНЫЙ ФАЙЛ (С ЗАЩИТОЙ ОТ ПЕРЕЗАГРУЗОК)
 
+// Добавьте в начало файла modules/main.js
+import { initAdminPanel } from './admin-panel.js';
+
+// И в функции инициализации (где-то после загрузки данных):
+initAdminPanel();
+
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
 import { setCurrentUser } from './auth.js';
