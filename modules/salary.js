@@ -26,6 +26,8 @@ export function calculateDayEarnings(record, rate, settings) {
     const sunPercent = adminSettings.sundayPercent || 100;
     const overtimePercent = adminSettings.overtimePercent || 25;
     const nightPercent = adminSettings.nightBonusPercent || 20;
+    
+    // Бонус за субботу (Stravené)
     const straveneAmount = adminSettings.straveneBonus?.amount || 4.34;
     const straveneEnabled = adminSettings.straveneBonus?.enabled || true;
     
@@ -41,6 +43,7 @@ export function calculateDayEarnings(record, rate, settings) {
             return hours * rate * (1 + sunPercent/100);
         case 'extra':
             // Надчас: 1 надчас = 3,5 фактических часа, засчитывается как 7,5ч
+            // 7,5ч × ставка × 1.36 ≈ 10,2 € за один надчас
             return 7.5 * rate * 1.36;
         case 'sick':
             return hours * rate * 0.6;
