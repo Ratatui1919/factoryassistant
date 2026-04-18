@@ -1,11 +1,6 @@
-// modules/main.js - ГЛАВНЫЙ ФАЙЛ (С ЗАЩИТОЙ ОТ ПЕРЕЗАГРУЗОК)
+// modules/main.js - ГЛАВНЫЙ ФАЙЛ (С АДМИН-ПАНЕЛЬЮ)
 
-// В самом верху modules/main.js, вместе с другими импортами
 import { initAdminPanel } from './admin-panel.js';
-
-// И в функции инициализации (где-то после загрузки данных):
-initAdminPanel();
-
 import { auth, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
 import { setLanguage, showModal, hideModal } from './utils.js';
 import { setCurrentUser } from './auth.js';
@@ -135,6 +130,11 @@ async function loadAllUserData(user) {
                 console.log('Инициализация погодных эффектов');
                 window.initWeather();
             }
+            
+            // Инициализируем админ-панель ПОСЛЕ загрузки всех данных
+            setTimeout(() => {
+                initAdminPanel();
+            }, 500);
             
         }, 200);
         
