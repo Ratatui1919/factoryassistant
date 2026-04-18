@@ -1,4 +1,4 @@
-// modules/admin-panel.js - ПОЛНАЯ ВЕРСИЯ (с переключателями бонусов и защитой)
+// modules/admin-panel.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
 
 import { 
     BASE_RATE, 
@@ -31,15 +31,12 @@ let adminSettings = {
     // Надчасы (extra blocks)
     extraBlockHours: 3.5,        // Фактических часов в одном надчасе
     extraBlockPaidHours: 7.5,    // Сколько засчитывается в табель
-    extraBlockBonus: 25,         // Бонус за 2 надчаса
     
     // БОНУСЫ (каждый можно включить/выключить)
-    straveneBonus: { enabled: true, amount: 4.34 },      // Stravené за субботу
-    attendanceBonus: { enabled: true, amount: 10 },      // Attendance
-    monthlyEvalBonus: { enabled: true, amount: 8 },      // Monthly eval.
-    doplatokBonus: { enabled: true, amount: 28.75 },     // Doplatok
+    straveneBonus: { enabled: true, amount: 4.34 },      // Бонус за субботу (4,34 €)
+    extraBlockBonus: { enabled: true, amount: 25 },      // Бонус за 2 надчаса (25 €)
     
-    // Бонус продуктивности
+    // Бонус продуктивности (уже включает Attendance и Monthly eval.)
     productivityBonus: { 
         enabled: true,
         fullMonth: 20,      // Полный месяц - 20%
@@ -215,16 +212,12 @@ function showAdminPanelContent() {
     document.getElementById('adminSaturdayPercent').value = adminSettings.saturdayPercent;
     document.getElementById('adminSundayPercent').value = adminSettings.sundayPercent;
     document.getElementById('adminExtraBlockHours').value = adminSettings.extraBlockHours;
-    document.getElementById('adminExtraBlockBonus').value = adminSettings.extraBlockBonus;
     
     document.getElementById('straveneEnabled').checked = adminSettings.straveneBonus.enabled;
     document.getElementById('straveneAmount').value = adminSettings.straveneBonus.amount;
-    document.getElementById('attendanceEnabled').checked = adminSettings.attendanceBonus.enabled;
-    document.getElementById('attendanceAmount').value = adminSettings.attendanceBonus.amount;
-    document.getElementById('monthlyEvalEnabled').checked = adminSettings.monthlyEvalBonus.enabled;
-    document.getElementById('monthlyEvalAmount').value = adminSettings.monthlyEvalBonus.amount;
-    document.getElementById('doplatokEnabled').checked = adminSettings.doplatokBonus.enabled;
-    document.getElementById('doplatokAmount').value = adminSettings.doplatokBonus.amount;
+    document.getElementById('extraBlockBonusEnabled').checked = adminSettings.extraBlockBonus.enabled;
+    document.getElementById('extraBlockBonusAmount').value = adminSettings.extraBlockBonus.amount;
+    
     document.getElementById('productivityEnabled').checked = adminSettings.productivityBonus.enabled;
     document.getElementById('prodFullMonth').value = adminSettings.productivityBonus.fullMonth;
     document.getElementById('prodPartialMonth').value = adminSettings.productivityBonus.partialMonth;
@@ -443,7 +436,7 @@ export function createAdminPanel() {
                     </div>
                 </div>
                 <div class="admin-row">
-                    <span class="admin-label">📅 Суббота</span>
+                    <span class="admin-label">📅 Суббота (доплата)</span>
                     <div class="admin-value">
                         <input type="number" id="adminSaturdayPercent" step="5" value="${adminSettings.saturdayPercent}"> %
                     </div>
@@ -460,25 +453,29 @@ export function createAdminPanel() {
             <div class="admin-section">
                 <h3><i class="fas fa-clock"></i> Надчасы (Extra blocks)</h3>
                 <div class="admin-row">
-                    <span class="admin-label">⏰ Фактических часов в надчасе</span>
+                    <span class="admin-label">⏰ Часов в одном надчасе</span>
                     <div class="admin-value">
                         <input type="number" id="adminExtraBlockHours" step="0.5" value="${adminSettings.extraBlockHours}"> ч
                     </div>
                 </div>
                 <div class="admin-row">
-                    <span class="admin-label">💰 Бонус за 2 надчаса</span>
+                    <span class="admin-label">💰 Бонус за 2 надчаса <small>25 € за каждые 2 блока</small></span>
                     <div class="admin-value">
-                        <input type="number" id="adminExtraBlockBonus" step="5" value="${adminSettings.extraBlockBonus}"> €
+                        <input type="number" id="extraBlockBonusAmount" step="5" value="${adminSettings.extraBlockBonus.amount}" style="width: 70px;"> €
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="extraBlockBonusEnabled" ${adminSettings.extraBlockBonus.enabled ? 'checked' : ''}>
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
                 </div>
             </div>
             
-            <!-- Бонусы с переключателями -->
+            <!-- Бонусы -->
             <div class="admin-section">
                 <h3><i class="fas fa-gift"></i> Бонусы</h3>
                 
                 <div class="admin-row">
-                    <span class="admin-label">🍽️ Stravené за субботу <small>4,34 € за каждую субботу</small></span>
+                    <span class="admin-label">🍽️ Бонус за субботу <small>4,34 € за каждую субботу (Stravené)</small></span>
                     <div class="admin-value">
                         <input type="number" id="straveneAmount" step="1" value="${adminSettings.straveneBonus.amount}" style="width: 70px;"> €
                         <label class="admin-toggle">
@@ -487,44 +484,11 @@ export function createAdminPanel() {
                         </label>
                     </div>
                 </div>
-                
-                <div class="admin-row">
-                    <span class="admin-label">✅ Attendance <small>бонус за присутствие</small></span>
-                    <div class="admin-value">
-                        <input type="number" id="attendanceAmount" step="5" value="${adminSettings.attendanceBonus.amount}" style="width: 70px;"> €
-                        <label class="admin-toggle">
-                            <input type="checkbox" id="attendanceEnabled" ${adminSettings.attendanceBonus.enabled ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="admin-row">
-                    <span class="admin-label">📊 Monthly eval. <small>бонус за оценку</small></span>
-                    <div class="admin-value">
-                        <input type="number" id="monthlyEvalAmount" step="5" value="${adminSettings.monthlyEvalBonus.amount}" style="width: 70px;"> €
-                        <label class="admin-toggle">
-                            <input type="checkbox" id="monthlyEvalEnabled" ${adminSettings.monthlyEvalBonus.enabled ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="admin-row">
-                    <span class="admin-label">💰 Doplatok <small>дополнительный бонус</small></span>
-                    <div class="admin-value">
-                        <input type="number" id="doplatokAmount" step="5" value="${adminSettings.doplatokBonus.amount}" style="width: 70px;"> €
-                        <label class="admin-toggle">
-                            <input type="checkbox" id="doplatokEnabled" ${adminSettings.doplatokBonus.enabled ? 'checked' : ''}>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
             </div>
             
             <!-- Бонус продуктивности -->
             <div class="admin-section">
-                <h3><i class="fas fa-chart-line"></i> Бонус продуктивности</h3>
+                <h3><i class="fas fa-chart-line"></i> Бонус продуктивности (включает Attendance и Monthly eval.)</h3>
                 <div class="admin-row">
                     <span class="admin-label">📊 Включить бонус</span>
                     <label class="admin-toggle">
@@ -533,19 +497,19 @@ export function createAdminPanel() {
                     </label>
                 </div>
                 <div class="admin-row">
-                    <span class="admin-label">✅ Полный месяц (без пропусков)</span>
+                    <span class="admin-label">✅ Полный месяц (без пропусков) <small>20% от обычных часов</small></span>
                     <div class="admin-value">
                         <input type="number" id="prodFullMonth" step="5" value="${adminSettings.productivityBonus.fullMonth}"> %
                     </div>
                 </div>
                 <div class="admin-row">
-                    <span class="admin-label">⚠️ Пропущено 1-4 дня</span>
+                    <span class="admin-label">⚠️ Пропущено 1-4 дня <small>15%</small></span>
                     <div class="admin-value">
                         <input type="number" id="prodPartialMonth" step="5" value="${adminSettings.productivityBonus.partialMonth}"> %
                     </div>
                 </div>
                 <div class="admin-row">
-                    <span class="admin-label">❌ Пропущено 5+ дней</span>
+                    <span class="admin-label">❌ Пропущено 5+ дней <small>10%</small></span>
                     <div class="admin-value">
                         <input type="number" id="prodLowMonth" step="5" value="${adminSettings.productivityBonus.lowMonth}"> %
                     </div>
@@ -613,7 +577,7 @@ export function createAdminPanel() {
             <div class="info-text">
                 <i class="fas fa-info-circle"></i> 
                 <strong>Ваши данные за март:</strong><br>
-                • 15 обычных дней × 7,5ч = 112,5ч<br>
+                • 15 обычных дней × 7,5ч = 112,5ч (бонус продуктивности 20% = +22,5ч)<br>
                 • 1 суббота × 7,5ч = 7,5ч (+25% + 4,34€)<br>
                 • 7 надчасов × 3,5ч = 24,5ч (засчитывается как 7,5ч каждый)<br>
                 <strong>Всего в табеле: 172,5 часов</strong>
@@ -625,12 +589,12 @@ export function createAdminPanel() {
     
     // Добавляем обработчики
     const inputs = ['adminHourlyRate', 'adminLunchCost', 'adminNightBonus', 'adminOvertimePercent', 
-                    'adminSaturdayPercent', 'adminSundayPercent', 'adminExtraBlockHours', 'adminExtraBlockBonus',
-                    'straveneAmount', 'attendanceAmount', 'monthlyEvalAmount', 'doplatokAmount',
+                    'adminSaturdayPercent', 'adminSundayPercent', 'adminExtraBlockHours',
+                    'straveneAmount', 'extraBlockBonusAmount',
                     'prodFullMonth', 'prodPartialMonth', 'prodLowMonth',
                     'adminHealthRate', 'adminSocialRate', 'adminSocialSecRate', 'adminTaxRate', 'adminNonTaxable',
                     'adminRoundToCents', 'adminProgressiveTax',
-                    'straveneEnabled', 'attendanceEnabled', 'monthlyEvalEnabled', 'doplatokEnabled', 'productivityEnabled'];
+                    'straveneEnabled', 'extraBlockBonusEnabled', 'productivityEnabled'];
     
     inputs.forEach(id => {
         const el = document.getElementById(id);
@@ -646,16 +610,12 @@ function updateAdminPreview() {
     adminSettings.saturdayPercent = parseFloat(document.getElementById('adminSaturdayPercent')?.value || adminSettings.saturdayPercent);
     adminSettings.sundayPercent = parseFloat(document.getElementById('adminSundayPercent')?.value || adminSettings.sundayPercent);
     adminSettings.extraBlockHours = parseFloat(document.getElementById('adminExtraBlockHours')?.value || adminSettings.extraBlockHours);
-    adminSettings.extraBlockBonus = parseFloat(document.getElementById('adminExtraBlockBonus')?.value || adminSettings.extraBlockBonus);
     
     adminSettings.straveneBonus.amount = parseFloat(document.getElementById('straveneAmount')?.value || adminSettings.straveneBonus.amount);
     adminSettings.straveneBonus.enabled = document.getElementById('straveneEnabled')?.checked || false;
-    adminSettings.attendanceBonus.amount = parseFloat(document.getElementById('attendanceAmount')?.value || adminSettings.attendanceBonus.amount);
-    adminSettings.attendanceBonus.enabled = document.getElementById('attendanceEnabled')?.checked || false;
-    adminSettings.monthlyEvalBonus.amount = parseFloat(document.getElementById('monthlyEvalAmount')?.value || adminSettings.monthlyEvalBonus.amount);
-    adminSettings.monthlyEvalBonus.enabled = document.getElementById('monthlyEvalEnabled')?.checked || false;
-    adminSettings.doplatokBonus.amount = parseFloat(document.getElementById('doplatokAmount')?.value || adminSettings.doplatokBonus.amount);
-    adminSettings.doplatokBonus.enabled = document.getElementById('doplatokEnabled')?.checked || false;
+    adminSettings.extraBlockBonus.amount = parseFloat(document.getElementById('extraBlockBonusAmount')?.value || adminSettings.extraBlockBonus.amount);
+    adminSettings.extraBlockBonus.enabled = document.getElementById('extraBlockBonusEnabled')?.checked || false;
+    
     adminSettings.productivityBonus.enabled = document.getElementById('productivityEnabled')?.checked || false;
     adminSettings.productivityBonus.fullMonth = parseFloat(document.getElementById('prodFullMonth')?.value || adminSettings.productivityBonus.fullMonth);
     adminSettings.productivityBonus.partialMonth = parseFloat(document.getElementById('prodPartialMonth')?.value || adminSettings.productivityBonus.partialMonth);
@@ -695,11 +655,8 @@ export function resetAdminSettings() {
             sundayPercent: 100,
             extraBlockHours: 3.5,
             extraBlockPaidHours: 7.5,
-            extraBlockBonus: 25,
             straveneBonus: { enabled: true, amount: 4.34 },
-            attendanceBonus: { enabled: true, amount: 10 },
-            monthlyEvalBonus: { enabled: true, amount: 8 },
-            doplatokBonus: { enabled: true, amount: 28.75 },
+            extraBlockBonus: { enabled: true, amount: 25 },
             productivityBonus: { enabled: true, fullMonth: 20, partialMonth: 15, lowMonth: 10 },
             healthRate: 0.04,
             socialRate: 0.04,
@@ -738,7 +695,7 @@ export function addAdminButton() {
     }
 }
 
-// Глобальные функции для вызова из HTML
+// Глобальные функции
 window.openAdminPanel = openAdminPanel;
 window.closeAdminPanel = closeAdminPanel;
 window.applyAdminSettingsAndClose = applyAdminSettingsAndClose;
