@@ -155,3 +155,46 @@ export function calculateYearlyStats(records, year, settings) {
     
     return { totalGross, totalHours, totalLunch, monthTotals };
 }
+
+// Добавьте эту функцию в salary.js
+
+export function calculateProductivityBonusForMonth(records, month, year, hourlyRate) {
+    // Считаем обычные рабочие дни (не суббота, не воскресенье, не переработка)
+    const regularWorkDays = records.filter(r => {
+        const d = new Date(r.date);
+        const dayOfWeek = d.getDay();
+        return d.getMonth() === month && 
+               d.getFullYear() === year && 
+               r.type !== 'off' && 
+               r.type !== 'sick' && 
+               r.type !== 'vacation' &&
+               r.type !== 'doctor' &&
+               dayOfWeek !== 6 && dayOfWeek !== 0 && // не суббота и не воскресенье
+               r.type !== 'sat' && r.type !== 'sun' &&
+               r.type !== 'overtime';
+    });
+    
+    const workDaysCount = regularWorkDays.length;
+    const totalMonthDays = new Date(year, month + 1, 0).getDate();
+    const missedDays = totalMonthDays - workDaysCount;
+    
+    // Получаем настройки из админки
+    let adminSettings = {};
+    try {
+        const saved = localStorage.getItem('adminSalarySettings');
+        if (saved) adminSettings = JSON.parse(saved);
+    } catch(e) {}
+    
+    let percent = adminSettings.productivityBonus?.fullMonth || 20;
+    if (missedDays >= 5) {
+        percent = adminSettings.productivityBonus?.lowMonth || 10;
+    } else if (missedDays > 0) {
+        percent = adminSettings.productivityBonus?.partialMonth || 15;
+    }
+    
+    // Считаем обычные часы
+    const regularHours = regularWorkDays.reduce((sum, r) => sum + (r.hours || 7.5), 0);
+    const bonusAmount = regularHours * hourlyRate * (percent / 100);
+    
+    return { bonusAmount, percent, workDaysCount, missedDays };
+}
