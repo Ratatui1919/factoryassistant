@@ -1,4 +1,4 @@
-// modules/translations.js - Система переводов
+// modules/translations.js
 
 const translations = {
     ru: {
@@ -11,7 +11,6 @@ const translations = {
         register: "Регистрация",
         email: "Email",
         password: "Пароль",
-        confirmPassword: "Подтвердите пароль",
         rememberMe: "Запомнить меня",
         loginBtn: "Войти",
         registerBtn: "Зарегистрироваться",
@@ -40,7 +39,6 @@ const translations = {
         fri: "Пт",
         sat: "Сб",
         sun: "Вс",
-        selectDayType: "Выберите тип дня",
         work: "Смена",
         nightShift: "Ночная",
         saturday: "Суббота",
@@ -281,34 +279,29 @@ const translations = {
     }
 };
 
-let currentLanguage = localStorage.getItem('language') || 'ru';
+let currentLang = localStorage.getItem('language') || 'ru';
 
-// Глобальные функции для доступа из HTML
-window.getTranslation = function(key) {
-    return translations[currentLanguage]?.[key] || translations.ru[key] || key;
-};
+function t(key) {
+    return translations[currentLang]?.[key] || translations.ru[key] || key;
+}
 
-window.setLanguage = function(lang) {
+function setLanguage(lang) {
     if (translations[lang]) {
-        currentLanguage = lang;
+        currentLang = lang;
         localStorage.setItem('language', lang);
-        updateAllTranslations();
+        updateUI();
     }
-};
+}
 
-window.getCurrentLanguage = function() {
-    return currentLanguage;
-};
-
-function updateAllTranslations() {
+function updateUI() {
     document.querySelectorAll('[data-lang]').forEach(el => {
         const key = el.getAttribute('data-lang');
-        const translation = window.getTranslation(key);
+        const translation = t(key);
         if (translation) {
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                 const placeholderKey = el.getAttribute('data-lang-placeholder');
                 if (placeholderKey) {
-                    el.placeholder = window.getTranslation(placeholderKey);
+                    el.placeholder = t(placeholderKey);
                 } else {
                     el.value = translation;
                 }
@@ -320,16 +313,17 @@ function updateAllTranslations() {
     
     document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
         const key = el.getAttribute('data-lang-placeholder');
-        const translation = window.getTranslation(key);
+        const translation = t(key);
         if (translation && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
             el.placeholder = translation;
         }
     });
-    
-    const event = new CustomEvent('languageChanged', { detail: { language: currentLanguage } });
-    document.dispatchEvent(event);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    updateAllTranslations();
+    updateUI();
 });
+
+// Глобальные функции
+window.t = t;
+window.setLanguage = setLanguage;
