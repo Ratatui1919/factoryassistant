@@ -1,357 +1,765 @@
-// modules/translations.js - Система переводов
-
-const translations = {
-    ru: {
-        // Навигация
-        dashboard: "Дашборд",
-        calendar: "Календарь",
-        stats: "Статистика",
-        profile: "Профиль",
-        finance: "Финансы",
-        taxCalculator: "Налоги 2026",
-        
-        // Авторизация
-        login: "Вход",
-        register: "Регистрация",
-        email: "Email",
-        password: "Пароль",
-        confirmPassword: "Подтвердите пароль",
-        rememberMe: "Запомнить меня",
-        loginBtn: "Войти",
-        registerBtn: "Зарегистрироваться",
-        
-        // Дашборд
-        netSalary: "Чистая зарплата",
-        grossSalary: "Грязная",
-        hours: "Часов",
-        lunches: "Обеды",
-        overtime: "Переработки",
-        extraBlocks: "Надчасы",
-        saturdays: "Субботы",
-        doctorVisits: "Перепустки",
-        exchangeRate: "Курс евро",
-        update: "Обновить",
-        enterEuro: "Введите сумму в евро",
-        resultUAH: "Результат в гривнах",
-        lastUpdate: "Последнее обновление",
-        weekendsThisMonth: "Выходные в этом месяце",
-        accruedWeekends: "Накоплено выходных",
-        doctorLeft: "Перепустки осталось",
-        accompanyLeft: "Сопровождение",
-        monthlyIncome: "Доход по месяцам",
-        
-        // Календарь
-        mon: "Пн",
-        tue: "Вт",
-        wed: "Ср",
-        thu: "Чт",
-        fri: "Пт",
-        sat: "Сб",
-        sun: "Вс",
-        selectDayType: "Выберите тип дня",
-        work: "Смена",
-        nightShift: "Ночная",
-        saturday: "Суббота",
-        sunday: "Воскресенье",
-        sick: "Больничный",
-        vacation: "Отпуск",
-        doctor: "Перепустка",
-        dayOff: "Выходной",
-        cancel: "Отмена",
-        
-        // Статистика
-        totalStats: "Общая статистика",
-        calculate: "Рассчитать",
-        totalEarned: "Всего заработано",
-        totalHours: "Всего часов",
-        totalLunch: "Потрачено на обеды",
-        bestMonth: "Лучший месяц",
-        exportToExcel: "Экспорт в Excel",
-        exportToPDF: "Экспорт в PDF",
-        
-        // Профиль
-        employee: "Сотрудник завода",
-        personalData: "Личные данные",
-        fullName: "Полное имя",
-        employeeId: "Табельный номер",
-        cardId: "Номер карты",
-        salarySettings: "Настройки зарплаты",
-        hourlyRate: "Базовая ставка (€/час)",
-        lunchCost: "Стоимость обеда (€/день)",
-        nightBonus: "Ночная доплата (%)",
-        saturdayBonus: "Коэф. субботы",
-        sundayBonus: "Коэф. воскресенья",
-        extraBonus: "Бонус за надчас (€)",
-        vacations: "Отпуска и перепустки",
-        accruedWeekendsLabel: "Накоплено выходных",
-        usedWeekends: "Использовано выходных",
-        personalDoctor: "Перепустки (личные)",
-        usedPersonalDoctor: "Использовано личных",
-        accompanyDoctor: "Перепустки (сопровождение)",
-        usedAccompanyDoctor: "Использовано сопровождения",
-        weatherEffects: "Погодные эффекты",
-        enableWeatherEffects: "Включить снег/дождь на фоне",
-        weatherMode: "Режим",
-        auto: "авто (по погоде)",
-        snow: "❄️ только снег",
-        rain: "🌧️ только дождь",
-        off: "выключено",
-        theme: "Тема оформления",
-        dark: "🌑 Тёмная",
-        light: "☀️ Светлая",
-        blue: "🔵 Синяя",
-        purple: "🟣 Фиолетовая",
-        orange: "🟠 Оранжевая",
-        red: "🔴 Красная",
-        green: "🟢 Зелёная",
-        pink: "🌸 Розовая",
-        mint: "🌿 Мятная",
-        gray: "⚪ Серая",
-        saveChanges: "Сохранить изменения",
-        export: "Экспорт данных",
-        
-        // Финансы
-        financeAnalytics: "Финансовая аналитика",
-        currentMonth: "Текущий месяц",
-        netIncome: "Чистый доход",
-        taxes: "Налоги",
-        savings: "Сбережения (10%)",
-        gross: "Брутто",
-        goal: "Моя финансовая цель",
-        goalName: "Название цели",
-        goalAmount: "Сумма цели (€)",
-        saveGoal: "Сохранить цель",
-        goalSaved: "Накоплено",
-        goalTarget: "Цель",
-        goalRemaining: "Осталось",
-        add: "Добавить",
-        withdraw: "Снять",
-        history: "Последние операции",
-        deleteGoal: "Удалить цель",
-        financialTip: "Финансовый совет",
-        importPDF: "Импорт из PDF",
-        uploadPDF: "Загрузите PDF с зарплатой",
-        chooseFile: "Выберите файл",
-        
-        // Общее
-        factoryPro: "FACTORY PRO",
-        cancel: "Отмена"
-    },
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Vaillant • Factory Assistant</title>
     
-    sk: {
-        dashboard: "Panel",
-        calendar: "Kalendár",
-        stats: "Štatistiky",
-        profile: "Profil",
-        finance: "Financie",
-        taxCalculator: "Dane 2026",
-        login: "Prihlásenie",
-        register: "Registrácia",
-        netSalary: "Čistá mzda",
-        grossSalary: "Hrubá",
-        hours: "Hodín",
-        lunches: "Obed",
-        overtime: "Nadčasy",
-        extraBlocks: "Nadhodiny",
-        saturdays: "Soboty",
-        doctorVisits: "Prevoľno",
-        exchangeRate: "Kurz eura",
-        update: "Aktualizovať",
-        monthlyIncome: "Príjem podľa mesiacov",
-        mon: "Po",
-        tue: "Ut",
-        wed: "St",
-        thu: "Št",
-        fri: "Pi",
-        sat: "So",
-        sun: "Ne",
-        work: "Zmena",
-        nightShift: "Nočná",
-        saturday: "Sobota",
-        sunday: "Nedeľa",
-        sick: "Choroba",
-        vacation: "Dovolenka",
-        doctor: "Prevoľno",
-        dayOff: "Voľno",
-        totalEarned: "Celkový zárobok",
-        totalHours: "Celkom hodín",
-        totalLunch: "Obed",
-        bestMonth: "Najlepší mesiac",
-        exportToExcel: "Export do Excelu",
-        exportToPDF: "Export do PDF",
-        employee: "Zamestnanec",
-        hourlyRate: "Základná sadzba (€/hod)",
-        nightBonus: "Nočný príplatok (%)",
-        saturdayBonus: "Koef. sobota",
-        sundayBonus: "Koef. nedeľa",
-        extraBonus: "Bonus za nadhodinu (€)",
-        saveChanges: "Uložiť zmeny",
-        goal: "Môj finančný cieľ",
-        saveGoal: "Uložiť cieľ",
-        gross: "Brutto",
-        cancel: "Zrušiť"
-    },
+    <!-- Фавикон -->
+    <link rel="icon" type="image/png" href="assets/vaillant-logo.png">
     
-    en: {
-        dashboard: "Dashboard",
-        calendar: "Calendar",
-        stats: "Statistics",
-        profile: "Profile",
-        finance: "Finance",
-        taxCalculator: "Tax 2026",
-        login: "Login",
-        register: "Register",
-        netSalary: "Net salary",
-        grossSalary: "Gross",
-        hours: "Hours",
-        lunches: "Lunches",
-        overtime: "Overtime",
-        extraBlocks: "Extra hours",
-        saturdays: "Saturdays",
-        doctorVisits: "Sick days",
-        exchangeRate: "Euro rate",
-        update: "Update",
-        monthlyIncome: "Monthly income",
-        mon: "Mo",
-        tue: "Tu",
-        wed: "We",
-        thu: "Th",
-        fri: "Fr",
-        sat: "Sa",
-        sun: "Su",
-        work: "Work",
-        nightShift: "Night",
-        saturday: "Saturday",
-        sunday: "Sunday",
-        sick: "Sick",
-        vacation: "Vacation",
-        doctor: "Doctor",
-        dayOff: "Day off",
-        totalEarned: "Total earned",
-        totalHours: "Total hours",
-        totalLunch: "Lunch cost",
-        bestMonth: "Best month",
-        exportToExcel: "Export to Excel",
-        exportToPDF: "Export to PDF",
-        employee: "Employee",
-        hourlyRate: "Base rate (€/hour)",
-        nightBonus: "Night bonus (%)",
-        saturdayBonus: "Saturday coeff",
-        sundayBonus: "Sunday coeff",
-        extraBonus: "Extra bonus (€)",
-        saveChanges: "Save changes",
-        goal: "My financial goal",
-        saveGoal: "Save goal",
-        gross: "Gross",
-        cancel: "Cancel"
-    },
+    <!-- Open Graph -->
+    <meta property="og:title" content="Vaillant Factory Assistant" />
+    <meta property="og:description" content="Мой личный помощник для учёта смен, зарплаты и финансов на заводе Vaillant." />
+    <meta property="og:image" content="https://raw.githubusercontent.com/Ratatui1919/factoryassistant/main/assets/vaillant-logo.png" />
+    <meta property="og:url" content="https://ratatui1919.github.io/factoryassistant/" />
+    <meta property="og:type" content="website" />
     
-    uk: {
-        dashboard: "Дашборд",
-        calendar: "Календар",
-        stats: "Статистика",
-        profile: "Профіль",
-        finance: "Фінанси",
-        taxCalculator: "Податки 2026",
-        login: "Вхід",
-        register: "Реєстрація",
-        netSalary: "Чиста зарплата",
-        grossSalary: "Брудна",
-        hours: "Годин",
-        lunches: "Обіди",
-        overtime: "Переробки",
-        extraBlocks: "Надгодини",
-        saturdays: "Суботи",
-        doctorVisits: "Перепустки",
-        exchangeRate: "Курс євро",
-        update: "Оновити",
-        monthlyIncome: "Дохід по місяцях",
-        mon: "Пн",
-        tue: "Вт",
-        wed: "Ср",
-        thu: "Чт",
-        fri: "Пт",
-        sat: "Сб",
-        sun: "Нд",
-        work: "Зміна",
-        nightShift: "Нічна",
-        saturday: "Субота",
-        sunday: "Неділя",
-        sick: "Лікарняний",
-        vacation: "Відпустка",
-        doctor: "Перепустка",
-        dayOff: "Вихідний",
-        totalEarned: "Всього зароблено",
-        totalHours: "Всього годин",
-        totalLunch: "Обіди",
-        bestMonth: "Кращий місяць",
-        exportToExcel: "Експорт в Excel",
-        exportToPDF: "Експорт в PDF",
-        employee: "Співробітник",
-        hourlyRate: "Базова ставка (€/год)",
-        nightBonus: "Нічна доплата (%)",
-        saturdayBonus: "Коеф. суботи",
-        sundayBonus: "Коеф. неділі",
-        extraBonus: "Бонус за надгодину (€)",
-        saveChanges: "Зберегти зміни",
-        goal: "Моя фінансова мета",
-        saveGoal: "Зберегти мету",
-        gross: "Брутто",
-        cancel: "Скасувати"
-    }
-};
-
-let currentLanguage = localStorage.getItem('language') || 'ru';
-
-export function getTranslation(key) {
-    return translations[currentLanguage]?.[key] || translations.ru[key] || key;
-}
-
-export function setLanguage(lang) {
-    if (translations[lang]) {
-        currentLanguage = lang;
-        localStorage.setItem('language', lang);
-        updateAllTranslations();
-    }
-}
-
-export function getCurrentLanguage() {
-    return currentLanguage;
-}
-
-function updateAllTranslations() {
-    document.querySelectorAll('[data-lang]').forEach(el => {
-        const key = el.getAttribute('data-lang');
-        const translation = getTranslation(key);
-        if (translation) {
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                const placeholderKey = el.getAttribute('data-lang-placeholder');
-                if (placeholderKey) {
-                    el.placeholder = getTranslation(placeholderKey);
-                } else {
-                    el.value = translation;
-                }
-            } else {
-                el.innerHTML = translation;
-            }
-        }
-    });
+    <!-- Font Awesome и Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-lang-placeholder');
-        const translation = getTranslation(key);
-        if (translation && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
-            el.placeholder = translation;
-        }
-    });
+    <!-- Библиотеки -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
-    const event = new CustomEvent('languageChanged', { detail: { language: currentLanguage } });
-    document.dispatchEvent(event);
-}
+    <!-- Основные стили -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Мобильные стили -->
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+    <!-- Прелоадер -->
+    <div id="preloader">
+        <div class="loader">
+            <div class="loader-spinner"></div>
+            <img src="assets/vaillant-logo.png" alt="Vaillant">
+            <h2 style="color: var(--primary, #00b060);">Vaillant Assistant</h2>
+            <p style="color: var(--text-muted, #a0a8b8);" id="loadingStatus">Загрузка...</p>
+        </div>
+    </div>
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateAllTranslations();
-});
+    <!-- Модалка авторизации -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-card">
+            <div class="auth-logo">
+                <img src="assets/vaillant-logo.png" alt="Vaillant">
+                <h2>Vaillant<span>Assistant</span></h2>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="window.showLoginForm()"><span data-lang="login">Вход</span></button>
+                <button class="auth-tab" onclick="window.showRegisterForm()"><span data-lang="register">Регистрация</span></button>
+            </div>
+            
+            <div id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" data-lang-placeholder="email" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPass" data-lang-placeholder="password" placeholder="Пароль">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe" data-lang="rememberMe">Запомнить меня</label>
+                </div>
+                <button class="btn-primary" onclick="window.login()"><span data-lang="loginBtn">Войти</span></button>
+            </div>
+            
+            <div id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" data-lang-placeholder="email" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPass" data-lang-placeholder="password" placeholder="Пароль">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-check-circle"></i>
+                    <input type="password" id="regConfirm" data-lang-placeholder="confirmPassword" placeholder="Подтвердите пароль">
+                </div>
+                <button class="btn-primary" onclick="window.register()"><span data-lang="registerBtn">Зарегистрироваться</span></button>
+            </div>
+        </div>
+    </div>
 
-window.setLanguage = setLanguage;
-window.getTranslation = getTranslation;
+    <!-- Основное приложение -->
+    <div id="app" class="hidden">
+        <header>
+            <div class="header-left">
+                <div class="logo">
+                    <img src="assets/vaillant-logo.png" alt="Vaillant">
+                    <h1>Assistant</h1>
+                </div>
+                <div class="header-badge pulse"><span data-lang="factoryPro">FACTORY PRO</span></div>
+                <div class="language-selector">
+                    <button class="lang-btn" data-lang="ru" onclick="window.setLanguage('ru')">RU</button>
+                    <button class="lang-btn" data-lang="sk" onclick="window.setLanguage('sk')">SK</button>
+                    <button class="lang-btn" data-lang="en" onclick="window.setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="uk" onclick="window.setLanguage('uk')">UA</button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-widget">
+                    <div class="widget-time">
+                        <span class="time" id="time"></span>
+                    </div>
+                    <div class="widget-date-weather">
+                        <span class="date" id="date"></span>
+                        <span class="weather">
+                            <i class="fas fa-cloud-sun"></i>
+                            <span id="weatherTemp">--°C</span>
+                            <span class="weather-location">Trenčín</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <img id="avatarPreview" src="" alt="avatar">
+                    <span id="userName">Guest</span>
+                </div>
+                <button class="logout-btn" onclick="window.logout()" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+                
+                <div class="mobile-menu-toggle" onclick="window.toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Навигация -->
+        <nav id="mainNav">
+            <button class="nav-btn" data-view="dashboard" onclick="window.setView('dashboard')">
+                <i class="fas fa-chart-pie"></i><span data-lang="dashboard">Дашборд</span>
+            </button>
+            <button class="nav-btn" data-view="calendar" onclick="window.setView('calendar')">
+                <i class="fas fa-calendar-alt"></i><span data-lang="calendar">Календарь</span>
+            </button>
+            <button class="nav-btn" data-view="stats" onclick="window.setView('stats')">
+                <i class="fas fa-chart-line"></i><span data-lang="stats">Статистика</span>
+            </button>
+            <button class="nav-btn" data-view="profile" onclick="window.setView('profile')">
+                <i class="fas fa-user-cog"></i><span data-lang="profile">Профиль</span>
+            </button>
+            <button class="nav-btn" data-view="finance" onclick="window.setView('finance')">
+                <i class="fas fa-coins"></i><span data-lang="finance">Финансы</span>
+            </button>
+        </nav>
+
+        <main>
+            <!-- ДАШБОРД -->
+            <section id="dashboard" class="view active">
+                <div class="month-selector glass-effect">
+                    <button type="button" onclick="window.safeChangeMonth(-1); return false;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 id="currentMonth"></h2>
+                    <button type="button" onclick="window.safeChangeMonth(1); return false;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card glass-effect">
+                        <div class="kpi-icon"><i class="fas fa-euro-sign"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="netSalary">Чистая зарплата</span>
+                            <span class="kpi-value" id="net">0 €</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect">
+                        <div class="kpi-icon"><i class="fas fa-coins"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="grossSalary">Грязная</span>
+                            <span class="kpi-value" id="gross">0 €</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect">
+                        <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="hours">Часов</span>
+                            <span class="kpi-value" id="hoursWorked">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect">
+                        <div class="kpi-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="lunches">Обеды</span>
+                            <span class="kpi-value" id="lunchCost">0 €</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect warning">
+                        <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="overtime">Переработки</span>
+                            <span class="kpi-value" id="overtimeHours">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect success">
+                        <div class="kpi-icon"><i class="fas fa-plus-circle"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="extraBlocks">Надчасы</span>
+                            <span class="kpi-value" id="extraCount">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect">
+                        <div class="kpi-icon"><i class="fas fa-calendar-day"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="saturdays">Субботы</span>
+                            <span class="kpi-value" id="satCount">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-effect">
+                        <div class="kpi-icon"><i class="fas fa-stethoscope"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label" data-lang="doctorVisits">Перепустки</span>
+                            <span class="kpi-value" id="doctorCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Курс валют -->
+                <div class="exchange-rate-card glass-effect">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-chart-line" style="color: var(--primary); font-size: 1.3rem;"></i>
+                            <span style="font-weight: 600; font-size: 1.1rem;" data-lang="exchangeRate">Курс евро</span>
+                        </div>
+                        <button class="btn-primary" onclick="window.updateExchangeRate()" id="updateRateBtn" style="padding: 8px 20px; font-size: 0.9rem;">
+                            <i class="fas fa-sync-alt"></i> <span data-lang="update">Обновить</span>
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 15px 0; padding: 15px; background: rgba(0,176,96,0.05); border-radius: 50px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-euro-sign" style="color: #00b060; font-size: 1.5rem;"></i>
+                            <span style="font-weight: 700; font-size: 1.8rem; color: var(--primary);">1</span>
+                        </div>
+                        <i class="fas fa-equals" style="color: var(--text-muted); font-size: 1.2rem;"></i>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-hryvnia" style="color: #ffd700; font-size: 1.5rem;"></i>
+                            <span class="currency-value" style="font-weight: 700; font-size: 1.8rem; color: var(--primary);" id="currentRate">42.50</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="enterEuro">Введите сумму в евро</label>
+                            <div style="display: flex; align-items: center; background: var(--dark); border-radius: 12px; border: 1px solid var(--border); padding: 5px;">
+                                <i class="fas fa-euro-sign" style="color: var(--text-muted); margin-left: 10px;"></i>
+                                <input type="number" id="euroInput" value="100" min="0" step="1" style="flex: 1; background: transparent; border: none; padding: 12px; color: var(--text); font-size: 1rem; outline: none;">
+                            </div>
+                        </div>
+                        <i class="fas fa-arrow-right" style="color: var(--primary); font-size: 1.5rem;"></i>
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;" data-lang="resultUAH">Результат в гривнах</label>
+                            <div style="display: flex; align-items: center; background: var(--dark); border-radius: 12px; border: 1px solid var(--border); padding: 5px;">
+                                <i class="fas fa-hryvnia" style="color: #ffd700; margin-left: 10px;"></i>
+                                <span id="uahResult" style="flex: 1; padding: 12px; color: var(--primary); font-size: 1.2rem; font-weight: 600;">4250</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="last-update" style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                        <i class="fas fa-clock"></i> <span data-lang="lastUpdate">Последнее обновление</span>: <span id="lastUpdateTime">--:--</span>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-box glass-effect">
+                        <i class="fas fa-calendar-week"></i>
+                        <div>
+                            <span class="stat-label" data-lang="weekendsThisMonth">Выходные в этом месяце</span>
+                            <span class="stat-value" id="weekendsThisMonth">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-box glass-effect">
+                        <i class="fas fa-umbrella-beach"></i>
+                        <div>
+                            <span class="stat-label" data-lang="accruedWeekends">Накоплено выходных</span>
+                            <span class="stat-value" id="accruedWeekends">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-box glass-effect">
+                        <i class="fas fa-stethoscope"></i>
+                        <div>
+                            <span class="stat-label" data-lang="doctorLeft">Перепустки осталось</span>
+                            <span class="stat-value" id="doctorLeft">7/7</span>
+                        </div>
+                    </div>
+                    <div class="stat-box glass-effect">
+                        <i class="fas fa-user-friends"></i>
+                        <div>
+                            <span class="stat-label" data-lang="accompanyLeft">Сопровождение</span>
+                            <span class="stat-value" id="accompanyLeft">6/6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-effect">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> <span data-lang="monthlyIncome">Доход по месяцам</span></h3>
+                    </div>
+                    <canvas id="yearChart" style="width:100%; height:300px;"></canvas>
+                </div>
+            </section>
+
+            <!-- КАЛЕНДАРЬ -->
+            <section id="calendar" class="view">
+                <div class="month-selector glass-effect">
+                    <button type="button" onclick="window.safeChangeMonth(-1); return false;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 id="calendarMonth"></h2>
+                    <button type="button" onclick="window.safeChangeMonth(1); return false;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="calendar-weekdays">
+                    <span data-lang="mon">Пн</span>
+                    <span data-lang="tue">Вт</span>
+                    <span data-lang="wed">Ср</span>
+                    <span data-lang="thu">Чт</span>
+                    <span data-lang="fri">Пт</span>
+                    <span data-lang="sat">Сб</span>
+                    <span data-lang="sun">Вс</span>
+                </div>
+                
+                <div class="calendar-grid" id="calendarGrid"></div>
+                
+                <div class="calendar-legend glass-effect"></div>
+            </section>
+
+            <!-- СТАТИСТИКА -->
+            <section id="stats" class="view">
+                <div class="stats-header">
+                    <h2><i class="fas fa-chart-simple"></i> <span data-lang="totalStats">Общая статистика</span></h2>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="yearSelectStats" class="glass-effect" style="min-width: 120px;">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                        <button class="btn-primary" onclick="window.calculateYearStats()" style="padding: 10px 20px;">
+                            <i class="fas fa-calculator"></i> <span data-lang="calculate">Рассчитать</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stats-card glass-effect">
+                        <i class="fas fa-coins"></i>
+                        <div>
+                            <span class="stats-label" data-lang="totalEarned">Всего заработано</span>
+                            <span class="stats-value" id="totalEarned">0 €</span>
+                        </div>
+                    </div>
+                    <div class="stats-card glass-effect">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="stats-label" data-lang="totalHours">Всего часов</span>
+                            <span class="stats-value" id="totalHours">0</span>
+                        </div>
+                    </div>
+                    <div class="stats-card glass-effect">
+                        <i class="fas fa-utensils"></i>
+                        <div>
+                            <span class="stats-label" data-lang="totalLunch">Потрачено на обеды</span>
+                            <span class="stats-value" id="totalLunch">0 €</span>
+                        </div>
+                    </div>
+                    <div class="stats-card glass-effect">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <span class="stats-label" data-lang="bestMonth">Лучший месяц</span>
+                            <span class="stats-value" id="bestMonth">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container glass-effect">
+                    <h3><i class="fas fa-chart-bar"></i> <span data-lang="monthlyIncome">Доход по месяцам</span></h3>
+                    <canvas id="statsChart" style="width:100%; height:300px;"></canvas>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn-secondary" onclick="window.exportToExcel()">
+                        <i class="fas fa-file-excel"></i> <span data-lang="exportToExcel">Экспорт в Excel</span>
+                    </button>
+                    <button class="btn-secondary" onclick="window.exportToPDF()">
+                        <i class="fas fa-file-pdf"></i> <span data-lang="exportToPDF">Экспорт в PDF</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ПРОФИЛЬ -->
+            <section id="profile" class="view">
+                <div class="profile-container">
+                    <div class="profile-header glass-effect">
+                        <div class="profile-avatar">
+                            <img id="profileAvatar" src="" alt="avatar">
+                            <label for="avatarUpload" class="avatar-upload"><i class="fas fa-camera"></i></label>
+                            <input type="file" id="avatarUpload" accept="image/*" hidden onchange="window.previewAvatar(this)">
+                        </div>
+                        <div class="profile-title">
+                            <h2 id="profileName"></h2>
+                            <p data-lang="employee">Сотрудник завода</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-grid">
+                        <div class="profile-card glass-effect">
+                            <h3><i class="fas fa-id-card"></i> <span data-lang="personalData">Личные данные</span></h3>
+                            <div class="profile-field">
+                                <label data-lang="fullName">Полное имя</label>
+                                <input type="text" id="fullName">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="employeeId">Табельный номер</label>
+                                <input type="text" id="employeeId">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="cardId">Номер карты</label>
+                                <input type="text" id="cardId">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="email">Email</label>
+                                <input type="email" id="email">
+                            </div>
+                        </div>
+                        
+                        <div class="profile-card glass-effect">
+                            <h3><i class="fas fa-cog"></i> <span data-lang="salarySettings">Настройки зарплаты</span></h3>
+                            <div class="profile-field">
+                                <label data-lang="hourlyRate">Базовая ставка (€/час)</label>
+                                <input type="number" id="hourlyRate" value="6.10" step="0.01">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="lunchCost">Стоимость обеда (€/день)</label>
+                                <input type="number" id="lunchCost" value="1.31" step="0.01">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="nightBonus">Ночная доплата (%)</label>
+                                <input type="number" id="nightBonus" value="20" step="1">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="saturdayBonus">Коэф. субботы</label>
+                                <input type="number" id="saturdayBonus" value="1.5" step="0.1">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="sundayBonus">Коэф. воскресенья</label>
+                                <input type="number" id="sundayBonus" value="2.0" step="0.1">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="extraBonus">Бонус за надчас (€)</label>
+                                <input type="number" id="extraBonus" value="25" step="1">
+                            </div>
+                        </div>
+                        
+                        <div class="profile-card glass-effect">
+                            <h3><i class="fas fa-calendar-alt"></i> <span data-lang="vacations">Отпуска и перепустки</span></h3>
+                            <div class="profile-field">
+                                <label data-lang="accruedWeekendsLabel">Накоплено выходных</label>
+                                <input type="number" id="accruedWeekendsInput" value="0" min="0" step="1">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="usedWeekends">Использовано выходных</label>
+                                <input type="number" id="usedWeekends" value="0" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="personalDoctor">Перепустки (личные)</label>
+                                <input type="number" id="personalDoctorDays" value="7" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="usedPersonalDoctor">Использовано личных</label>
+                                <input type="number" id="usedPersonalDoctor" value="0" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="accompanyDoctor">Перепустки (сопровождение)</label>
+                                <input type="number" id="accompanyDoctorDays" value="6" min="0">
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="usedAccompanyDoctor">Использовано сопровождения</label>
+                                <input type="number" id="usedAccompanyDoctor" value="0" min="0">
+                            </div>
+                        </div>
+                        
+                        <div class="profile-card glass-effect">
+                            <h3><i class="fas fa-cloud-sun"></i> <span data-lang="weatherEffects">Погодные эффекты</span></h3>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="weatherEffectsEnabled" onchange="window.toggleWeatherEffect()">
+                                <label for="weatherEffectsEnabled" data-lang="enableWeatherEffects">Включить снег/дождь на фоне</label>
+                            </div>
+                            <div class="profile-field">
+                                <label data-lang="weatherMode">Режим</label>
+                                <select id="weatherEffectMode" onchange="window.toggleWeatherEffect()">
+                                    <option value="auto" data-lang="auto">авто (по погоде)</option>
+                                    <option value="snow" data-lang="snow">❄️ только снег</option>
+                                    <option value="rain" data-lang="rain">🌧️ только дождь</option>
+                                    <option value="off" data-lang="off">выключено</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-card glass-effect">
+                            <h3><i class="fas fa-palette"></i> <span data-lang="theme">Тема оформления</span></h3>
+                            <div class="theme-selector">
+                                <button class="theme-btn" data-theme="dark" onclick="window.setTheme('dark')"><span data-lang="dark">🌑 Тёмная</span></button>
+                                <button class="theme-btn" data-theme="light" onclick="window.setTheme('light')"><span data-lang="light">☀️ Светлая</span></button>
+                                <button class="theme-btn" data-theme="blue" onclick="window.setTheme('blue')"><span data-lang="blue">🔵 Синяя</span></button>
+                                <button class="theme-btn" data-theme="purple" onclick="window.setTheme('purple')"><span data-lang="purple">🟣 Фиолетовая</span></button>
+                                <button class="theme-btn" data-theme="orange" onclick="window.setTheme('orange')"><span data-lang="orange">🟠 Оранжевая</span></button>
+                                <button class="theme-btn" data-theme="red" onclick="window.setTheme('red')"><span data-lang="red">🔴 Красная</span></button>
+                                <button class="theme-btn" data-theme="green" onclick="window.setTheme('green')"><span data-lang="green">🟢 Зелёная</span></button>
+                                <button class="theme-btn" data-theme="pink" onclick="window.setTheme('pink')"><span data-lang="pink">🌸 Розовая</span></button>
+                                <button class="theme-btn" data-theme="mint" onclick="window.setTheme('mint')"><span data-lang="mint">🌿 Мятная</span></button>
+                                <button class="theme-btn" data-theme="gray" onclick="window.setTheme('gray')"><span data-lang="gray">⚪ Серая</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn-primary" onclick="window.saveProfile()">
+                            <i class="fas fa-save"></i> <span data-lang="saveChanges">Сохранить изменения</span>
+                        </button>
+                        <button class="btn-secondary" onclick="window.exportData()">
+                            <i class="fas fa-download"></i> <span data-lang="export">Экспорт данных</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ФИНАНСЫ -->
+            <section id="finance" class="view">
+                <div class="finance-container">
+                    <h2><i class="fas fa-chart-pie"></i> <span data-lang="financeAnalytics">Финансовая аналитика</span></h2>
+                    
+                    <div class="finance-month-info glass-effect">
+                        <h3><i class="fas fa-calendar-alt"></i> <span data-lang="currentMonth">Текущий месяц</span>: <span id="financeMonth"></span></h3>
+                    </div>
+                    
+                    <div class="pie-chart-container">
+                        <canvas id="pieChart" width="300" height="300" style="width:100%; height:100%;"></canvas>
+                        <div class="pie-total" id="pieTotal">0 €</div>
+                    </div>
+                    
+                    <div class="finance-details glass-effect">
+                        <div class="finance-item">
+                            <span class="finance-label"><i class="fas fa-euro-sign" style="color:#00b060;"></i> <span data-lang="netIncome">Чистый доход</span></span>
+                            <span class="finance-value positive" id="financeNet">0 €</span>
+                        </div>
+                        <div class="finance-item">
+                            <span class="finance-label"><i class="fas fa-percent" style="color:#f59e0b;"></i> <span data-lang="taxes">Налоги</span></span>
+                            <span class="finance-value" id="financeTax">0 €</span>
+                        </div>
+                        <div class="finance-item">
+                            <span class="finance-label"><i class="fas fa-utensils" style="color:#ef4444;"></i> <span data-lang="lunches">Обеды</span></span>
+                            <span class="finance-value" id="financeLunch">0 €</span>
+                        </div>
+                        <div class="finance-item">
+                            <span class="finance-label"><i class="fas fa-piggy-bank" style="color:#8b5cf6;"></i> <span data-lang="savings">Сбережения (10%)</span></span>
+                            <span class="finance-value" id="financeSavings">0 €</span>
+                        </div>
+                        <div class="finance-item total">
+                            <span class="finance-label" data-lang="gross">Брутто</span>
+                            <span class="finance-value" id="financeGross">0 €</span>
+                        </div>
+                    </div>
+                    
+                    <!-- ФИНАНСОВЫЕ ЦЕЛИ -->
+                    <div class="finance-goals glass-effect">
+                        <h3><i class="fas fa-bullseye"></i> <span data-lang="goal">Моя финансовая цель</span></h3>
+                        
+                        <div class="goal-inputs">
+                            <div class="input-group">
+                                <label data-lang="goalName">Название цели</label>
+                                <input type="text" id="goalName" placeholder="Подушка безопасности">
+                            </div>
+                            <div class="input-group">
+                                <label data-lang="goalAmount">Сумма цели (€)</label>
+                                <input type="number" id="goalAmount" min="0" step="100" value="3000">
+                            </div>
+                            <button class="btn-primary" onclick="window.saveGoal()">
+                                <i class="fas fa-save"></i> <span data-lang="saveGoal">Сохранить цель</span>
+                            </button>
+                        </div>
+                        
+                        <div class="goal-progress" id="goalProgress" style="display:none">
+                            <h4 id="goalNameDisplay"></h4>
+                            
+                            <div style="margin: 20px 0;">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="goalProgressBar" style="width:0%"></div>
+                                </div>
+                                <div class="progress-percent" id="goalPercent">0%</div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; background: var(--dark); border-radius: 12px;">
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalSaved">Накоплено</div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--primary);" id="goalSaved">0 €</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalTarget">Цель</div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--text);" id="goalTarget">0 €</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" data-lang="goalRemaining">Осталось</div>
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: #f59e0b;" id="goalRemaining">0 €</div>
+                                </div>
+                            </div>
+                            
+                            <div class="goal-actions" id="goalActions" style="display: none; gap: 10px; margin: 20px 0;">
+                                <button class="btn-success" onclick="window.addToGoal()" style="flex: 1;">
+                                    <i class="fas fa-plus-circle"></i> <span data-lang="add">Добавить</span>
+                                </button>
+                                <button class="btn-warning" onclick="window.withdrawFromGoal()" style="flex: 1;">
+                                    <i class="fas fa-minus-circle"></i> <span data-lang="withdraw">Снять</span>
+                                </button>
+                            </div>
+                            
+                            <div class="goal-history">
+                                <h5><i class="fas fa-history"></i> <span data-lang="history">Последние операции</span></h5>
+                                <div id="goalHistory"></div>
+                            </div>
+                            
+                            <button class="btn-danger btn-small" onclick="window.clearGoal()" style="width: 100%; margin-top: 15px;">
+                                <i class="fas fa-times"></i> <span data-lang="deleteGoal">Удалить цель</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="finance-tips glass-effect">
+                        <h4><i class="fas fa-lightbulb"></i> <span data-lang="financialTip">Финансовый совет</span></h4>
+                        <p id="financeTip">Откладывай минимум 10% от зарплаты</p>
+                        <div class="tip-date" id="tipDate"></div>
+                    </div>
+
+                    <div class="pdf-import glass-effect">
+                        <h3><i class="fas fa-file-pdf"></i> <span data-lang="importPDF">Импорт из PDF</span></h3>
+                        <p><span data-lang="uploadPDF">Загрузите PDF с зарплатой</span></p>
+                        <div class="pdf-upload-area">
+                            <input type="file" id="pdfUpload" accept=".pdf" onchange="window.importFromPDF(this)">
+                            <label for="pdfUpload" class="pdf-label">
+                                <i class="fas fa-cloud-upload-alt"></i> <span data-lang="chooseFile">Выберите файл</span>
+                            </label>
+                        </div>
+                        <div class="pdf-status" id="pdfStatus"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Модалка выбора типа дня (ИСПРАВЛЕННАЯ) -->
+    <div class="modal" id="dayModal">
+        <div class="modal-content day-modal glass-effect">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-day"></i> <span data-lang="selectDayType">Выберите тип дня</span></h3>
+            </div>
+            <div class="day-types">
+                <button class="day-type work" onclick="window.addRecord('work')">
+                    <i class="fas fa-briefcase"></i>
+                    <span data-lang="work">Смена</span>
+                    <small>7.5ч</small>
+                </button>
+                <button class="day-type night" onclick="window.addRecord('night')">
+                    <i class="fas fa-moon"></i>
+                    <span data-lang="nightShift">Ночная</span>
+                    <small>+20%</small>
+                </button>
+                <button class="day-type overtime" onclick="window.addRecord('overtime')">
+                    <i class="fas fa-clock"></i>
+                    <span data-lang="overtime">Переработка</span>
+                    <small>×1.5</small>
+                </button>
+                <button class="day-type saturday" onclick="window.addRecord('sat')">
+                    <i class="fas fa-calendar-day"></i>
+                    <span data-lang="saturday">Суббота</span>
+                    <small>×1.5 +€25</small>
+                </button>
+                <button class="day-type sunday" onclick="window.addRecord('sun')">
+                    <i class="fas fa-sun"></i>
+                    <span data-lang="sunday">Воскресенье</span>
+                    <small>×2.0</small>
+                </button>
+                <button class="day-type extra" onclick="window.addRecord('extra')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span data-lang="extraBlocks">Надчас</span>
+                    <small>+3.75ч</small>
+                </button>
+                <button class="day-type sick" onclick="window.addRecord('sick')">
+                    <i class="fas fa-hospital"></i>
+                    <span data-lang="sick">Больничный</span>
+                    <small>60%</small>
+                </button>
+                <button class="day-type vacation" onclick="window.addRecord('vacation')">
+                    <i class="fas fa-umbrella-beach"></i>
+                    <span data-lang="vacation">Отпуск</span>
+                    <small>100%</small>
+                </button>
+                <button class="day-type doctor" onclick="window.addRecord('doctor')">
+                    <i class="fas fa-stethoscope"></i>
+                    <span data-lang="doctor">Перепустка</span>
+                    <small>100%</small>
+                </button>
+                <button class="day-type off" onclick="window.addRecord('off')">
+                    <i class="fas fa-times"></i>
+                    <span data-lang="dayOff">Выходной</span>
+                    <small>0 €</small>
+                </button>
+            </div>
+            <button class="btn-secondary cancel-btn" onclick="window.closeModal()">
+                <span data-lang="cancel">Отмена</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div id="notification" class="notification hidden">
+        <div class="notification-content">
+            <span id="notificationMessage"></span>
+            <button onclick="window.hideNotification()"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <!-- СКРИПТЫ -->
+    <script type="module" src="modules/firebase-config.js"></script>
+    <script type="module" src="modules/translations.js"></script>
+    <script type="module" src="modules/utils.js"></script>
+    <script type="module" src="modules/salary.js"></script>
+    <script type="module" src="modules/auth.js"></script>
+    <script type="module" src="modules/theme.js"></script>
+    <script type="module" src="modules/time.js"></script>
+    <script type="module" src="modules/weather.js"></script>
+    <script type="module" src="modules/calendar.js"></script>
+    <script type="module" src="modules/dashboard.js"></script>
+    <script type="module" src="modules/stats.js"></script>
+    <script type="module" src="modules/finance.js"></script>
+    <script type="module" src="modules/exchange.js"></script>
+    <script type="module" src="modules/important-dates.js"></script>
+    <script type="module" src="modules/export.js"></script>
+    <script type="module" src="modules/import.js"></script>
+    <script type="module" src="modules/financial-tip.js"></script>
+    <script type="module" src="modules/notifications.js"></script>
+    <script type="module" src="modules/main.js"></script>
+    <script type="module" src="modules/pull-to-refresh.js"></script>
+</body>
+</html>
+
