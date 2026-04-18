@@ -10,50 +10,44 @@ export const HEALTH_RATE = 0.10;
 export const TAX_RATE = 0.19;
 export const NON_TAXABLE = 410;
 
-// В modules/salary.js - замените существующую функцию
+// В modules/salary.js - ЗАМЕНИТЕ ЭТУ ФУНКЦИЮ
 
 export function calculateDayEarnings(record, rate, settings) {
     let hours = record.hours || 7.5;
     
-    // Получаем админ-настройки из localStorage
+    // Получаем админ-настройки
     let adminSettings = {};
     try {
         const saved = localStorage.getItem('adminSalarySettings');
-        if (saved) {
-            adminSettings = JSON.parse(saved);
-        }
+        if (saved) adminSettings = JSON.parse(saved);
     } catch(e) {}
     
-    // Проценты из админки (по умолчанию стандартные)
-    const nightPercent = adminSettings.nightBonusPercent || 20;
+    const satPercent = adminSettings.saturdayPercent || 25;
+    const sunPercent = adminSettings.sundayPercent || 100;
     const overtimePercent = adminSettings.overtimePercent || 25;
-    const saturdayPercent = adminSettings.saturdayPercent || 50;
-    const sundayPercent = adminSettings.sundayPercent || 100;
-    const saturdayFixedBonus = adminSettings.saturdayFixedBonus || 25;
-    const extraBonus = adminSettings.extraBonus || 25;
-    
-    // Вычисляем коэффициенты из процентов
-    const overtimeCoeff = 1 + (overtimePercent / 100);
-    const saturdayCoeff = 1 + (saturdayPercent / 100);
-    const sundayCoeff = 1 + (sundayPercent / 100);
+    const nightPercent = adminSettings.nightBonusPercent || 20;
+    const straveneAmount = adminSettings.straveneBonus?.amount || 4.34;
+    const straveneEnabled = adminSettings.straveneBonus?.enabled || true;
     
     switch(record.type) {
-        case 'night': 
+        case 'night':
             return hours * rate * (1 + nightPercent/100);
-        case 'overtime': 
-            return hours * rate * overtimeCoeff;
-        case 'sat': 
-            return hours * rate * saturdayCoeff + saturdayFixedBonus;
-        case 'sun': 
-            return hours * rate * sundayCoeff;
-        case 'extra': 
-            return (hours/2) * rate * 1.36;
-        case 'sick': 
+        case 'overtime':
+            return hours * rate * (1 + overtimePercent/100);
+        case 'sat':
+            const stravene = straveneEnabled ? straveneAmount : 0;
+            return hours * rate * (1 + satPercent/100) + stravene;
+        case 'sun':
+            return hours * rate * (1 + sunPercent/100);
+        case 'extra':
+            // Надчас: 1 надчас = 3,5 фактических часа, засчитывается как 7,5ч
+            return 7.5 * rate * 1.36;
+        case 'sick':
             return hours * rate * 0.6;
-        case 'vacation': 
-        case 'doctor': 
+        case 'vacation':
+        case 'doctor':
             return hours * rate;
-        default: 
+        default:
             return hours * rate;
     }
 }
