@@ -10,12 +10,12 @@ export const HEALTH_RATE = 0.10;
 export const TAX_RATE = 0.19;
 export const NON_TAXABLE = 410;
 
-// Замените существующую функцию calculateDayEarnings на эту:
+// В modules/salary.js - замените существующую функцию
 
 export function calculateDayEarnings(record, rate, settings) {
     let hours = record.hours || 7.5;
     
-    // Получаем админ-настройки
+    // Получаем админ-настройки из localStorage
     let adminSettings = {};
     try {
         const saved = localStorage.getItem('adminSalarySettings');
@@ -24,22 +24,28 @@ export function calculateDayEarnings(record, rate, settings) {
         }
     } catch(e) {}
     
-    const satCoeff = adminSettings.saturdayCoeff || 1.5;
-    const sunCoeff = adminSettings.sundayCoeff || 2.0;
-    const overtimeCoeff = adminSettings.overtimeCoeff || 1.5;
-    const satBonus = adminSettings.saturdayBonus || 25;
-    const nightBonus = adminSettings.nightBonusPercent || 20;
+    // Проценты из админки (по умолчанию стандартные)
+    const nightPercent = adminSettings.nightBonusPercent || 20;
+    const overtimePercent = adminSettings.overtimePercent || 25;
+    const saturdayPercent = adminSettings.saturdayPercent || 50;
+    const sundayPercent = adminSettings.sundayPercent || 100;
+    const saturdayFixedBonus = adminSettings.saturdayFixedBonus || 25;
     const extraBonus = adminSettings.extraBonus || 25;
+    
+    // Вычисляем коэффициенты из процентов
+    const overtimeCoeff = 1 + (overtimePercent / 100);
+    const saturdayCoeff = 1 + (saturdayPercent / 100);
+    const sundayCoeff = 1 + (sundayPercent / 100);
     
     switch(record.type) {
         case 'night': 
-            return hours * rate * (1 + nightBonus/100);
+            return hours * rate * (1 + nightPercent/100);
         case 'overtime': 
             return hours * rate * overtimeCoeff;
         case 'sat': 
-            return hours * rate * satCoeff + satBonus;
+            return hours * rate * saturdayCoeff + saturdayFixedBonus;
         case 'sun': 
-            return hours * rate * sunCoeff;
+            return hours * rate * sundayCoeff;
         case 'extra': 
             return (hours/2) * rate * 1.36;
         case 'sick': 
